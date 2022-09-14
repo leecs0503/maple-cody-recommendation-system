@@ -1,6 +1,15 @@
 # maple-cody-recommandation-system
 22-2R 캡스톤디자인 AI 메이플 코디 추천 시스템
 
+# 디렉토리 구조
+```
+.
+├── notebook: 모델 개발에 필요한 notebook들
+├── script: 서버 개발 전 프로토타입 개발을 위한 스크립트들
+├── src: 서버 코드
+└── tests: 각 작업의 테스트 코드
+```
+
 # 의존성 관리
 
 의존성은 기본적으로 [poetry](https://python-poetry.org/)를 활용해 관리
