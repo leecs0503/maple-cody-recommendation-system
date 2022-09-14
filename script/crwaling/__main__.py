@@ -65,5 +65,4 @@ def image():
         urllib.request.urlretrieve(download, f'sample{i+1}.png')
 
 
-if __name__ == '__main__':
-    main()
+main()
