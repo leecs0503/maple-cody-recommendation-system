@@ -57,3 +57,30 @@ pytest .
 - feature 추가시 issue를 먼저 등록하고 작업
 - branch명 규칙: `{issue번호}-{microservice명}-{작업 내용}`
 - main에 직접 commit하는 경우는 지양
+- commit명의 prefix는 "feat", "docs", "refactor", "deploy"중 하나를 선택
+
+# git 사용 법
+## branch 추가하는 법
+```
+git checkout -b {branch name}
+```
+
+## branch 이동하는 법
+```
+git checkout {branch name}
+```
+
+## branch 리스트 보는 법
+```
+git branch
+```
+
+## branch 변경 전 commit이후 내용 임시 저장
+```
+git stash
+```
+
+## commit하는 법
+```
+git commit -m "커밋 메세지"
+```
