@@ -1,0 +1,14 @@
+{
+    "include": ["."],
+    "exclude": [
+      ".venv"
+    ],
+  
+    "stubPath": "./typings",
+  
+    "reportTypeshedErrors": true,
+    "reportMissingImports": false,
+  
+    "pythonVersion": "3.9",
+    "pythonPlatform": "Windows"
+  }
