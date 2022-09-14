@@ -6,7 +6,7 @@ authors = ["leecs0503"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.8"
 pyppeteer = "^1.0.2"
 
 
