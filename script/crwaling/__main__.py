@@ -9,35 +9,42 @@ import pandas as pd
 
 def main():
     parser = argparse.ArgumentParser(description='크롤러')
-
-    parser.add_argument('--name', action='store_true')
-    parser.add_argument('--image', action='store_true')
+    parser.add_argument('data_num', help='크롤링 할 데이터의 개수 지정')
+    parser.add_argument('--crawl_name', action='store_true', help='캐릭터 id 크롤링')
+    parser.add_argument('--crawl_image', action='store_true', help='캐릭터 코디 이미지 크롤링')
     args = parser.parse_args()
 
-    if args.name is True:
-        name()
-    if args.image is True:
-        image()
+    if args.crawl_name is True:
+        crawl_name(int(args.data_num))
+    if args.crawl_image is True:
+        crawl_image(int(args.data_num))
 
 
-def name():
+def crawl_name(data_num):
+    PAGE_END_IDX = 11
     name_list = []
-    i = 0
+    ranking = 0
 
-    for page in range(1, 101):
+    for page in range(1, data_num + 1):
         url = f'https://maplestory.nexon.com/Ranking/World/Total?page={page}'
-        html = requests.get(url).text
-        soup = BeautifulSoup(html, 'html.parser')
 
+        proxies = {
+            'http': 'socks5://127.0.0.1:9050',
+            'https': 'socks5://127.0.0.1:9050'
+        }
+
+        html = requests.get(url, proxies=proxies).text
+        soup = BeautifulSoup(html, 'html.parser')
+        print(page)
         tag_list = []
 
         for tr_tag in soup.find(class_='rank_table').find_all('tr'):
             tag = tr_tag.find("a")
             tag_list.append(tag)
 
-        for j in range(1, 11):
-            i += 1
-            name_list.append([i, tag_list[j].text])
+        for page_name_idx in range(1, PAGE_END_IDX):
+            ranking += 1
+            name_list.append([ranking, tag_list[page_name_idx].text])
 
     fields = ['Ranking', 'Name']
 
@@ -47,22 +54,29 @@ def name():
         write.writerows(name_list)
 
 
-def image():
-    df = pd.read_csv('1test.csv')
+def crawl_image(data_num):
 
-    for i in range(0, 99):
-        name = df['Name'][i]
+    df = pd.read_csv('test.csv')
+
+    for df_name_idx in range(0, data_num):
+        name = df['Name'][df_name_idx]
         url = f"https://maple.gg/u/{name}"
 
-        response = requests.get(url)
+        proxies = {
+            'http': 'socks5://127.0.0.1:9050',
+            'https': 'socks5://127.0.0.1:9050'
+        }
+
+        response = requests.get(url, proxies=proxies)
         html = response.text
         soup = BeautifulSoup(html, 'html.parser')
 
-        tr_tag = soup.find(class_='col-6 col-md-8 col-lg-6').find('img')
+        img_tag = soup.find(class_='col-6 col-md-8 col-lg-6').find('img')
 
-        download = tr_tag['src']
+        img_url = img_tag['src']
 
-        urllib.request.urlretrieve(download, f'sample{i+1}.png')
+        urllib.request.urlretrieve(img_url, f'sample{df_name_idx+1}.png')
 
 
-main()
+if __name__ == '__main__':
+    main()
