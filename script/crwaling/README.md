@@ -17,6 +17,6 @@ start_page_idx는 크롤링을 시작할 페이지 index이고, num_want_to_craw
 메이플 공식 홈페이지에서 크롤링 한 결과가 csv 형태로 저장되고 원하는 csv 파일을 지정하여 이미지를 크롤링 합니다.
 
 - json 파일 병합:
-> python \_\_main\_\_.py --json_name_1 json_data_11_30 --json_name_2 json_data_31_50 --json_merge
+> python \_\_main\_\_.py --json_name json_data_11_30 json_data_31_50 --json_merge
 
-json 파일 명을 지정하여 병합을 진행합니다.
+json 파일 명을 지정하여 병합을 진행합니다.(복수 개 지정 가능)

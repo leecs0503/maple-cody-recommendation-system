@@ -27,7 +27,7 @@ def crawl_name(start_page_idx: int, num_want_to_crawl: int):
     메이플 공식 사이트에서 html을 받아와 id에 해당하는 정보를 list에 담는다.
     한 페이지 당 10개의 id가 있으므로 반복문을 이용하여 page를 바꿔가면서 크롤링 진행한다.
 
-    Keyword arguments:
+    arguments:
     num_want_to_crawl -- 크롤링 하고 싶은 유저 id 개수
     start_page_idx -- 크롤링을 진행 할 page idx
     NUM_OF_CHARACTER_IN_ONE_PAGE -- 한 페이지 당 id 개수
@@ -46,9 +46,9 @@ def crawl_name(start_page_idx: int, num_want_to_crawl: int):
         soup = get_html_text(url)
 
         rank_table = soup.find(class_="rank_table")
-        assert isinstance(rank_table, Tag), "해당 class의 Tag가 없습니다. class 명을 확인해 주세요"
+        assert isinstance(rank_table, Tag), "crawl_name method_해당 class의 Tag가 없습니다. class 명을 확인해 주세요"
         tag_list = [tr_tag.find("a") for tr_tag in rank_table.find_all("tr") if isinstance(tr_tag, Tag)]
-        assert len(tag_list) > 0, "tag_list가 비었습니다."
+        assert len(tag_list) > 0, "crawl_name method_tag_list가 비었습니다. 해당 class의 tr Tag가 없습니다. 태그 명을 다시 확인 해 주세요"
 
         for page_name_idx in range(1, NUM_OF_CHARACTER_IN_ONE_PAGE + 1):
             ranking += 1
@@ -69,7 +69,7 @@ def crawl_image(csv_name: str):
     crawl_name 함수에서 얻은 csv 데이터 파일의 name column을 활용해
     반복문을 이용하여 page를 바꿔가면서 크롤링 진행한다.
 
-    Keyword arguments:
+    arguments:
     df -- crawl_name 함수에서 얻은 csv 파일에 대한 데이터 프레임
     name -- 유저 id
     rank -- 유저 ranking
@@ -77,27 +77,32 @@ def crawl_image(csv_name: str):
     img_tag -- 사이트 내에 있는 이미지 tag의 html
     img_url -- image 태그 안에 있는 이미지 url
     """
-    RECENT_CODY_NUM = 6
+    NUM_RECENT_CODY = 6
 
     df = pd.read_csv(f"{csv_name}.csv")
-    RANK_START = df["Ranking"][0]
+    rank_start = df["Ranking"][0]
+    num_data_csv = len(df["Name"])
+    img_url_list = []
 
-    json_data = {}
-    json_data["info"] = []
+    json_data = {
+        "info": [],
+    }
 
-    for df_name_idx in range(0, len(df["Name"])):
+    for df_name_idx in range(0, num_data_csv):
         name = df["Name"][df_name_idx]
-        rank = df["Ranking"][df_name_idx]
         url = BASE_URL_MAPLEGG + f"/{name}"
         soup = get_html_text(url)
 
-        img_tag = soup.find_all(class_="character-image")
-        img_tag.pop(0)
-        img_tag.pop()
-        for recent_cody in range(RECENT_CODY_NUM):
-            img_url = img_tag[recent_cody]["src"]
-            urllib.request.urlretrieve(img_url, f"ranking{rank}_cody{recent_cody + 1}.png")
+        img_tag = soup.find_all(class_="character-image")[1:-1]
 
+        for recent_cody in range(NUM_RECENT_CODY):
+            img_url = img_tag[recent_cody]["src"]
+            img_url_list.append(img_url)
+
+    image_save(img_url_list, num_data_csv, rank_start, NUM_RECENT_CODY)
+
+
+"""
         data = {
             "name": f"{name}",
             "ranking": f"{rank}",
@@ -111,23 +116,39 @@ def crawl_image(csv_name: str):
 
         json_data["info"].append(data)
 
-    with open(f"json_data_{RANK_START}_{rank}.json", "w") as f:
+    with open(f"json_data_{rank_start}_{rank}.json", "w") as f:
         json.dump(json_data, f, indent=2, ensure_ascii=False)
+"""
 
 
-def json_merge(json_name_1: str, json_name_2: str):
+def image_save(img_url_list: list, num_data_csv: int, rank_start: int, NUM_RECENT_CODY: int):
+    for rank in range(0, num_data_csv):
+        for num_cody in range(0, NUM_RECENT_CODY):
+            urllib.request.urlretrieve(
+                img_url_list[(NUM_RECENT_CODY * rank) + num_cody], f"ranking{rank_start}_cody{num_cody + 1}.png"
+            )
+        rank_start += 1
 
-    NAME_START_IDX = json_name_1[10:12]
-    NAME_END_IDX = json_name_2[13:15]
 
-    with open(f"./{json_name_1}.json") as file_1:
-        data1 = json.load(file_1)
+def file_load(json_file_idx: str):
+    with open(f"./{json_file_idx}.json") as f:
+        json_data = json.load(f)
+    return json_data
 
-    with open(f"./{json_name_2}.json") as file_2:
-        data2 = json.load(file_2)
 
-    for json_idx in range(0, len(data2["info"])):
-        data1["info"].append(data2["info"][json_idx])
+def json_merge(json_name: list):
+
+    NAME_START_IDX = json_name[0][10:12]  # 10:12 는 입력 된 json_name의 시작 ranking에 해당하는 숫자를 슬라이싱 한 것
+    NAME_END_IDX = json_name[-1][13:15]  # 13:15는 입력 된 json_name의 마지막 ranking에 해당하는 숫자를 슬라이싱 한 것
+
+    total_json_data = {
+        "info": [],
+    }
+
+    for file_idx in range(len(json_name)):
+        json_file = file_load(json_name[file_idx])
+        for info_idx in range(0, len(json_file["info"])):
+            total_json_data["info"].append(json_file["info"][info_idx])
 
     with open(f"json_data_{NAME_START_IDX}_{NAME_END_IDX}.json", "w") as f:
-        json.dump(data1, f, indent=2, ensure_ascii=False)
+        json.dump(total_json_data, f, indent=2, ensure_ascii=False)
