@@ -15,3 +15,5 @@ start_page_idx는 크롤링을 시작할 페이지 index이고, num_want_to_craw
 > python \_\_main\_\_.py --crawl_image
 
 메이플 공식 홈페이지에서 크롤링 한 결과가 csv 형태로 저장되고 이를 활용하여 이미지를 크롤링 합니다.
+
+
