@@ -62,7 +62,7 @@ def crawl_name(start_page_idx: int, num_want_to_crawl: int):
         write.writerows(name_list)
 
 
-def crawl_image(csv_name: str):
+def process_image(csv_name: str):
     """사이트 내에 있는 유저 코디 이미지 데이터를 크롤링 한다.
 
     maple.gg 사이트에서 html을 받아와 이미지에 해당하는 url을 저장 한 뒤, 다운로드를 진행한다.
@@ -84,10 +84,6 @@ def crawl_image(csv_name: str):
     num_data_csv = len(df["Name"])
     img_url_list = []
 
-    json_data = {
-        "info": [],
-    }
-
     for df_name_idx in range(0, num_data_csv):
         name = df["Name"][df_name_idx]
         url = BASE_URL_MAPLEGG + f"/{name}"
@@ -99,26 +95,30 @@ def crawl_image(csv_name: str):
             img_url = img_tag[recent_cody]["src"]
             img_url_list.append(img_url)
 
+    json_save(list(df["Name"]), list(df["Ranking"]), num_data_csv, rank_start, NUM_RECENT_CODY)
     image_save(img_url_list, num_data_csv, rank_start, NUM_RECENT_CODY)
 
 
-"""
+def json_save(name_list: list, ranking_list: list, num_data_csv: int, rank_start: int, NUM_RECENT_CODY: int):
+
+    json_data = {
+        "info": [],
+    }
+
+    for df_name_idx in range(0, num_data_csv):
+        name = name_list[df_name_idx]
+        rank = ranking_list[df_name_idx]
         data = {
             "name": f"{name}",
             "ranking": f"{rank}",
-            "img_url_1": f"./ranking{rank}_cody1.png",
-            "img_url_2": f"./ranking{rank}_cody2.png",
-            "img_url_3": f"./ranking{rank}_cody3.png",
-            "img_url_4": f"./ranking{rank}_cody4.png",
-            "img_url_5": f"./ranking{rank}_cody5.png",
-            "img_url_6": f"./ranking{rank}_cody6.png",
         }
+        for img_url_idx in range(1, NUM_RECENT_CODY + 1):
+            data[f"img_url_{img_url_idx}"] = f"./ranking{rank}_cody{img_url_idx}.png"
 
         json_data["info"].append(data)
 
     with open(f"json_data_{rank_start}_{rank}.json", "w") as f:
         json.dump(json_data, f, indent=2, ensure_ascii=False)
-"""
 
 
 def image_save(img_url_list: list, num_data_csv: int, rank_start: int, NUM_RECENT_CODY: int):

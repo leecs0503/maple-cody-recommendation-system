@@ -1,6 +1,6 @@
 import argparse
 
-from crawl import crawl_image, crawl_name, json_merge
+from crawl import crawl_name, json_merge, process_image
 
 
 def main():
@@ -18,7 +18,7 @@ def main():
     if args.crawl_name:
         crawl_name(args.start_page_idx, args.num_want_to_crawl)
     if args.crawl_image:
-        crawl_image(args.csv_name)
+        process_image(args.csv_name)
     if args.json_merge:
         json_merge(args.json_name)
 
