@@ -62,7 +62,7 @@ def crawl_name(start_page_idx: int, num_want_to_crawl: int):
         write.writerows(name_list)
 
 
-def crawl_image(csv_name):
+def crawl_image(csv_name: str):
     """사이트 내에 있는 유저 코디 이미지 데이터를 크롤링 한다.
 
     maple.gg 사이트에서 html을 받아와 이미지에 해당하는 url을 저장 한 뒤, 다운로드를 진행한다.
@@ -115,7 +115,7 @@ def crawl_image(csv_name):
         json.dump(json_data, f, indent=2, ensure_ascii=False)
 
 
-def json_merge(json_name_1, json_name_2):
+def json_merge(json_name_1: str, json_name_2: str):
 
     NAME_START_IDX = json_name_1[10:12]
     NAME_END_IDX = json_name_2[13:15]
