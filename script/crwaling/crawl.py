@@ -1,6 +1,7 @@
 import csv
 import json
 import urllib
+from typing import List
 
 import pandas as pd
 import requests
@@ -30,11 +31,8 @@ def crawl_name(start_page_idx: int, num_want_to_crawl: int):
     arguments:
     num_want_to_crawl -- 크롤링 하고 싶은 유저 id 개수
     start_page_idx -- 크롤링을 진행 할 page idx
-    NUM_OF_CHARACTER_IN_ONE_PAGE -- 한 페이지 당 id 개수
-    name_list -- 전체 유저 id 데이터를 담을 list
-    tag_list -- 한 페이지 내의 유저 id 데이터를 담을 list
-    ranking -- 유저의 ranking 데이터
-    fields -- 생성할 csv 파일의 column 이름
+
+
     """
 
     NUM_OF_CHARACTER_IN_ONE_PAGE = 10
@@ -70,12 +68,9 @@ def process_image(csv_name: str):
     반복문을 이용하여 page를 바꿔가면서 크롤링 진행한다.
 
     arguments:
-    df -- crawl_name 함수에서 얻은 csv 파일에 대한 데이터 프레임
-    name -- 유저 id
-    rank -- 유저 ranking
-    csv_name -- 크롤링 하고 싶은 csv 파일(입력으로 받는다)
-    img_tag -- 사이트 내에 있는 이미지 tag의 html
-    img_url -- image 태그 안에 있는 이미지 url
+    csv_name -- 이미지 크롤링 하고자 하는 유저의 id 정보와 ranking 정보가 들어있는 csv 파일의 csv 이름
+
+
     """
     NUM_RECENT_CODY = 6
 
@@ -100,6 +95,18 @@ def process_image(csv_name: str):
 
 
 def json_save(name_list: list, ranking_list: list, num_data_csv: int, rank_start: int, NUM_RECENT_CODY: int):
+    """process_image 함수에서 얻은 결과값을 토대로 json 파일을 생성한다.
+
+
+    arguments:
+    name_list -- 유저 id 정보를 담고 있는 list
+    ranking_list -- 유저 랭킹 정보를 담고 있는 list
+    num_data_csv -- csv 파일의 총 길이
+    rank_start -- csv 파일의 유저 ranking의 시작 ranking
+    NUM_RECENT_CODY -- 한 페이지 당 최근 코디 이미지 개수
+
+
+    """
 
     json_data = {
         "info": [],
@@ -121,7 +128,19 @@ def json_save(name_list: list, ranking_list: list, num_data_csv: int, rank_start
         json.dump(json_data, f, indent=2, ensure_ascii=False)
 
 
-def image_save(img_url_list: list, num_data_csv: int, rank_start: int, NUM_RECENT_CODY: int):
+def image_save(img_url_list: List[str], num_data_csv: int, rank_start: int, NUM_RECENT_CODY: int):
+    """process_image 함수에서 얻은 결과값을 토대로 json 파일을 생성한다.
+
+
+    arguments:
+    img_url_list -- 크롤링 한 image의 url 정보를 담고 있는 list
+    num_data_csv -- csv 파일의 총 길이
+    rank_start -- csv 파일의 유저 ranking의 시작 ranking
+    NUM_RECENT_CODY -- 한 페이지 당 최근 코디 이미지 개수
+
+
+    """
+
     for rank in range(0, num_data_csv):
         for num_cody in range(0, NUM_RECENT_CODY):
             urllib.request.urlretrieve(
