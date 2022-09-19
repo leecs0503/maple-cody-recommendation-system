@@ -35,7 +35,7 @@ def _get_name_list_from_maple_ranking_site(page_num: int) -> List[str]:
     assert len(tag_list) > 0, "crawl_name: method_tag_list가 비었습니다. 해당 class의 tr Tag가 없습니다. 태그 명을 다시 확인 해 주세요"
 
     # soup가 반환하는 객체는 1-based List (tag_list[0] = None)
-    name_list = [tag.text for idx, tag in enumerate(tag_list) if idx != 0]
+    name_list = [tag.text for idx, tag in enumerate(tag_list) if idx != 0 and tag is not None]
 
     return name_list
 
@@ -97,7 +97,7 @@ def read_user_info_list(csv_name: str) -> List[UserInfo]:
     """ csv파일을 읽어서 user_info_list를 반환하는 메소드 """
     df = pd.read_csv(f"{csv_name}.csv")
     return [
-        UserInfo(ranking=ranking, name=name)
+        UserInfo(ranking=ranking, nickname=name)
         for ranking, name in zip(df["Ranking"], df["Name"])
     ]
 
