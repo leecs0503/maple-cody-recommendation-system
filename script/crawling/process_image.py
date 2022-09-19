@@ -1,6 +1,6 @@
 import json
-import urllib
 import os
+import urllib
 from dataclasses import asdict, dataclass
 from typing import List
 

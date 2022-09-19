@@ -1,4 +1,6 @@
 import csv
+import logging
+import os
 from dataclasses import dataclass
 from typing import List
 
@@ -7,8 +9,6 @@ from bs4.element import Tag
 
 from .constant import BASE_URI_PATH
 from .util import get_html_text
-import logging
-import os
 
 logger = logging.Logger(__name__)
 logger.setLevel(logging.INFO)
