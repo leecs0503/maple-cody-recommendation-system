@@ -1,13 +1,17 @@
 import json
 import urllib
+import os
 from dataclasses import asdict, dataclass
 from typing import List
 
+from .constant import BASE_URI_PATH
 from .process_name import UserInfo, read_user_info_list
 from .util import get_html_text
 
 BASE_URL_MAPLEGG_FORMA = "https://maple.gg/u/{0}"
-FORMAT_IMAGE_PATH = "./images/ranking{0}_cody{1}.png"
+IMAGE_BASE_URI = os.path.join(BASE_URI_PATH, 'images')
+FORMAT_IMAGE_PATH = os.path.join(IMAGE_BASE_URI, "ranking{0}_cody{1}.png")
+FORMAT_JSON_PATH = os.path.join(BASE_URI_PATH, "json_data_{0}_{1}.json")
 
 
 @dataclass
@@ -81,13 +85,14 @@ def save_json(
 
     start_rank = data_list[0].ranking
     end_rank = data_list[-1].ranking
-    with open(f"json_data_{start_rank}_{end_rank}.json", "w") as f:
+    with open(FORMAT_JSON_PATH.format(start_rank, end_rank), "w") as f:
         json.dump(json_data, f, indent=2, ensure_ascii=False)
 
 
 def save_image(user_info_list: List[UserInfoWithRecentCody]) -> List[List[str]]:
     """ process_image 함수에서 얻은 결과값을 토대로 json 파일을 생성한다. """
     uris_list = []
+    os.makedirs(IMAGE_BASE_URI, exist_ok=True)
     for user_info in user_info_list:
         uris = []
         for idx, url in enumerate(user_info.recent_cody_list):

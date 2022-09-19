@@ -6,13 +6,13 @@ from .process_name import process_name
 
 def main():
     parser = argparse.ArgumentParser(description="크롤러")
-    parser.add_argument("--start_page_idx", type=int, help="크롤링 할 페이지 시작 지점 지정")
-    parser.add_argument("--end_page_idx", type=int, help="크롤링 할 페이지 마지막 지점 지정")
-    parser.add_argument("--csv_name", type=str, help="이미지 크롤링 할 csv 파일 지정")
-    parser.add_argument("--json_name", nargs="*", help="merge 할 json 파일 지정(원하는 만큼 적어주어야 한다)")
-    parser.add_argument("--crawl_name", action="store_true", help="캐릭터 id 크롤링")
-    parser.add_argument("--crawl_image", action="store_true", help="캐릭터 코디 이미지 크롤링")
-    parser.add_argument("--json_merge", action="store_true", help="json_merge")
+    parser.add_argument("--start-page-idx", type=int, help="크롤링 할 페이지 시작 지점 지정")
+    parser.add_argument("--end-page-idx", type=int, help="크롤링 할 페이지 마지막 지점 지정")
+    parser.add_argument("--csv-name", type=str, help="이미지 크롤링 할 csv 파일 지정")
+    parser.add_argument("--json-name", nargs="*", help="merge 할 json 파일 지정(원하는 만큼 적어주어야 한다)")
+    parser.add_argument("--crawl-name", action="store_true", help="캐릭터 id 크롤링")
+    parser.add_argument("--crawl-image", action="store_true", help="캐릭터 코디 이미지 크롤링")
+    parser.add_argument("--json-merge", action="store_true", help="json_merge")
 
     args = parser.parse_args()
 

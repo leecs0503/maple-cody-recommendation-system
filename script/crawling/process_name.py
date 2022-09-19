@@ -5,10 +5,16 @@ from typing import List
 import pandas as pd
 from bs4.element import Tag
 
+from .constant import BASE_URI_PATH
 from .util import get_html_text
+import logging
+import os
+
+logger = logging.Logger(__name__)
+logger.setLevel(logging.INFO)
 
 BASE_URL_MAPLE_OFFICIAL_FORMA = "https://maplestory.nexon.com/Ranking/World/Total?page={0}"
-FORMAT_NAME_LIST = "user_info_{0}_{1}.csv"
+FORMAT_NAME_LIST = os.path.join(BASE_URI_PATH, "user_info_{0}_{1}.csv")
 
 
 @dataclass
@@ -97,6 +103,8 @@ def read_user_info_list(csv_name: str) -> List[UserInfo]:
 
 
 def process_name(start_page_idx: int, end_page_idx: int):
+    logger.info(f"process name start! st: {start_page_idx}, en: {end_page_idx}")
     user_info_list = crawl_name(start_page_idx, end_page_idx)
     save_user_info_list(user_info_list)
+    logger.info(f"process name end! len(user_info_list): {len(user_info_list)}")
     return user_info_list
