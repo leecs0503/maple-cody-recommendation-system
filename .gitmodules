@@ -1,3 +1,6 @@
 [submodule "WzComparerR2"]
 	path = WzComparerR2Server//WzComparerR2
 	url = https://github.com/KENNYSOFT/WzComparerR2
+[submodule "WzComparerR2Server/WzComparerR2"]
+	path = WzComparerR2Server/WzComparerR2
+	url = https://github.com/KENNYSOFT/WzComparerR2
