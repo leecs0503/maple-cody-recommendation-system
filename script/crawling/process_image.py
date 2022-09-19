@@ -1,8 +1,8 @@
 import json
 import os
-import urllib
 from dataclasses import asdict, dataclass
 from typing import List
+from urllib.request import urlretrieve
 
 from .constant import BASE_URI_PATH
 from .process_name import UserInfo, read_user_info_list
@@ -97,7 +97,7 @@ def save_image(user_info_list: List[UserInfoWithRecentCody]) -> List[List[str]]:
         uris = []
         for idx, url in enumerate(user_info.recent_cody_list):
             uri = FORMAT_IMAGE_PATH.format(user_info.ranking, idx + 1)
-            urllib.request.urlretrieve(url, uri)
+            urlretrieve(url, uri)
             uris.append(uri)
         uris_list.append(uris)
 
