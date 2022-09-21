@@ -13,6 +13,9 @@
         "packagesPath": "/home/lawali/.nuget/packages/",
         "outputPath": "/home/lawali/projects/maple-cody-recommendation-system/WzComparerR2Server/obj/",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "/usr/share/dotnet/sdk/NuGetFallbackFolder"
+        ],
         "configFilePaths": [
           "/home/lawali/.nuget/NuGet/NuGet.Config"
         ],
@@ -37,6 +40,12 @@
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
+          "dependencies": {
+            "System.Drawing.Common": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

@@ -1,8 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "5D67vJ6bDvGB9RWqCwtnFUtEnqrWNaHvnTTu0lD4bLK11Gx6YNzOZ/NO5NtrVi5OYL8ZpaWGZ96WrdXjoPwarA==",
+  "dgSpecHash": "zMqF/e875fLHntpvnwLer6p2mtQ/BxtbVKiFCenMiXtrEk8Rsog4GIwDnmNtQSFWYLge+x6RYh4z7sGp338+kA==",
   "success": true,
   "projectFilePath": "/home/lawali/projects/maple-cody-recommendation-system/WzComparerR2Server/WzComparerR2Server.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "/home/lawali/.nuget/packages/microsoft.win32.systemevents/6.0.0/microsoft.win32.systemevents.6.0.0.nupkg.sha512",
+    "/home/lawali/.nuget/packages/system.drawing.common/6.0.0/system.drawing.common.6.0.0.nupkg.sha512"
+  ],
   "logs": []
 }
