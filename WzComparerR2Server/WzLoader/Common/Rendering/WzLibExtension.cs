@@ -13,30 +13,6 @@ namespace WzComparerR2.Rendering
         public static Texture2D ToTexture(this Wz_Png png, GraphicsDevice graphicsDevice)
         {
             var format = GetTextureFormatOfPng(png.Form);
-            if (format == SurfaceFormat.Bgra4444)
-            {
-                //检测是否支持 pre-win8
-                if (!graphicsDevice.IsSupportBgra4444())
-                {
-                    format = SurfaceFormat.Bgra32;
-                }
-            }
-            else if (format == SurfaceFormat.Bgr565)
-            {
-                //检测是否支持 pre-win8
-                if (!graphicsDevice.IsSupportBgr565())
-                {
-                    format = SurfaceFormat.Bgra32;
-                }
-            }
-            else if (format == SurfaceFormat.Bgra5551)
-            {
-                //检测是否支持 pre-win8
-                if (!graphicsDevice.IsSupportBgra5551())
-                {
-                    format = SurfaceFormat.Bgra32;
-                }
-            }
 
             var t2d = new Texture2D(graphicsDevice, png.Width, png.Height, false, format);
             png.ToTexture(t2d, Point.Zero);

@@ -8,10 +8,16 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="ImageManipulation" Version="1.0.0" />
-    <PackageReference Include="Spine" Version="3.3.0" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
+    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.1.303" />
+    <PackageReference Include="SharpDX" Version="4.2.0" />
+    <PackageReference Include="SharpDX.Direct2D1" Version="4.2.0" />
+    <PackageReference Include="SharpDX.Direct3D11" Version="4.2.0" />
+    <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="System.Xml" />
     <Reference Include="ImageManipulation">
       <HintPath>.\WzLoader\References\ImageManipulation.dll</HintPath>
       <Private>True</Private>

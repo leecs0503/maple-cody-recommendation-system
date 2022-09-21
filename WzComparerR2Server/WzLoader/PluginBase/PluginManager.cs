@@ -7,7 +7,6 @@ using System.Reflection;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
 using DevComponents.DotNetBar;
-using System.Windows.Forms;
 using System.Linq;
 
 namespace WzComparerR2.PluginBase
@@ -170,7 +169,7 @@ namespace WzComparerR2.PluginBase
                 }
                 catch (Exception ex)
                 {
-                    MessageBoxEx.Show("插件初始化失败。\r\n" + ex.Message, plugin.Instance.Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    // MessageBoxEx.Show("插件初始化失败。\r\n" + ex.Message, plugin.Instance.Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }

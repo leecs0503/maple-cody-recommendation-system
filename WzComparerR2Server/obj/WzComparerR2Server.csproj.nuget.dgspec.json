@@ -45,9 +45,29 @@
               "target": "Package",
               "version": "[1.0.0, )"
             },
-            "Spine": {
+            "MonoGame.Framework.DesktopGL": {
               "target": "Package",
-              "version": "[3.3.0, )"
+              "version": "[3.8.0.1641, )"
+            },
+            "MonoGame.Framework.WindowsDX": {
+              "target": "Package",
+              "version": "[3.8.1.303, )"
+            },
+            "SharpDX": {
+              "target": "Package",
+              "version": "[4.2.0, )"
+            },
+            "SharpDX.Direct2D1": {
+              "target": "Package",
+              "version": "[4.2.0, )"
+            },
+            "SharpDX.Direct3D11": {
+              "target": "Package",
+              "version": "[4.2.0, )"
+            },
+            "SharpDX.Mathematics": {
+              "target": "Package",
+              "version": "[4.2.0, )"
             },
             "System.Drawing.Common": {
               "target": "Package",
