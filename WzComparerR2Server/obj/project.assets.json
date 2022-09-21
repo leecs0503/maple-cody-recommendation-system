@@ -2,6 +2,18 @@
   "version": 3,
   "targets": {
     "net6.0": {
+      "ImageManipulation/1.0.0": {
+        "type": "package",
+        "dependencies": {
+          "System.Drawing.Common": "4.7.0"
+        },
+        "compile": {
+          "lib/netstandard2.0/ImageManipulation.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/ImageManipulation.dll": {}
+        }
+      },
       "Microsoft.Win32.SystemEvents/6.0.0": {
         "type": "package",
         "compile": {
@@ -22,6 +34,15 @@
             "assetType": "runtime",
             "rid": "win"
           }
+        }
+      },
+      "Spine/3.3.0": {
+        "type": "package",
+        "compile": {
+          "lib/NET40/spine-csharp.dll": {}
+        },
+        "runtime": {
+          "lib/NET40/spine-csharp.dll": {}
         }
       },
       "System.Drawing.Common/6.0.0": {
@@ -56,6 +77,18 @@
     }
   },
   "libraries": {
+    "ImageManipulation/1.0.0": {
+      "sha512": "1d19cMrGzRC8XSV4bJafRybtaMi6sXDrRFsQ5/iYLKGnmXwRn2GjD5LfiZ5t94O6M8wfIVFB771oBBiuuYCbhQ==",
+      "type": "package",
+      "path": "imagemanipulation/1.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "imagemanipulation.1.0.0.nupkg.sha512",
+        "imagemanipulation.nuspec",
+        "lib/netstandard2.0/ImageManipulation.dll"
+      ]
+    },
     "Microsoft.Win32.SystemEvents/6.0.0": {
       "sha512": "hqTM5628jSsQiv+HGpiq3WKBl2c8v1KZfby2J6Pr7pEPlK9waPdgEO6b8A/+/xn/yZ9ulv8HuqK71ONy2tg67A==",
       "type": "package",
@@ -83,6 +116,18 @@
         "runtimes/win/lib/netcoreapp3.1/Microsoft.Win32.SystemEvents.dll",
         "runtimes/win/lib/netcoreapp3.1/Microsoft.Win32.SystemEvents.xml",
         "useSharedDesignerContext.txt"
+      ]
+    },
+    "Spine/3.3.0": {
+      "sha512": "r/l0GJj4zKsmGPyp4prJeth8wpSTAMXF2yiCWm1u7AnYH45gBdpfmZXxAsaBilG+G7+8VyC/FQoUg5wfLIhMFQ==",
+      "type": "package",
+      "path": "spine/3.3.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/NET40/spine-csharp.dll",
+        "spine.3.3.0.nupkg.sha512",
+        "spine.nuspec"
       ]
     },
     "System.Drawing.Common/6.0.0": {
@@ -127,6 +172,8 @@
   },
   "projectFileDependencyGroups": {
     "net6.0": [
+      "ImageManipulation >= 1.0.0",
+      "Spine >= 3.3.0",
       "System.Drawing.Common >= 6.0.0"
     ]
   },
@@ -171,6 +218,14 @@
       "net6.0": {
         "targetAlias": "net6.0",
         "dependencies": {
+          "ImageManipulation": {
+            "target": "Package",
+            "version": "[1.0.0, )"
+          },
+          "Spine": {
+            "target": "Package",
+            "version": "[3.3.0, )"
+          },
           "System.Drawing.Common": {
             "target": "Package",
             "version": "[6.0.0, )"
@@ -198,5 +253,17 @@
         "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/6.0.401/RuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'Spine 3.3.0' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net6.0'. This package may not be fully compatible with your project.",
+      "libraryId": "Spine",
+      "targetGraphs": [
+        "net6.0"
+      ]
+    }
+  ]
 }

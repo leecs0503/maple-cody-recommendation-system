@@ -1,11 +1,24 @@
 {
   "version": 2,
-  "dgSpecHash": "zMqF/e875fLHntpvnwLer6p2mtQ/BxtbVKiFCenMiXtrEk8Rsog4GIwDnmNtQSFWYLge+x6RYh4z7sGp338+kA==",
+  "dgSpecHash": "hUpFh9Ige1dAhOwVBb6rwYpUMQyT4WMlhHXfgxQcDXAbHoe0LJmtcGfcQ2x/XHQf3KvlXgTzOfHu4ZbP7vzRNg==",
   "success": true,
   "projectFilePath": "/home/lawali/projects/maple-cody-recommendation-system/WzComparerR2Server/WzComparerR2Server.csproj",
   "expectedPackageFiles": [
+    "/home/lawali/.nuget/packages/imagemanipulation/1.0.0/imagemanipulation.1.0.0.nupkg.sha512",
     "/home/lawali/.nuget/packages/microsoft.win32.systemevents/6.0.0/microsoft.win32.systemevents.6.0.0.nupkg.sha512",
+    "/home/lawali/.nuget/packages/spine/3.3.0/spine.3.3.0.nupkg.sha512",
     "/home/lawali/.nuget/packages/system.drawing.common/6.0.0/system.drawing.common.6.0.0.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'Spine 3.3.0' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net6.0'. This package may not be fully compatible with your project.",
+      "libraryId": "Spine",
+      "targetGraphs": [
+        "net6.0"
+      ]
+    }
+  ]
 }

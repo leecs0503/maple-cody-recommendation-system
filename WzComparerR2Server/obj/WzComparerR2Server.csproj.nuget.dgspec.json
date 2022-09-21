@@ -41,6 +41,14 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "ImageManipulation": {
+              "target": "Package",
+              "version": "[1.0.0, )"
+            },
+            "Spine": {
+              "target": "Package",
+              "version": "[3.3.0, )"
+            },
             "System.Drawing.Common": {
               "target": "Package",
               "version": "[6.0.0, )"
