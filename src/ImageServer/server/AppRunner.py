@@ -1,7 +1,8 @@
 import requests
 import logging
 import json
-from functools import cache
+from .httpServer import HTTPServer
+from functools import cached_property
 
 
 class Config:
@@ -38,17 +39,19 @@ class AppRunner:
             wcr_server_protocol=wcr_server_protocol,
             base_wz_code_path=base_wz_code_path,
         )
-        self.logger = AppRunner._get_logger()
+        self.HTTPServer = HTTPServer(
+            logger=self.logger
+        )
 
-    @cache
-    def _get_logger():
+    @cached_property
+    def logger(self):
         logger = logging.getLogger(__name__)
 
         formatter = logging.Formatter(
             "%(asctime)s %(levelname)s [%(name)s] [%(filename)s:%(lineno)d] - %(message)s"
         )
 
-        file_handler = logging.FileHandler("logs/log.log")
+        file_handler = logging.FileHandler("logs/app_runner_log.log")
         file_handler.setFormatter(formatter)
         file_handler.setLevel(logging.INFO)
 
@@ -56,14 +59,17 @@ class AppRunner:
         
         return logger
 
-    async def run(self):
+    def run(self) -> None:
         self.logger.info(f"now config: {json.dumps(self.config.to_json())}")
 
         self.logger.info("start loading base_wz")
-        self.load_base_wz()
+        self._load_base_wz()
         self.logger.info("complete loading base_wz")
 
-    def load_base_wz(self):
+        self.logger.info("start HTTPServer")
+        self.HTTPServer.run()
+
+    def _load_base_wz(self) -> None:
         if self.config.base_wz_code_path:
             base_wz_code_path = self.config.base_wz_code_path
             with open(base_wz_code_path) as f:
