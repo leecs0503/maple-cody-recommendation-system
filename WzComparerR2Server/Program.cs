@@ -50,6 +50,10 @@ public class Program
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
 
+        app.MapControllerRoute(
+            name: "code",
+            pattern: "{controller=Home}/{action=Code}/{id?}");
+
         app.Run();
     }
 }
