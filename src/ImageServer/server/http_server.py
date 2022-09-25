@@ -11,12 +11,6 @@ class HTTPServer:
         self,
         logger: logging.Logger,
         config: Config,
-        wcr_server_host: str,
-        wcr_server_port: int,
-        wcr_server_protocol: str,
-        wcr_caller_retry_num: int = -1,
-        wcr_caller_timeout: float = 2,
-        wcr_caller_backoff: float = 1,
     ) -> None:
         self.logger = logger
         self.app = web.Application()
