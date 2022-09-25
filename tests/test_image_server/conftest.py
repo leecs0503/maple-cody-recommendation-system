@@ -4,7 +4,7 @@ from src.ImageServer.server.config import Config
 
 
 @pytest.fixture
-def test_config():
+def config_for_test():
     return Config(
         wcr_server_host="0.0.0.0",
         wcr_server_protocol="http",
