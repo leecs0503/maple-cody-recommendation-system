@@ -69,7 +69,7 @@ public class HomeController : Controller
 	[Route("avatar")]
 	public ActionResult Avatar(string code)
 	{
-		Console.WriteLine("Avatar 진입");
+		Console.WriteLine("Avatar 진입 : " + code);
 		if(LoadCode(code, 0)) {
 			Console.WriteLine("성공");
 			var bone = this.avatar.CreateFrame(0, 0, 0);
@@ -382,6 +382,10 @@ public class HomeController : Controller
 		{
 			this.avatar.LoadTamingActions();
 		}
+		else if (part == avatar.Weapon) //同步武器类型
+		{
+			FillWeaponTypes();
+		}
 		else if (part == avatar.Pants || part == avatar.Coat) //隐藏套装
 		{
 			if (avatar.Longcoat != null)
@@ -398,4 +402,12 @@ public class HomeController : Controller
 			}
 		}
 	}
+	private void FillWeaponTypes()
+    {
+		var type = avatar.GetCashWeaponTypes();
+		if(type.Any())
+		{
+			avatar.WeaponType = type[0];
+		}
+    }
 }

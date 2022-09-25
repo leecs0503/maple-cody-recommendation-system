@@ -260,6 +260,9 @@ namespace WzComparerR2.Avatar
             AvatarPart part = new AvatarPart(imgNode);
 
             var gearType = Gear.GetGearType(part.ID.Value);
+
+            // Console.WriteLine(gearType);
+
             switch (gearType)
             {
                 case GearType.body: this.Body = part; break;
