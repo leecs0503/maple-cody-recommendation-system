@@ -1,4 +1,6 @@
+using WzComparerR2;
 using WzComparerR2.WzLib;
+using WzComparerR2.PluginBase;
 
 
 namespace MainProgram
@@ -7,12 +9,19 @@ public class Program
 {
 
     public static Wz_Structure wz;
+    public static List<Wz_Structure> openedWz;
     static void Main(string[] args)
     {
+        PluginManager.WzFileFinding += new FindWzEventHandler(CharaSimLoader_WzFileFinding);
+
         var dir = Path.Combine(Directory.GetCurrentDirectory(), "Data");
         var wzFilePath = Path.Combine(Path.Combine(dir, "Base"), "Base.wz");
 
         wz = new Wz_Structure();
+        openedWz = new List<Wz_Structure>();
+
+        Console.WriteLine("Load Start");
+
         if (wz.IsKMST1125WzFormat(wzFilePath))
         {
             wz.LoadKMST1125DataWz(wzFilePath);
@@ -22,7 +31,9 @@ public class Program
             wz.Load(wzFilePath, true);
         }
 
-        Console.Write("Load Complete\n");
+        openedWz.Add(wz);
+
+        Console.WriteLine("Load Complete");
 
         var builder = WebApplication.CreateBuilder(args);
 
@@ -54,8 +65,100 @@ public class Program
             name: "code",
             pattern: "{controller=Home}/{action=Code}/{id?}");
 
+        app.MapControllerRoute(
+            name: "avatar",
+            pattern: "{controller=Home}/{action=Avatar}/{id?}");
+
         app.Run();
     }
+
+    static void CharaSimLoader_WzFileFinding(object sender, FindWzEventArgs e)
+    {
+        string[] fullPath = null;
+        if (!string.IsNullOrEmpty(e.FullPath)) //用fullpath作为输入参数
+        {
+            fullPath = e.FullPath.Split('/', '\\');
+            e.WzType = Enum.TryParse<Wz_Type>(fullPath[0], true, out var wzType) ? wzType : Wz_Type.Unknown;
+        }
+
+        List<Wz_Node> preSearch = new List<Wz_Node>();
+        if (e.WzType != Wz_Type.Unknown) //用wztype作为输入参数
+        {
+            IEnumerable<Wz_Structure> preSearchWz = e.WzFile?.WzStructure != null ?
+                Enumerable.Repeat(e.WzFile.WzStructure, 1) :
+                openedWz;
+            foreach (var wzs in preSearchWz)
+            {
+                Wz_File baseWz = null;
+                bool find = false;
+                foreach (Wz_File wz_f in wzs.wz_files)
+                {
+                    if (wz_f.Type == e.WzType)
+                    {
+                        preSearch.Add(wz_f.Node);
+                        find = true;
+                        //e.WzFile = wz_f;
+                    }
+                    if (wz_f.Type == Wz_Type.Base)
+                    {
+                        baseWz = wz_f;
+                    }
+                }
+
+                // detect data.wz
+                if (baseWz != null && !find)
+                {
+                    string key = e.WzType.ToString();
+                    foreach (Wz_Node node in baseWz.Node.Nodes)
+                    {
+                        if (node.Text == key && node.Nodes.Count > 0)
+                        {
+                            preSearch.Add(node);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (fullPath == null || fullPath.Length <= 1)
+        {
+            if (e.WzType != Wz_Type.Unknown && preSearch.Count > 0) //返回wzFile
+            {
+                e.WzNode = preSearch[0];
+                e.WzFile = preSearch[0].Value as Wz_File;
+            }
+            return;
+        }
+
+        if (preSearch.Count <= 0)
+        {
+            return;
+        }
+
+        foreach (var wzFileNode in preSearch)
+        {
+            var searchNode = wzFileNode;
+            for (int i = 1; i < fullPath.Length && searchNode != null; i++)
+            {
+                searchNode = searchNode.Nodes[fullPath[i]];
+                var img = searchNode.GetValueEx<Wz_Image>(null);
+                if (img != null)
+                {
+                    searchNode = img.TryExtract() ? img.Node : null;
+                }
+            }
+
+            if (searchNode != null)
+            {
+                e.WzNode = searchNode;
+                e.WzFile = wzFileNode.Value as Wz_File;
+                return;
+            }
+        }
+        //寻找失败
+        e.WzNode = null;
+    }
+
 }
 
 }

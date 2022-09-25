@@ -42,7 +42,8 @@ namespace WzComparerR2.Avatar
 
         public bool LoadZ()
         {
-            return LoadZ(PluginBase.PluginManager.FindWz("Base\\zmap.img"));
+            Console.WriteLine("LoadZ 실행");
+            return LoadZ(PluginBase.PluginManager.FindWz(Path.Combine("Base","zmap.img")));
         }
 
         public bool LoadZ(Wz_Node zMapNode)
