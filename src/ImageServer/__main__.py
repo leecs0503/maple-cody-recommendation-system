@@ -1,6 +1,6 @@
 import argparse
 
-from .server.AppRunner import AppRunner
+from .server.app_runner import AppRunner
 
 
 def main():
@@ -10,6 +10,9 @@ def main():
     parser.add_argument("--wcr-server-port", type=int, help="wcr server host", default=80)
     parser.add_argument("--wcr-server-protocol", type=str, help="wcr server host", default="http")
     parser.add_argument("--base-wz-code-path", type=str, help="base", default="./src/ImageServer/base_wz_code.json")
+    parser.add_argument("--wcr-caller-retry-num", type=int, help="wcr server host", default=-1)
+    parser.add_argument("--wcr-caller-timeout", type=float, help="wcr server host", default=2.5)
+    parser.add_argument("--wcr-caller-backoff", type=float, help="wcr server host", default=1)
 
     args = parser.parse_args()
 
@@ -18,6 +21,9 @@ def main():
         wcr_server_port=args.wcr_server_port,
         wcr_server_protocol=args.wcr_server_protocol,
         base_wz_code_path=args.base_wz_code_path,
+        wcr_caller_retry_num=args.wcr_caller_retry_num,
+        wcr_caller_timeout=args.wcr_caller_timeout,
+        wcr_caller_backoff=args.wcr_caller_backoff,
     ).run()
 
 

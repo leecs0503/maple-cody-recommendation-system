@@ -54,6 +54,9 @@ class AppRunner:
             wcr_server_port=wcr_server_port,
             wcr_server_protocol=wcr_server_protocol,
             base_wz_code_path=base_wz_code_path,
+            wcr_caller_retry_num=wcr_caller_retry_num,
+            wcr_caller_timeout=wcr_caller_timeout,
+            wcr_caller_backoff=wcr_caller_backoff,
         )
         self.HTTPServer = HTTPServer(
             logger=self.logger,
