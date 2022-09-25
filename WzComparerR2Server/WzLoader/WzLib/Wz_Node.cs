@@ -24,8 +24,8 @@ namespace WzComparerR2.WzLib
 
         //fields
         private object value;
-        private string text;
-        private WzNodeCollection nodes;
+        public string text; // TODO: private
+        public WzNodeCollection nodes; // TODO: private
         private Wz_Node parentNode;
 
         //properties
