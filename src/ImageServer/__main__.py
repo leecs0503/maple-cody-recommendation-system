@@ -1,6 +1,7 @@
 import argparse
 from .server.AppRunner import AppRunner
 
+
 def main():
     parser = argparse.ArgumentParser(description="image server")
 

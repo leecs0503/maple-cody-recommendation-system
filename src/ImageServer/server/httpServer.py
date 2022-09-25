@@ -2,6 +2,7 @@ import logging
 from aiohttp import web
 from .httpHandler import get_routes
 
+
 class HTTPServer:
     def __init__(
         self,

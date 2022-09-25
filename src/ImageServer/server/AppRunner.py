@@ -21,6 +21,8 @@ class Config:
     def to_json(self) -> dict:
         return {
             "wcr_server_host": self.wcr_server_host,
+            "wcr_server_port": self.wcr_server_port,
+            "wcr_server_protocol": self.wcr_server_protocol,
             "base_wz_code_path": self.base_wz_code_path,
         }
 
@@ -56,7 +58,8 @@ class AppRunner:
         file_handler.setLevel(logging.INFO)
 
         logger.addHandler(file_handler)
-        
+        logger.setLevel(logging.INFO)
+
         return logger
 
     def run(self) -> None:
