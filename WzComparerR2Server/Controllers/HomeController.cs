@@ -6,8 +6,11 @@ namespace WzComparerR2Server.Controllers;
 
 public class HomeController : Controller
 {
-    public int Index()
+    public ActionResult Index()
     {
-        return 0;
+        var dir = Directory.GetCurrentDirectory();
+        var path = Path.Combine(dir, "a.png");
+        var imageFileStream = System.IO.File.OpenRead(path);
+        return base.File(imageFileStream,"image/png");
     }
 }
