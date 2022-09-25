@@ -1,11 +1,15 @@
-import aiohttp
 import asyncio
+import logging
+
+import aiohttp
+
 from ..Avatar.avatar import Avatar
 
 
 class WCRCaller:
     def __init__(
         self,
+        logger: logging.Logger,
         wcr_server_host: str,
         wcr_server_protocol: str,
         wcr_server_port: int,

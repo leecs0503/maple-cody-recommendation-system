@@ -1,29 +1,34 @@
-from aiohttp import web
 import base64
-
-from http import HTTPStatus
-from PIL import Image
 import io
+import logging
+from http import HTTPStatus
+
+from aiohttp import web
+from PIL import Image
+
 from ..ImageProcessor.image_processor import ImageProcessor
 
 
 class HTTPHandler:
     def __init__(
         self,
+        logger: logging.Logger,
         wcr_server_host: str,
         wcr_server_port: int,
         wcr_server_protocol: str,
-        retry_num: int = -1,
-        timeout: float = 2,
-        backoff: float = 1,
+        wcr_caller_retry_num: int,
+        wcr_caller_timeout: float,
+        wcr_caller_backoff: float,
     ):
+        self.logger = logger
         self.processor = ImageProcessor(
+            logger=self.logger,
             wcr_server_host=wcr_server_host,
             wcr_server_port=wcr_server_port,
             wcr_server_protocol=wcr_server_protocol,
-            retry_num=retry_num,
-            timeout=timeout,
-            backoff=backoff,
+            wcr_caller_retry_num=wcr_caller_retry_num,
+            wcr_caller_timeout=wcr_caller_timeout,
+            wcr_caller_backoff=wcr_caller_backoff,
         )
 
     def get_routes(self):
