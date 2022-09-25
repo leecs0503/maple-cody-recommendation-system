@@ -6,9 +6,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
 
 namespace WzComparerR2.WzLib
 {
