@@ -7,28 +7,19 @@ from aiohttp import web
 from PIL import Image
 
 from ..ImageProcessor.image_processor import ImageProcessor
+from ..server.config import Config
 
 
 class HTTPHandler:
     def __init__(
         self,
         logger: logging.Logger,
-        wcr_server_host: str,
-        wcr_server_port: int,
-        wcr_server_protocol: str,
-        wcr_caller_retry_num: int,
-        wcr_caller_timeout: float,
-        wcr_caller_backoff: float,
+        config: Config,
     ):
         self.logger = logger
         self.processor = ImageProcessor(
             logger=self.logger,
-            wcr_server_host=wcr_server_host,
-            wcr_server_port=wcr_server_port,
-            wcr_server_protocol=wcr_server_protocol,
-            wcr_caller_retry_num=wcr_caller_retry_num,
-            wcr_caller_timeout=wcr_caller_timeout,
-            wcr_caller_backoff=wcr_caller_backoff,
+            config=config,
         )
 
     def get_routes(self):

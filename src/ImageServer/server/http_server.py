@@ -2,6 +2,7 @@ import logging
 
 from aiohttp import web
 
+from .config import Config
 from .http_handler import HTTPHandler
 
 
@@ -9,6 +10,7 @@ class HTTPServer:
     def __init__(
         self,
         logger: logging.Logger,
+        config: Config,
         wcr_server_host: str,
         wcr_server_port: int,
         wcr_server_protocol: str,
@@ -18,14 +20,10 @@ class HTTPServer:
     ) -> None:
         self.logger = logger
         self.app = web.Application()
+        self.config = config
         self.HTTPHandler = HTTPHandler(
             logger=self.logger,
-            wcr_server_host=wcr_server_host,
-            wcr_server_port=wcr_server_port,
-            wcr_server_protocol=wcr_server_protocol,
-            wcr_caller_retry_num=wcr_caller_retry_num,
-            wcr_caller_timeout=wcr_caller_timeout,
-            wcr_caller_backoff=wcr_caller_backoff,
+            config=config,
         )
         self.routes = self.HTTPHandler.get_routes()
         self.app.add_routes(self.routes)
