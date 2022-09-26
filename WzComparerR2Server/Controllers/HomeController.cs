@@ -6,6 +6,7 @@ using WzComparerR2.Common;
 using WzComparerR2.Avatar;
 using WzComparerR2.WzLib;
 using WzComparerR2.PluginBase;
+using WzComparerR2.CharaSim;
 using MainProgram;
 using System;
 using System.Text;
@@ -36,7 +37,7 @@ public class HomeController : Controller
 		var dir = Directory.GetCurrentDirectory();
 		var path = Path.Combine(dir, "a.png");
 		var imageFileStream = System.IO.File.OpenRead(path);
-		return Program.wz.WzNode.nodes[0].text;
+		return Program.wz.WzNode.Nodes[0].Text;
 		// return base.File(imageFileStream,"image/png");
 	}
 
@@ -45,18 +46,18 @@ public class HomeController : Controller
 		String ret = "{";
 		bool First = true;
 		
-		foreach(Wz_Node child_node in current_node.nodes)
+		foreach(Wz_Node child_node in current_node.Nodes)
 		{
 			if (First) First = false;
 			else ret += ", ";
-			ret += "\"" + child_node.text + "\": " + dfs(child_node);
+			ret += "\"" + child_node.Text + "\": " + dfs(child_node);
 		}
 		return ret + "}";
 	}
 
 	private string get_code(Wz_Node root)
 	{
-		return "{\"" + root.text + "\": " + dfs(root) + "}";
+		return "{\"" + root.Text + "\": " + dfs(root) + "}";
 	}
 
 	[Route("code")]
@@ -107,9 +108,8 @@ public class HomeController : Controller
 		this.inited = this.avatar.LoadZ()
 			&& this.avatar.LoadActions()
 			&& this.avatar.LoadEmotions();
-		avatar.ActionName = "stand1";
+		avatar.ActionName = "stand2";
 		avatar.EmotionName = "default";
-		avatar.HairCover = true;
 		return this.inited;
 	}
 
@@ -151,6 +151,7 @@ public class HomeController : Controller
 		}
 
 		List<int> failList = new List<int>();
+		bool HairCover = false;
 
 		foreach (Match m in matches)
 		{
@@ -161,6 +162,16 @@ public class HomeController : Controller
 				if (imgNode != null)
 				{
 					var part = this.avatar.AddPart(imgNode);
+					AvatarPart avatar_part = new AvatarPart(imgNode);
+
+					var gearType = Gear.GetGearType(avatar_part.ID.Value);
+
+					if (gearType == GearType.cap && imgNode.Text != "01002186.img" && imgNode.Text != "01004109.img")
+					{
+						HairCover = true;
+						
+					}
+
 					if (m.Groups.Count >= 4 && Int32.TryParse(m.Result("$3"), out int mixColor) && Int32.TryParse(m.Result("$4"), out int mixOpacity))
 					{
 						part.MixColor = mixColor;
@@ -213,7 +224,7 @@ public class HomeController : Controller
 			}
 		}
 
-		//刷新
+		avatar.HairCover = HairCover;
 
 		//其他提示
 		if (failList.Count > 0)
@@ -404,10 +415,28 @@ public class HomeController : Controller
 	}
 	private void FillWeaponTypes()
     {
-		var type = avatar.GetCashWeaponTypes();
-		if(type.Any())
+		if (this.avatar.Weapon != null && this.avatar.Weapon.ID != null && Gear.GetGearType(this.avatar.Weapon.ID.Value) == GearType.cashWeapon)
 		{
-			avatar.WeaponType = type[0];
+			bool finished = false;
+			foreach (var node in this.avatar.Weapon.Node.Nodes)
+			{
+				int typeID;
+				if (Int32.TryParse(node.Text, out typeID))
+				{
+					foreach (var cnode in node.Nodes)
+					{
+						if(cnode.Text == avatar.ActionName)
+						{
+							finished = true;
+							avatar.WeaponType = typeID;
+						}
+					}
+					if(finished)
+					{
+						break;
+					}
+				}
+			}
 		}
     }
 }
