@@ -196,8 +196,8 @@ public class HomeController : Controller
 		}
 		if (weapon != null)
 		{
-			gearType = get_geartype(weapon); 
-			if (gearType == null || !Gear.IsWeapon((GearType)gearType))
+			gearType = get_geartype(weapon);
+			if (gearType == null || !Gear.IsWeapon((GearType)gearType) && gearType!=GearType.cashWeapon)
 			{
 				return BadRequest("Fail to load item(weapon)");
 			}
@@ -488,23 +488,75 @@ public class HomeController : Controller
 		}
 		AvatarPart part = new AvatarPart(imgNode);
 		var gearType = Gear.GetGearType(part.ID.Value);
-		if(gearType != type && (type != GearType.weapon || !Gear.IsWeapon(gearType)))
+		if(gearType != type && (type != GearType.weapon || !Gear.IsWeapon(gearType) && gearType != GearType.cashWeapon))
 		{
 			Console.WriteLine("Type mismatch : " + gearType.ToString());
 			return BadRequest("item type mismatch");
 		}
-		var part_node = part.Node.FindNodeByPath(actionName);
-		if (part_node == null)
+		var part_node = part.Node;
+		if (gearType == GearType.cashWeapon)
 		{
-			Console.WriteLine("Action Not Found");
-			return BadRequest("Action Not Found");
+			bool finished = false;
+			foreach (var node in part.Node.Nodes)
+			{
+				int typeID;
+				if (Int32.TryParse(node.Text, out typeID))
+				{
+					foreach (var cnode in node.Nodes)
+					{
+						if(cnode.Text == actionName)
+						{
+							finished = true;
+							part_node = cnode;
+						}
+					}
+					if(finished)
+					{
+						break;
+					}
+				}
+			}
+			if (!finished)
+			{
+				Console.WriteLine("Action Not Found");
+				return BadRequest("Action Not Found");
+			}
+			while(part_node.Value is Wz_Uol)
+			{
+				part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
+			}
+			var effect_node = part_node.FindNodeByPath("0").FindNodeByPath("effect");
+			part_node = part_node.FindNodeByPath("0").FindNodeByPath(typename);
+			if (effect_node != null)
+			{
+				var part_bitmap = BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz);
+				var effect_bitmap = BitmapOrigin.CreateFromNode(effect_node, PluginManager.FindWz);
+				var rect = new Rectangle(part_bitmap.OpOrigin, part_bitmap.Bitmap.Size);
+				var newRect = new Rectangle(effect_bitmap.OpOrigin, effect_bitmap.Bitmap.Size);
+                rect = Rectangle.Union(rect, newRect);
+				
+				Bitmap bmp = new Bitmap(rect.Width, rect.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+				Graphics g = Graphics.FromImage(bmp);
+				g.DrawImage(effect_bitmap.Bitmap, effect_bitmap.OpOrigin.X - rect.X, effect_bitmap.OpOrigin.Y - rect.Y);
+				g.DrawImage(part_bitmap.Bitmap, part_bitmap.OpOrigin.X - rect.X, part_bitmap.OpOrigin.Y - rect.Y);
+				g.Dispose();
+				return base.File(BitmapToByteArray(bmp),"image/png");
+			}
 		}
-		part_node = part_node.FindNodeByPath("0").FindNodeByPath(typename);
-		while(part_node.Value is Wz_Uol)
+		else 
 		{
-			part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
+			part_node = part.Node.FindNodeByPath(actionName);
+			if (part_node == null)
+			{
+				Console.WriteLine("Action Not Found");
+				return BadRequest("Action Not Found");
+			}
+			part_node = part_node.FindNodeByPath("0").FindNodeByPath(typename);
+			while(part_node.Value is Wz_Uol)
+			{
+				part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
+			}
 		}
-
 		return base.File(BitmapToByteArray(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap),"image/png");
 	}
 
