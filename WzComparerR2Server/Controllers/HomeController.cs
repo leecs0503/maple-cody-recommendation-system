@@ -67,11 +67,30 @@ public class HomeController : Controller
 		return query_result;
 	}
 
+	[Route("avatar_raw")]
+	public ActionResult Avatar_Raw(string code, string actionName)
+	{
+		return GetAvatar(code, actionName);
+	}
+
 	[Route("avatar")]
-	public ActionResult Avatar(string code)
+	public ActionResult Avatar(string code, string actionName)
+	{
+		return GetAvatar(code, actionName);
+	}
+
+	private ActionResult GetAvatar(string code, string actionName)
 	{
 		Console.WriteLine("Avatar 진입 : " + code);
-		if(LoadCode(code, 0)) {
+		if(actionName == "stand1" || actionName == "stand2")
+		{
+			avatar.ActionName = actionName;
+		}
+		else
+		{
+			avatar.ActionName = "stand1";
+		}
+		if(code != null && LoadCode(code, 0)) {
 			Console.WriteLine("성공");
 			var bone = this.avatar.CreateFrame(0, 0, 0);
 			var frame = this.avatar.DrawFrame(bone);
@@ -104,11 +123,9 @@ public class HomeController : Controller
 
 	private bool AvatarInit()
 	{
-		Console.WriteLine("AvatarInit 실행");
 		this.inited = this.avatar.LoadZ()
 			&& this.avatar.LoadActions()
 			&& this.avatar.LoadEmotions();
-		avatar.ActionName = "stand2";
 		avatar.EmotionName = "default";
 		return this.inited;
 	}

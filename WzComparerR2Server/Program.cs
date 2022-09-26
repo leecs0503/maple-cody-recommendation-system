@@ -63,11 +63,15 @@ public class Program
 
         app.MapControllerRoute(
             name: "code",
-            pattern: "{controller=Home}/{action=Code}/{id?}");
+            pattern: "{controller=Home}/{action=Code}");
 
         app.MapControllerRoute(
             name: "avatar",
-            pattern: "{controller=Home}/{action=Avatar}/{id?}");
+            pattern: "{controller=Home}/{action=Avatar}");
+
+        app.MapControllerRoute(
+            name: "avatar_raw",
+            pattern: "{controller=Home}/{action=Avatar_Raw}");
 
         app.Run();
     }
