@@ -1339,7 +1339,7 @@ namespace WzComparerR2.Avatar
             return null;
         }
 
-        private unsafe Bitmap MixBitmaps(Bitmap baseBitmap, Bitmap mixBitmap, int mixRatio)
+        public unsafe Bitmap MixBitmaps(Bitmap baseBitmap, Bitmap mixBitmap, int mixRatio) // TODO : private
         {
             float baseOpacity = (100 - mixRatio) / (float)100;
             float mixOpacity = mixRatio / (float)100;

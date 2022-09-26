@@ -79,6 +79,326 @@ public class HomeController : Controller
 		return GetAvatar(code, actionName);
 	}
 
+	[Route("head")]
+	public ActionResult Head(string code, string actionName)
+	{
+		return ItemWithAction(code, actionName, GearType.head, "head");
+	}
+
+	[Route("face")]
+	public ActionResult Face(string code)
+	{
+		return ItemWithEmotion(code, GearType.face, "face");
+	}
+
+	[Route("hair")]
+	public ActionResult Hair(string code, string actionName)
+	{
+		var m = GetFromCode(code);
+		if (m == null)
+		{
+			return BadRequest("Wrong Code");
+		}
+		if(actionName != "stand1" && actionName != "stand2")
+		{
+			actionName = "stand1";
+		}
+		Wz_Node imgNode = GetWzNode(m);
+		if (imgNode == null)
+		{
+			Console.WriteLine("Image Node not found");
+			return BadRequest("wz file not found");
+		}
+		AvatarPart part = new AvatarPart(imgNode);
+		var gearType = Gear.GetGearType(part.ID.Value);
+		if(gearType != GearType.hair && gearType != GearType.hair2 && gearType != GearType.hair3)
+		{
+			Console.WriteLine("Type mismatch : " + gearType.ToString());
+			return BadRequest("item type mismatch");
+		}
+		if (m.Groups.Count >= 4 && Int32.TryParse(m.Result("$3"), out int mixColor) && Int32.TryParse(m.Result("$4"), out int mixOpacity))
+		{
+			part.MixColor = mixColor;
+			part.MixOpacity = mixOpacity;
+			var part_node = part.Node.FindNodeByPath(actionName);
+			if (part_node == null)
+			{
+				Console.WriteLine("Action Not Found");
+				return BadRequest("Action Not Found");
+			}
+			part_node = part_node.FindNodeByPath("0").FindNodeByPath("hair");
+			var mix_node = part.MixNodes[mixColor].FindNodeByPath(actionName).FindNodeByPath("0").FindNodeByPath("hair");
+			while(part_node.Value is Wz_Uol)
+			{
+				part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
+			}
+			return base.File(BitmapToByteArray(this.avatar.MixBitmaps(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap,BitmapOrigin.CreateFromNode(mix_node, PluginManager.FindWz).Bitmap,mixOpacity)),"image/png");
+		}
+		else
+		{
+			var part_node = part.Node.FindNodeByPath(actionName);
+			if (part_node == null)
+			{
+				Console.WriteLine("Action Not Found");
+				return BadRequest("Action Not Found");
+			}
+			part_node = part_node.FindNodeByPath("0").FindNodeByPath("hair");
+			while(part_node.Value is Wz_Uol)
+			{
+				part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
+			}
+
+			return base.File(BitmapToByteArray(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap),"image/png");
+		}
+	}
+
+	[Route("hairoverhead")]
+	public ActionResult HairOverHead(string code, string actionName)
+	{
+		var m = GetFromCode(code);
+		if (m == null)
+		{
+			return BadRequest("Wrong Code");
+		}
+		if(actionName != "stand1" && actionName != "stand2")
+		{
+			actionName = "stand1";
+		}
+		Wz_Node imgNode = GetWzNode(m);
+		if (imgNode == null)
+		{
+			Console.WriteLine("Image Node not found");
+			return BadRequest("wz file not found");
+		}
+		AvatarPart part = new AvatarPart(imgNode);
+		var gearType = Gear.GetGearType(part.ID.Value);
+		if(gearType != GearType.hair && gearType != GearType.hair2 && gearType != GearType.hair3)
+		{
+			Console.WriteLine("Type mismatch : " + gearType.ToString());
+			return BadRequest("item type mismatch");
+		}
+		if (m.Groups.Count >= 4 && Int32.TryParse(m.Result("$3"), out int mixColor) && Int32.TryParse(m.Result("$4"), out int mixOpacity))
+		{
+			part.MixColor = mixColor;
+			part.MixOpacity = mixOpacity;
+			var part_node = part.Node.FindNodeByPath(actionName);
+			if (part_node == null)
+			{
+				Console.WriteLine("Action Not Found");
+				return BadRequest("Action Not Found");
+			}
+			part_node = part_node.FindNodeByPath("0").FindNodeByPath("hairOverHead");
+			var mix_node = part.MixNodes[mixColor].FindNodeByPath(actionName).FindNodeByPath("0").FindNodeByPath("hairOverHead");
+			while(part_node.Value is Wz_Uol)
+			{
+				part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
+			}
+			return base.File(BitmapToByteArray(this.avatar.MixBitmaps(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap,BitmapOrigin.CreateFromNode(mix_node, PluginManager.FindWz).Bitmap,mixOpacity)),"image/png");
+		}
+		else
+		{
+			var part_node = part.Node.FindNodeByPath(actionName);
+			if (part_node == null)
+			{
+				Console.WriteLine("Action Not Found");
+				return BadRequest("Action Not Found");
+			}
+			part_node = part_node.FindNodeByPath("0").FindNodeByPath("hairOverHead");
+			while(part_node.Value is Wz_Uol)
+			{
+				part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
+			}
+
+			return base.File(BitmapToByteArray(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap),"image/png");
+		}
+	}
+
+	[Route("cap")]
+	public ActionResult Cap(string code, string actionName)
+	{
+		return ItemWithAction(code, actionName, GearType.cap, "default");
+	}
+
+	[Route("coat")]
+	public ActionResult Coat(string code, string actionName)
+	{
+		return ItemWithAction(code, actionName, GearType.coat, "mail");
+	}
+
+	[Route("longcoat")]
+	public ActionResult Longcoat(string code, string actionName)
+	{
+		return ItemWithAction(code, actionName, GearType.longcoat, "mail");
+	}
+
+	[Route("pants")]
+	public ActionResult Pants(string code, string actionName)
+	{
+		return ItemWithAction(code, actionName, GearType.pants, "pants");
+	}
+
+	[Route("shoes")]
+	public ActionResult Shoes(string code, string actionName)
+	{
+		return ItemWithAction(code, actionName, GearType.shoes, "shoes");
+	}
+
+	[Route("lglove")]
+	public ActionResult lGlove(string code, string actionName)
+	{
+		return ItemWithAction(code, actionName, GearType.glove, "lGlove");
+	}
+
+	[Route("rglove")]
+	public ActionResult rGlove(string code, string actionName)
+	{
+		return ItemWithAction(code, actionName, GearType.glove, "rGlove");
+	}
+
+	[Route("shield")]
+	public ActionResult Shield(string code, string actionName)
+	{
+		return ItemWithAction(code, actionName, GearType.shield, "shield");
+	}
+
+	[Route("cape")]
+	public ActionResult Cape(string code, string actionName)
+	{
+		return ItemWithAction(code, actionName, GearType.cape, "default");
+	}
+
+	[Route("weapon")]
+	public ActionResult Weapon(string code, string actionName)
+	{
+		return ItemWithAction(code, actionName, GearType.weapon, "weapon");
+	}
+
+	[Route("earrings")]
+	public ActionResult Earrings(string code, string actionName)
+	{
+		return ItemWithAction(code, actionName, GearType.earrings, "default");
+	}
+
+	[Route("faceAccessory")]
+	public ActionResult FaceAccessory(string code)
+	{
+		return ItemWithEmotion(code, GearType.faceAccessory, "default");
+	}
+
+	[Route("eyeAccessory")]
+	public ActionResult EyeAccessory(string code)
+	{
+		return ItemWithEmotion(code, GearType.eyeAccessory, "default");
+	}
+
+	private ActionResult ItemWithAction(string code, string actionName, GearType type, string typename)
+	{
+		var m = GetFromCode(code);
+		if (m == null)
+		{
+			return BadRequest("Wrong Code");
+		}
+		if(actionName != "stand1" && actionName != "stand2")
+		{
+			actionName = "stand1";
+		}
+		Wz_Node imgNode = GetWzNode(m);
+		if (imgNode == null)
+		{
+			Console.WriteLine("Image Node not found");
+			return BadRequest("wz file not found");
+		}
+		AvatarPart part = new AvatarPart(imgNode);
+		var gearType = Gear.GetGearType(part.ID.Value);
+		if(gearType != type && (type != GearType.weapon || !Gear.IsWeapon(gearType)))
+		{
+			Console.WriteLine("Type mismatch : " + gearType.ToString());
+			return BadRequest("item type mismatch");
+		}
+		var part_node = part.Node.FindNodeByPath(actionName);
+		if (part_node == null)
+		{
+			Console.WriteLine("Action Not Found");
+			return BadRequest("Action Not Found");
+		}
+		part_node = part_node.FindNodeByPath("0").FindNodeByPath(typename);
+		while(part_node.Value is Wz_Uol)
+		{
+			part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
+		}
+
+		return base.File(BitmapToByteArray(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap),"image/png");
+	}
+
+	private ActionResult ItemWithEmotion(string code, GearType type, string typename)
+	{
+		var m = GetFromCode(code);
+		if (m == null)
+		{
+			return BadRequest("Wrong Code");
+		}
+		Wz_Node imgNode = GetWzNode(m);
+		if (imgNode == null)
+		{
+			Console.WriteLine("Image Node not found");
+			return BadRequest("wz file not found");
+		}
+		AvatarPart part = new AvatarPart(imgNode);
+		var gearType = Gear.GetGearType(part.ID.Value);
+		if(gearType != type)
+		{
+			Console.WriteLine("Type mismatch : " + gearType.ToString());
+			return BadRequest("item type mismatch");
+		}
+		var part_node = part.Node.FindNodeByPath("default").FindNodeByPath(typename);
+
+		while(part_node.Value is Wz_Uol)
+		{
+			part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
+		}
+
+		return base.File(BitmapToByteArray(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap),"image/png");
+	}
+
+	Wz_Node? GetWzNode(Match m)
+	{
+		if (PluginManager.FindWz(Wz_Type.Base) == null)
+		{
+			Console.WriteLine("Base.wz 파일을 열 수 없습니다.");
+			return null;
+		}
+
+		var characWz = PluginManager.FindWz(Wz_Type.Character);
+
+		if (!this.inited && !this.AvatarInit())
+		{
+			Console.WriteLine("아바타 플러그인을 초기화할 수 없습니다.");
+			return null;
+		}
+		int gearID;
+		if (Int32.TryParse(m.Result("$1"), out gearID))
+		{
+			return FindNodeByGearID(characWz, gearID);
+		}
+		return null;
+	}
+
+	Match? GetFromCode(string code)
+	{
+		var matches = Regex.Matches(code, @"s?(\d+)(\+([0-7])\*(\d{1,2}))?([,\s]|$)");
+		if (matches.Count <= 0)
+		{
+			Console.WriteLine("아이템 코드에 해당되는 아이템이 없습니다.");
+			return null;
+		}
+		if (matches.Count != 1)
+		{
+			Console.WriteLine("잘못된 포맷입니다.");
+			return null;
+		}
+		return matches[0];
+	}
+
 	private ActionResult GetAvatar(string code, string actionName)
 	{
 		Console.WriteLine("Avatar 진입 : " + code);
@@ -98,10 +418,7 @@ public class HomeController : Controller
 			return base.File(BitmapToByteArray(frame.Bitmap),"image/png");
 		}
 		Console.WriteLine("실패");
-		var dir = Directory.GetCurrentDirectory();
-		var path = Path.Combine(dir, "a.png");
-		var imageFileStream = System.IO.File.OpenRead(path);
-		return base.File(imageFileStream,"image/png");
+		return NotFound();
 	}
 
 	public static byte[] BitmapToByteArray(Bitmap bitmap)
