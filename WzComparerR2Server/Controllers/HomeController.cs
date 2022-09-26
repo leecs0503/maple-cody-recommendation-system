@@ -74,8 +74,170 @@ public class HomeController : Controller
 	}
 
 	[Route("avatar")]
-	public ActionResult Avatar(string code, string actionName)
+	public ActionResult Avatar(
+		string? head,
+		string? face,
+		string? hair,
+		string? cap,
+		string? coat,
+		string? longcoat,
+		string? pants,
+		string? shoes,
+		string? glove,
+		string? shield,
+		string? cape,
+		string? weapon,
+		string? earrings,
+		string? faceAccessory,
+		string? eyeAccessory,
+		string? actionName
+	)
 	{
+		string code="2000";
+		GearType? gearType = null;
+		if (head != null)
+		{
+			gearType = get_geartype(head);
+			if (gearType == null || gearType != GearType.head)
+			{
+				return BadRequest("Fail to load item(head)");
+			}
+			code += ","; code += head;
+		}
+		if (face != null)
+		{
+			gearType = get_geartype(face); 
+			if (gearType == null || !Gear.IsFace((GearType)gearType))
+			{
+				return BadRequest("Fail to load item(face)");
+			}
+			code += ","; code += face;
+		}
+		if (hair != null)
+		{
+			gearType = get_geartype(hair); 
+			if (gearType == null || !Gear.IsHair((GearType)gearType))
+			{
+				return BadRequest("Fail to load item(hair)");
+			}
+			code += ","; code += hair;
+		}
+		if (cap != null)
+		{
+			gearType = get_geartype(cap); 
+			if (gearType == null || gearType != GearType.cap)
+			{
+				return BadRequest("Fail to load item(cap)");
+			}
+			code += ","; code += cap;
+		}
+		if (coat != null)
+		{
+			gearType = get_geartype(coat); 
+			if (gearType == null || gearType != GearType.coat)
+			{
+				return BadRequest("Fail to load item(coat)");
+			}
+			code += ","; code += coat;
+		}
+		if (longcoat != null)
+		{
+			gearType = get_geartype(longcoat); 
+			if (gearType == null || gearType != GearType.longcoat)
+			{
+				return BadRequest("Fail to load item(longcoat)");
+			}
+			code += ","; code += longcoat;
+		}
+		if (pants != null)
+		{
+			gearType = get_geartype(pants); 
+			if (gearType == null || gearType != GearType.pants)
+			{
+				return BadRequest("Fail to load item(pants)");
+			}
+			code += ","; code += pants;
+		}
+		if (shoes != null)
+		{
+			gearType = get_geartype(shoes); 
+			if (gearType == null || gearType != GearType.shoes)
+			{
+				return BadRequest("Fail to load item(shoes)");
+			}
+			code += ","; code += shoes;
+		}
+		if (glove != null)
+		{
+			gearType = get_geartype(glove); 
+			if (gearType == null || gearType != GearType.glove)
+			{
+				return BadRequest("Fail to load item(glove)");
+			}
+			code += ","; code += glove;
+		}
+		if (shield != null)
+		{
+			gearType = get_geartype(shield);
+			if (gearType == null || gearType != GearType.shield)
+			{
+				return BadRequest("Fail to load item(shield)");
+			}
+			code += ","; code += shield;
+		}
+		if (cape != null)
+		{
+			gearType = get_geartype(cape); 
+			if (gearType == null || gearType != GearType.cape)
+			{
+				return BadRequest("Fail to load item(cape)");
+			}
+			code += ","; code += cape;
+		}
+		if (weapon != null)
+		{
+			gearType = get_geartype(weapon); 
+			if (gearType == null || !Gear.IsWeapon((GearType)gearType))
+			{
+				return BadRequest("Fail to load item(weapon)");
+			}
+			code += ","; code += weapon;
+		}
+		if (earrings != null)
+		{
+			gearType = get_geartype(earrings); 
+			if (gearType == null || gearType != GearType.earrings)
+			{
+				return BadRequest("Fail to load item(earrings)");
+			}
+			code += ","; code += earrings;
+		}
+		if (faceAccessory != null)
+		{
+			gearType = get_geartype(faceAccessory);
+			if (gearType == null || gearType != GearType.faceAccessory)
+			{
+				return BadRequest("Fail to load item(faceAccessory)");
+			}
+			code += ","; code += faceAccessory;
+		}
+		if (eyeAccessory != null)
+		{
+			gearType = get_geartype(eyeAccessory); 
+			if (gearType == null || gearType != GearType.eyeAccessory)
+			{
+				return BadRequest("Fail to load item(eyeAccessory)");
+			}
+			code += ","; code += eyeAccessory;
+		}
+		if (longcoat != null && (coat != null || pants != null))
+		{
+			return BadRequest("longcoat and coat + pants can't be load simultaneously");
+		}
+		if (actionName != "stand1" && actionName != "stand2")
+		{
+			actionName = "stand1";
+		}
 		return GetAvatar(code, actionName);
 	}
 
@@ -291,6 +453,22 @@ public class HomeController : Controller
 		return ItemWithEmotion(code, GearType.eyeAccessory, "default");
 	}
 
+	GearType? get_geartype(string code)
+	{
+		var m = GetFromCode(code);
+		if (m == null)
+		{
+			return null;
+		}
+		Wz_Node imgNode = GetWzNode(m);
+		if (imgNode == null)
+		{
+			return null;
+		}
+		AvatarPart part = new AvatarPart(imgNode);
+		return Gear.GetGearType(part.ID.Value);
+	}
+
 	private ActionResult ItemWithAction(string code, string actionName, GearType type, string typename)
 	{
 		var m = GetFromCode(code);
@@ -414,7 +592,6 @@ public class HomeController : Controller
 			Console.WriteLine("성공");
 			var bone = this.avatar.CreateFrame(0, 0, 0);
 			var frame = this.avatar.DrawFrame(bone);
-			frame.Bitmap.Save(Path.Combine(Directory.GetCurrentDirectory(), "b.png"), System.Drawing.Imaging.ImageFormat.Png);
 			return base.File(BitmapToByteArray(frame.Bitmap),"image/png");
 		}
 		Console.WriteLine("실패");
