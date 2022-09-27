@@ -27,7 +27,7 @@ class WCRCaller:
 
     async def exponential_backoff(self, step: int):
         # https://en.wikipedia.org/wiki/Exponential_backoff
-        delay = self.backoff * (2 ** step)
+        delay = self.backoff * (2**step)
         await asyncio.sleep(delay)
 
     async def get_image(self, avatar: Avatar):

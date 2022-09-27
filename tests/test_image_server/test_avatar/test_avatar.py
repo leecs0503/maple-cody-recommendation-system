@@ -10,9 +10,4 @@ def test_avartar():
     )
 
     assert avatar.to_array() == ["1", "2", "3", "4"]
-    assert avatar.to_param() == [
-        ("Face", "1"),
-        ("Hair", "2"),
-        ("Longcoat", "3"),
-        ("Weapon", "4")
-    ]
+    assert avatar.to_param() == [("Face", "1"), ("Hair", "2"), ("Longcoat", "3"), ("Weapon", "4")]

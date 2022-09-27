@@ -37,9 +37,7 @@ class AppRunner:
     def logger(self):
         logger = logging.getLogger(__name__)
 
-        formatter = logging.Formatter(
-            "%(asctime)s %(levelname)s [%(name)s] [%(filename)s:%(lineno)d] - %(message)s"
-        )
+        formatter = logging.Formatter("%(asctime)s %(levelname)s [%(name)s] [%(filename)s:%(lineno)d] - %(message)s")
 
         file_handler = logging.FileHandler("logs/app_runner_log.log")
         file_handler.setFormatter(formatter)

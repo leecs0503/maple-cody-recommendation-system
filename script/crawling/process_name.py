@@ -19,13 +19,14 @@ FORMAT_NAME_LIST = os.path.join(BASE_URI_PATH, "user_info_{0}_{1}.csv")
 
 @dataclass
 class UserInfo:
-    """ 유저 정보 """
+    """유저 정보"""
+
     ranking: int
     nickname: str
 
 
 def _get_name_list_from_maple_ranking_site(page_num: int) -> List[str]:
-    """ 메이플 공식 홈페이지 랭킹 page_num 페이지에서 유저 정보가 들어있는 tag_list를 반환 """
+    """메이플 공식 홈페이지 랭킹 page_num 페이지에서 유저 정보가 들어있는 tag_list를 반환"""
     url = BASE_URL_MAPLE_OFFICIAL_FORMA.format(page_num)
     soup = get_html_text(url)
 
@@ -75,7 +76,7 @@ def crawl_name(start_page_idx: int, last_page_idx: int) -> List[UserInfo]:
 
 
 def save_user_info_list(user_info_list: List[UserInfo]) -> None:
-    """ user_info_list(List[UserInfo])를 저장하는 메소드 """
+    """user_info_list(List[UserInfo])를 저장하는 메소드"""
 
     fields = ["Ranking", "Name"]
     first_ranking = user_info_list[0].ranking
@@ -84,22 +85,13 @@ def save_user_info_list(user_info_list: List[UserInfo]) -> None:
     with open(FORMAT_NAME_LIST.format(first_ranking, last_ranking), "w", newline="") as f:
         write = csv.writer(f)
         write.writerow(fields)
-        write.writerows([
-            (
-                user_info.ranking,
-                user_info.nickname
-            )
-            for user_info in user_info_list
-        ])
+        write.writerows([(user_info.ranking, user_info.nickname) for user_info in user_info_list])
 
 
 def read_user_info_list(csv_name: str) -> List[UserInfo]:
-    """ csv파일을 읽어서 user_info_list를 반환하는 메소드 """
+    """csv파일을 읽어서 user_info_list를 반환하는 메소드"""
     df = pd.read_csv(f"{csv_name}.csv")
-    return [
-        UserInfo(ranking=ranking, nickname=name)
-        for ranking, name in zip(df["Ranking"], df["Name"])
-    ]
+    return [UserInfo(ranking=ranking, nickname=name) for ranking, name in zip(df["Ranking"], df["Name"])]
 
 
 def process_name(start_page_idx: int, end_page_idx: int):

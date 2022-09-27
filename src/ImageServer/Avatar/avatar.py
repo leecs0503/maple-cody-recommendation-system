@@ -24,6 +24,7 @@ class Avatar:
             ("Weapon", self.weapon),
         ]
 
+
 # TODO: 안정화 후 사용
 # @dataclass
 # class Avatar:
