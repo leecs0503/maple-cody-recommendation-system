@@ -1,6 +1,16 @@
 # WzComparerR2Server
 WzComparerR2 API 서버
 
+# Installation
+```
+sudo apt-get install dotnet-sdk-6.0
+```
+
+# 실행
+```
+dotnet run
+```
+
 # Route 구조
 
 ## /code/
@@ -9,7 +19,7 @@ wz파일 내부의 모든 파일을 json포맷으로 리턴하는 route
 ## /avatar_raw/
 아바타 코드와 캐릭터의 actionName을 받아서 png형식으로 리턴하는 route
 
- - 예시 : /avatar_raw/?code=2000,12000,21000,31000,,1041046,,1061039
+ - 예시 : /avatar_raw/?code=2000,12000,21000,31000,,1041046,,1061039&actionName=stand1
 
 |query parameter|description|
 |:---:|---|
