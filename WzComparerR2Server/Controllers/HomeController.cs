@@ -68,9 +68,9 @@ public class HomeController : Controller
 	}
 
 	[Route("avatar_raw")]
-	public ActionResult Avatar_Raw(string code, string actionName)
+	public ActionResult Avatar_Raw(string code, string actionName, bool? bs)
 	{
-		return GetAvatar(code, actionName);
+		return GetAvatar(code, actionName, bs);
 	}
 
 	[Route("avatar")]
@@ -90,7 +90,8 @@ public class HomeController : Controller
 		string? earrings,
 		string? faceAccessory,
 		string? eyeAccessory,
-		string? actionName
+		string? actionName,
+		bool? bs
 	)
 	{
 		string code="2000";
@@ -238,23 +239,23 @@ public class HomeController : Controller
 		{
 			actionName = "stand1";
 		}
-		return GetAvatar(code, actionName);
+		return GetAvatar(code, actionName, bs);
 	}
 
 	[Route("head")]
-	public ActionResult Head(string code, string actionName)
+	public ActionResult Head(string code, string actionName, bool? bs)
 	{
-		return ItemWithAction(code, actionName, GearType.head, "head");
+		return ItemWithAction(code, actionName, GearType.head, "head", bs);
 	}
 
 	[Route("face")]
-	public ActionResult Face(string code)
+	public ActionResult Face(string code, bool? bs)
 	{
-		return ItemWithEmotion(code, GearType.face, "face");
+		return ItemWithEmotion(code, GearType.face, "face", bs);
 	}
 
 	[Route("hair")]
-	public ActionResult Hair(string code, string actionName)
+	public ActionResult Hair(string code, string actionName, bool? bs)
 	{
 		var m = GetFromCode(code);
 		if (m == null)
@@ -294,7 +295,9 @@ public class HomeController : Controller
 			{
 				part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
 			}
-			return base.File(BitmapToByteArray(this.avatar.MixBitmaps(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap,BitmapOrigin.CreateFromNode(mix_node, PluginManager.FindWz).Bitmap,mixOpacity)),"image/png");
+			var byteArray = BitmapToByteArray(this.avatar.MixBitmaps(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap,BitmapOrigin.CreateFromNode(mix_node, PluginManager.FindWz).Bitmap,mixOpacity));
+			if (bs == true) return Content(Convert.ToBase64String(byteArray));
+			else return base.File(byteArray,"image/png");
 		}
 		else
 		{
@@ -309,13 +312,14 @@ public class HomeController : Controller
 			{
 				part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
 			}
-
-			return base.File(BitmapToByteArray(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap),"image/png");
+			var byteArray = BitmapToByteArray(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap);
+			if (bs == true) return Content(Convert.ToBase64String(byteArray));
+			return base.File(byteArray,"image/png");
 		}
 	}
 
 	[Route("hairoverhead")]
-	public ActionResult HairOverHead(string code, string actionName)
+	public ActionResult HairOverHead(string code, string actionName, bool? bs)
 	{
 		var m = GetFromCode(code);
 		if (m == null)
@@ -355,7 +359,9 @@ public class HomeController : Controller
 			{
 				part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
 			}
-			return base.File(BitmapToByteArray(this.avatar.MixBitmaps(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap,BitmapOrigin.CreateFromNode(mix_node, PluginManager.FindWz).Bitmap,mixOpacity)),"image/png");
+			var byteArray = BitmapToByteArray(this.avatar.MixBitmaps(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap,BitmapOrigin.CreateFromNode(mix_node, PluginManager.FindWz).Bitmap,mixOpacity));
+			if (bs == true) return Content(Convert.ToBase64String(byteArray));
+			else return base.File(byteArray,"image/png");
 		}
 		else
 		{
@@ -371,86 +377,88 @@ public class HomeController : Controller
 				part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
 			}
 
-			return base.File(BitmapToByteArray(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap),"image/png");
+			var byteArray = BitmapToByteArray(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap);
+			if (bs == true) return Content(Convert.ToBase64String(byteArray));
+			return base.File(byteArray,"image/png");
 		}
 	}
 
 	[Route("cap")]
-	public ActionResult Cap(string code, string actionName)
+	public ActionResult Cap(string code, string actionName, bool? bs)
 	{
-		return ItemWithAction(code, actionName, GearType.cap, "default");
+		return ItemWithAction(code, actionName, GearType.cap, "default", bs);
 	}
 
 	[Route("coat")]
-	public ActionResult Coat(string code, string actionName)
+	public ActionResult Coat(string code, string actionName, bool? bs)
 	{
-		return ItemWithAction(code, actionName, GearType.coat, "mail");
+		return ItemWithAction(code, actionName, GearType.coat, "mail", bs);
 	}
 
 	[Route("longcoat")]
-	public ActionResult Longcoat(string code, string actionName)
+	public ActionResult Longcoat(string code, string actionName, bool? bs)
 	{
-		return ItemWithAction(code, actionName, GearType.longcoat, "mail");
+		return ItemWithAction(code, actionName, GearType.longcoat, "mail", bs);
 	}
 
 	[Route("pants")]
-	public ActionResult Pants(string code, string actionName)
+	public ActionResult Pants(string code, string actionName, bool? bs)
 	{
-		return ItemWithAction(code, actionName, GearType.pants, "pants");
+		return ItemWithAction(code, actionName, GearType.pants, "pants", bs);
 	}
 
 	[Route("shoes")]
-	public ActionResult Shoes(string code, string actionName)
+	public ActionResult Shoes(string code, string actionName, bool? bs)
 	{
-		return ItemWithAction(code, actionName, GearType.shoes, "shoes");
+		return ItemWithAction(code, actionName, GearType.shoes, "shoes", bs);
 	}
 
 	[Route("lglove")]
-	public ActionResult lGlove(string code, string actionName)
+	public ActionResult lGlove(string code, string actionName, bool? bs)
 	{
-		return ItemWithAction(code, actionName, GearType.glove, "lGlove");
+		return ItemWithAction(code, actionName, GearType.glove, "lGlove", bs);
 	}
 
 	[Route("rglove")]
-	public ActionResult rGlove(string code, string actionName)
+	public ActionResult rGlove(string code, string actionName, bool? bs)
 	{
-		return ItemWithAction(code, actionName, GearType.glove, "rGlove");
+		return ItemWithAction(code, actionName, GearType.glove, "rGlove", bs);
 	}
 
 	[Route("shield")]
-	public ActionResult Shield(string code, string actionName)
+	public ActionResult Shield(string code, string actionName, bool? bs)
 	{
-		return ItemWithAction(code, actionName, GearType.shield, "shield");
+		return ItemWithAction(code, actionName, GearType.shield, "shield", bs);
 	}
 
 	[Route("cape")]
-	public ActionResult Cape(string code, string actionName)
+	public ActionResult Cape(string code, string actionName, bool? bs)
 	{
-		return ItemWithAction(code, actionName, GearType.cape, "default");
+		return ItemWithAction(code, actionName, GearType.cape, "default", bs);
 	}
 
 	[Route("weapon")]
-	public ActionResult Weapon(string code, string actionName)
+	public ActionResult Weapon(string code, string actionName, bool? bs)
 	{
-		return ItemWithAction(code, actionName, GearType.weapon, "weapon");
+		return ItemWithAction(code, actionName, GearType.weapon, "weapon", bs);
 	}
 
 	[Route("earrings")]
-	public ActionResult Earrings(string code, string actionName)
+	public ActionResult Earrings(string code, string actionName, bool? bs)
 	{
-		return ItemWithAction(code, actionName, GearType.earrings, "default");
+		return ItemWithAction(code, actionName, GearType.earrings, "default", bs);
 	}
 
 	[Route("faceAccessory")]
-	public ActionResult FaceAccessory(string code)
+	public ActionResult FaceAccessory(string code, bool? bs)
 	{
-		return ItemWithEmotion(code, GearType.faceAccessory, "default");
+		return ItemWithEmotion(code, GearType.faceAccessory, "default", bs);
 	}
 
 	[Route("eyeAccessory")]
-	public ActionResult EyeAccessory(string code)
+	public ActionResult EyeAccessory(string code, bool? bs)
 	{
-		return ItemWithEmotion(code, GearType.eyeAccessory, "default");
+		return ItemWithEmotion(code, GearType.eyeAccessory, "default", bs);
 	}
 
 	GearType? get_geartype(string code)
@@ -469,7 +477,7 @@ public class HomeController : Controller
 		return Gear.GetGearType(part.ID.Value);
 	}
 
-	private ActionResult ItemWithAction(string code, string actionName, GearType type, string typename)
+	private ActionResult ItemWithAction(string code, string actionName, GearType type, string typename, bool? bs)
 	{
 		var m = GetFromCode(code);
 		if (m == null)
@@ -540,6 +548,7 @@ public class HomeController : Controller
 				g.DrawImage(effect_bitmap.Bitmap, effect_bitmap.OpOrigin.X - rect.X, effect_bitmap.OpOrigin.Y - rect.Y);
 				g.DrawImage(part_bitmap.Bitmap, part_bitmap.OpOrigin.X - rect.X, part_bitmap.OpOrigin.Y - rect.Y);
 				g.Dispose();
+				if (bs == true) return Content(Convert.ToBase64String(BitmapToByteArray(bmp)));
 				return base.File(BitmapToByteArray(bmp),"image/png");
 			}
 		}
@@ -557,10 +566,12 @@ public class HomeController : Controller
 				part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
 			}
 		}
-		return base.File(BitmapToByteArray(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap),"image/png");
+		var byteArray = BitmapToByteArray(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap);
+		if (bs == true) return Content(Convert.ToBase64String(byteArray));
+		return base.File(byteArray,"image/png");
 	}
 
-	private ActionResult ItemWithEmotion(string code, GearType type, string typename)
+	private ActionResult ItemWithEmotion(string code, GearType type, string typename, bool? bs)
 	{
 		var m = GetFromCode(code);
 		if (m == null)
@@ -587,7 +598,9 @@ public class HomeController : Controller
 			part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
 		}
 
-		return base.File(BitmapToByteArray(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap),"image/png");
+		var byteArray = BitmapToByteArray(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap);
+		if (bs == true) return Content(Convert.ToBase64String(byteArray));
+		return base.File(byteArray,"image/png");
 	}
 
 	Wz_Node? GetWzNode(Match m)
@@ -629,7 +642,7 @@ public class HomeController : Controller
 		return matches[0];
 	}
 
-	private ActionResult GetAvatar(string code, string actionName)
+	private ActionResult GetAvatar(string code, string actionName, bool? bs)
 	{
 		Console.WriteLine("Avatar 진입 : " + code);
 		if(actionName == "stand1" || actionName == "stand2")
@@ -644,7 +657,9 @@ public class HomeController : Controller
 			Console.WriteLine("성공");
 			var bone = this.avatar.CreateFrame(0, 0, 0);
 			var frame = this.avatar.DrawFrame(bone);
-			return base.File(BitmapToByteArray(frame.Bitmap),"image/png");
+			var byteArray = BitmapToByteArray(frame.Bitmap);
+			if (bs == true) return Content(Convert.ToBase64String(byteArray));
+			return base.File(byteArray,"image/png");
 		}
 		Console.WriteLine("실패");
 		return NotFound();
