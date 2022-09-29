@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 using WzComparerR2Server.Models;
 using WzComparerR2;
 using WzComparerR2.Common;
@@ -37,6 +38,7 @@ public class HomeController : Controller
 		var dir = Directory.GetCurrentDirectory();
 		var path = Path.Combine(dir, "a.png");
 		var imageFileStream = System.IO.File.OpenRead(path);
+		
 		return Program.wz.WzNode.Nodes[0].Text;
 		// return base.File(imageFileStream,"image/png");
 	}
@@ -70,6 +72,7 @@ public class HomeController : Controller
 	[Route("avatar_raw")]
 	public ActionResult Avatar_Raw(string code, string actionName, bool? bs)
 	{
+		Add_X_request_ID();
 		return GetAvatar(code, actionName, bs);
 	}
 
@@ -96,6 +99,7 @@ public class HomeController : Controller
 	{
 		string code="2000";
 		GearType? gearType = null;
+		Add_X_request_ID();
 		if (head != null)
 		{
 			gearType = get_geartype(head);
@@ -245,19 +249,21 @@ public class HomeController : Controller
 	[Route("head")]
 	public ActionResult Head(string code, string actionName, bool? bs)
 	{
+		Add_X_request_ID();
 		return ItemWithAction(code, actionName, GearType.head, "head", bs);
 	}
 
 	[Route("face")]
 	public ActionResult Face(string code, bool? bs)
 	{
+		Add_X_request_ID();
 		return ItemWithEmotion(code, GearType.face, "face", bs);
 	}
 
 	[Route("hair")]
 	public ActionResult Hair(string code, string actionName, bool? bs)
 	{
-		var m = GetFromCode(code);
+		var m = GetFromCode(code); Add_X_request_ID();
 		if (m == null)
 		{
 			return BadRequest("Wrong Code");
@@ -321,7 +327,7 @@ public class HomeController : Controller
 	[Route("hairoverhead")]
 	public ActionResult HairOverHead(string code, string actionName, bool? bs)
 	{
-		var m = GetFromCode(code);
+		var m = GetFromCode(code); Add_X_request_ID();
 		if (m == null)
 		{
 			return BadRequest("Wrong Code");
@@ -386,79 +392,105 @@ public class HomeController : Controller
 	[Route("cap")]
 	public ActionResult Cap(string code, string actionName, bool? bs)
 	{
+		Add_X_request_ID();
 		return ItemWithAction(code, actionName, GearType.cap, "default", bs);
 	}
 
 	[Route("coat")]
 	public ActionResult Coat(string code, string actionName, bool? bs)
 	{
+		Add_X_request_ID();
 		return ItemWithAction(code, actionName, GearType.coat, "mail", bs);
 	}
 
 	[Route("longcoat")]
 	public ActionResult Longcoat(string code, string actionName, bool? bs)
 	{
+		Add_X_request_ID();
 		return ItemWithAction(code, actionName, GearType.longcoat, "mail", bs);
 	}
 
 	[Route("pants")]
 	public ActionResult Pants(string code, string actionName, bool? bs)
 	{
+		Add_X_request_ID();
 		return ItemWithAction(code, actionName, GearType.pants, "pants", bs);
 	}
 
 	[Route("shoes")]
 	public ActionResult Shoes(string code, string actionName, bool? bs)
 	{
+		Add_X_request_ID();
 		return ItemWithAction(code, actionName, GearType.shoes, "shoes", bs);
 	}
 
 	[Route("lglove")]
 	public ActionResult lGlove(string code, string actionName, bool? bs)
 	{
+		Add_X_request_ID();
 		return ItemWithAction(code, actionName, GearType.glove, "lGlove", bs);
 	}
 
 	[Route("rglove")]
 	public ActionResult rGlove(string code, string actionName, bool? bs)
 	{
+		Add_X_request_ID();
 		return ItemWithAction(code, actionName, GearType.glove, "rGlove", bs);
 	}
 
 	[Route("shield")]
 	public ActionResult Shield(string code, string actionName, bool? bs)
 	{
+		Add_X_request_ID();
 		return ItemWithAction(code, actionName, GearType.shield, "shield", bs);
 	}
 
 	[Route("cape")]
 	public ActionResult Cape(string code, string actionName, bool? bs)
 	{
+		Add_X_request_ID();
 		return ItemWithAction(code, actionName, GearType.cape, "default", bs);
 	}
 
 	[Route("weapon")]
 	public ActionResult Weapon(string code, string actionName, bool? bs)
 	{
+		Add_X_request_ID();
 		return ItemWithAction(code, actionName, GearType.weapon, "weapon", bs);
 	}
 
 	[Route("earrings")]
 	public ActionResult Earrings(string code, string actionName, bool? bs)
 	{
+		Add_X_request_ID();
 		return ItemWithAction(code, actionName, GearType.earrings, "default", bs);
 	}
 
 	[Route("faceAccessory")]
 	public ActionResult FaceAccessory(string code, bool? bs)
 	{
+		Add_X_request_ID();
 		return ItemWithEmotion(code, GearType.faceAccessory, "default", bs);
 	}
 
 	[Route("eyeAccessory")]
 	public ActionResult EyeAccessory(string code, bool? bs)
 	{
+		Add_X_request_ID();
 		return ItemWithEmotion(code, GearType.eyeAccessory, "default", bs);
+	}
+
+	void Add_X_request_ID()
+	{
+		foreach (var header in Request.Headers)
+		{
+			if (header.Key == "X-Request-ID")
+			{
+				Response.Headers.Add(header.Key, header.Value);
+				return;
+			}
+		}
+		Response.Headers.Add("X-Request-ID", System.Guid.NewGuid().ToString());
 	}
 
 	GearType? get_geartype(string code)

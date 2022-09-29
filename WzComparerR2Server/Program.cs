@@ -35,6 +35,11 @@ public class Program
 
 		Console.WriteLine("Load Complete");
 
+		foreach (string arg in args)
+		{
+			Console.WriteLine(arg);
+		}
+
 		var builder = WebApplication.CreateBuilder(args);
 
 		// Add services to the container.
