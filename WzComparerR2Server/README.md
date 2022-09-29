@@ -3,12 +3,18 @@ WzComparerR2 API 서버
 
 # Installation
 ```
-sudo apt-get install dotnet-sdk-6.0
+sudo apt-get update && \
+  sudo apt-get install -y dotnet-sdk-6.0
+sudo apt install libc6-dev 
+sudo apt install libgdiplus
+dotnet dev-certs https -ep $/https/aspnetapp.pfx -p {password}
+dotnet dev-certs https --trust
 ```
 
 # 실행
 ```
 dotnet run
+docker-compose up
 ```
 
 # Route 구조

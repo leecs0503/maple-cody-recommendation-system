@@ -12,9 +12,11 @@ public class Program
 	public static List<Wz_Structure> openedWz;
 	static void Main(string[] args)
 	{
+		System.AppContext.SetSwitch("System.Drawing.EnableUnixSupport", true);
+
 		PluginManager.WzFileFinding += new FindWzEventHandler(CharaSimLoader_WzFileFinding);
 
-		var dir = Path.Combine(Directory.GetCurrentDirectory(), "Data");
+		var dir = Path.Combine(Path.Combine(Directory.GetCurrentDirectory(), "Data"), "Data");
 		var wzFilePath = Path.Combine(Path.Combine(dir, "Base"), "Base.wz");
 
 		wz = new Wz_Structure();

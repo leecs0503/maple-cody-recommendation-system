@@ -33,13 +33,9 @@ public class HomeController : Controller
 	}
 
 	[Route("")]
-	public string Index() // TODO : ActionResult
+	public ActionResult Index() // TODO : ActionResult
 	{
-		var dir = Directory.GetCurrentDirectory();
-		var path = Path.Combine(dir, "a.png");
-		var imageFileStream = System.IO.File.OpenRead(path);
-		
-		return Program.wz.WzNode.Nodes[0].Text;
+		return Ok("main");
 		// return base.File(imageFileStream,"image/png");
 	}
 

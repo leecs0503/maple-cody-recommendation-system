@@ -5410,8 +5410,7 @@
     ]
   },
   "packageFolders": {
-    "/home/lawali/.nuget/packages/": {},
-    "/usr/share/dotnet/sdk/NuGetFallbackFolder": {}
+    "/home/lawali/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
@@ -5422,9 +5421,6 @@
       "packagesPath": "/home/lawali/.nuget/packages/",
       "outputPath": "/home/lawali/projects/maple-cody-recommendation-system/WzComparerR2Server/obj/",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "/usr/share/dotnet/sdk/NuGetFallbackFolder"
-      ],
       "configFilePaths": [
         "/home/lawali/.nuget/NuGet/NuGet.Config"
       ],
