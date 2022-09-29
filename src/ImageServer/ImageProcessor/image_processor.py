@@ -24,7 +24,7 @@ class ImageProcessor:
             backoff=config.wcr_caller_backoff,
         )
 
-    async def infer(self, input_image: Image) -> Avatar:
+    async def infer(self, image: Image) -> Avatar:
         # TODO: implement
         result = Avatar("1", "1", "1", "1")
         return result
