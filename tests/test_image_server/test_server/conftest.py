@@ -8,8 +8,6 @@ from src.ImageServer.Avatar.avatar import Avatar
 from src.ImageServer.ImageProcessor.WCR_caller import WCRCaller
 from PIL import Image
 
-pytest_plugins = 'aiohttp.pytest_plugin'
-
 
 class test_for_ImageProcessor:
     def __init__(
@@ -32,7 +30,6 @@ class test_for_ImageProcessor:
         # TODO: implement
         result = Avatar("1", "1", "1", "1")
         return result
-
 
 
 @pytest.fixture

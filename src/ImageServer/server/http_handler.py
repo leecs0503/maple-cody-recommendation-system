@@ -45,13 +45,9 @@ class HTTPHandler:
         """
 
         """
-#        a=request.read()
-#        print(a)
-#        print(type(a))
-        post = await request.post() 
-#       print(post)
-        bs64 = post.get("bs64")
-        image_data = base64.b64decode(bs64)
+        post = await request.post()
+        bs64str = post.get("bs64")
+        image_data = base64.b64decode(bs64str)
         image = Image.open(io.BytesIO(image_data))
         result = await self.processor.infer(
             image=image

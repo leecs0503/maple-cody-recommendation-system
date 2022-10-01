@@ -1,22 +1,17 @@
 import asyncio
-
-from dataclasses import dataclass
-import io
 import os
-import sys
 import pytest
-from aiohttp import web
 from aiohttp.test_utils import make_mocked_request
 import json
-from multidict import MultiDict
+import urllib
 
+from aiohttp import streams
 from src.ImageServer.server.http_handler import HTTPHandler
-from tests.test_image_server.test_server.conftest import test_for_ImageProcessor
 
-from PIL import Image
 import base64
 from src.ImageServer.Avatar.avatar import Avatar
 from aiohttp import test_utils
+
 
 @pytest.mark.asyncio
 async def test_http_index_handler(http_handler: HTTPHandler):
@@ -32,60 +27,37 @@ async def test_http_healthcheck_handler(http_handler: HTTPHandler):
     assert result.status == 200
 
 
+class TempProtocol(asyncio.BaseProtocol):
+    def __init__(self):
+        self._reading_paused = False
+
+
 @pytest.mark.asyncio
 async def test_http_image_handler(http_handler: HTTPHandler):
     base_uri = os.path.dirname(__file__)
     file_path = os.path.join(base_uri, '.data', 'test_image.png')
     with open(file_path, 'rb') as img:
-        base64_string = base64.b64encode(img.read())
-
-    reader, writer = await asyncio.open_connection(
-        '127.0.0.1', 8080)
-
-    request = test_utils.make_mocked_request(
-        method="post",
-        path="/image",
-        writer ={
-            "bs64": str(base64_string, 'utf-8'),
-        },
-        payload=reader
+        base64_bstring = base64.b64encode(img.read())
+    reader = streams.StreamReader(
+        protocol=TempProtocol(),
+        limit=10000
     )
-#    print(type(request))
+    bdata = bytes(
+        urllib.parse.urlencode(
+            {
+                "bs64": str(base64_bstring, encoding='utf-8'),
+            }
+        ),
+        encoding='utf-8'
+    )
+    reader.feed_data(bdata)
+    reader.feed_eof()
+    request = test_utils.make_mocked_request(
+        method="POST",
+        headers={'Content-Type' : 'application/x-www-form-urlencoded'},
+        path="/image",
+        payload=reader,
+    )
+
     result = await http_handler.image_handler(request=request)
     assert result.text == json.dumps(Avatar("1", "1", "1", "1").to_array())
-
-
-
-
-
-
-
-
-'''
-class TEST():
-    def __init__(self):
-        base_uri = os.path.dirname(__file__)
-        file_path = os.path.join(base_uri, '.data', 'test_image.png')
-        with open(file_path, 'rb') as img:
-            base64_string = base64.b64encode(img.read())
-        self.response = TESTFORGET(base64_string)
-    
-    async def post(self):
-        return self.response
-
-class TESTFORGET:
-    def __init__(self, data):
-        self.data=data
-    def get(self,key):
-        return self.data
-
-@pytest.mark.asyncio
-async def test(http_handler: HTTPHandler):
-    request=TEST()
-    res = await http_handler.image_handler(request=request)
-
-    assert res.text == json.dumps(Avatar("1","1","1","1").to_array())
-
-'''
-
-
