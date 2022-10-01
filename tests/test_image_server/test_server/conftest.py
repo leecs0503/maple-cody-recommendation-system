@@ -9,7 +9,7 @@ from src.ImageServer.ImageProcessor.WCR_caller import WCRCaller
 from PIL import Image
 
 
-class test_for_ImageProcessor:
+class ImageProcessorForTest:
     def __init__(
         self,
         logger: logging.Logger,
@@ -26,19 +26,27 @@ class test_for_ImageProcessor:
             backoff=config.wcr_caller_backoff,
         )
 
-    async def infer(self, input_image: Image) -> Avatar:
-        # TODO: implement
+    async def infer(self, image: Image) -> Avatar:
         result = Avatar("1", "1", "1", "1")
         return result
 
 
 @pytest.fixture
-def test_image_processor(config_for_test: Config):
+def image_processor_for_test():
+    return ImageProcessorForTest
+
+
+@pytest.fixture
+def test_http_handler(config_for_test: Config, image_processor_for_test):
     logger = logging.getLogger(__name__)
-    return test_for_ImageProcessor(
+    res = HTTPHandler(
         logger=logger,
         config=config_for_test,
     )
+    res.processor = image_processor_for_test(
+        logger=logger,
+        config=config_for_test,)
+    return res
 
 
 @pytest.fixture
