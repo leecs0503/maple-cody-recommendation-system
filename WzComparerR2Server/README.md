@@ -25,18 +25,19 @@ wz파일 내부의 모든 파일을 json포맷으로 리턴하는 route
 ## /avatar_raw/
 아바타 코드와 캐릭터의 actionName을 받아서 png형식으로 리턴하는 route
 
- - 예시 : /avatar_raw/?code=2000,12000,21000,31000,,1041046,,1061039&actionName=stand1
+ - 예시 : /avatar_raw/?code=2000,12000,21000,31000,,1041046,,1061039&actionName=stand1&earType=ear
 
 |query parameter|description|
 |:---:|---|
 |code|WzComparerR2의 아바타 기능에서 사용하는 있는 코드 포맷에 따른 아이템 코드.|
 |actionName|캐릭터의 모션을 지정. stand1(한손무기 모션) 또는 stand2(두손무기 모션)만을 받음. default로는 stand1.|
 |bs|이미지를 base64 encoding한 문자열로 리턴할지 결정하는 boolean variable. default로는 false|
+|earType|아바타의 귀 종류, ear, humanEar, lefEar, highlefEar 중 하나. default로는 humanEar|
 
 ## /avatar/
 avatar_raw와 동일한 작업을 하는 route.
 
- - 예시 : /avatar/?head=12015&face=21078&hair=41750%2B5*50&cap=1004898&longcoat=1051513&shoes=1071103&glove=1082002&shield=1092008&cape=1102988&weapon=1702736&earrings=1032200&faceAccessory=1012757&eyeAccessory=1022277&actionName=stand1
+ - 예시 : /avatar/?head=12015&face=21078&hair=41750%2B5*50&cap=1004898&longcoat=1051513&shoes=1071103&glove=1082002&shield=1092008&cape=1102988&weapon=1702736&earrings=1032200&faceAccessory=1012757&eyeAccessory=1022277&actionName=stand1&earType=ear
 
 |query parameter|description|example|
 |:---:|---|---|
@@ -57,17 +58,19 @@ avatar_raw와 동일한 작업을 하는 route.
 |eyeAccessory|눈장식에 대한 코드.|eyeAccessory=1022277|
 |actionName|avatar_raw와 동일.|actionName=stand1|
 |bs|이미지를 base64 encoding한 문자열로 리턴할지 결정하는 boolean variable. default로는 false|
+|earType|아바타의 귀 종류, ear, humanEar, lefEar, highlefEar 중 하나. default로는 humanEar|
 
 ## /head/
 피부에 대한 개별 이미지를 리턴하는 route.
 
-- 예시 : /head/?code=12015&actionName=stand1
+- 예시 : /head/?code=12015&actionName=stand1&earType=ear
 
 |query parameter|description|
 |:---:|---|
 |code|피부 아이템 코드.|
 |actionName|캐릭터의 모션을 지정. stand1(한손무기 모션) 또는 stand2(두손무기 모션)만을 받음. default로는 stand1.|
 |bs|이미지를 base64 encoding한 문자열로 리턴할지 결정하는 boolean variable. default로는 false|
+|earType|아바타의 귀 종류, ear, humanEar, lefEar, highlefEar 중 하나. default로는 humanEar|
 
 ## /face/
 얼굴 성형에 대한 개별 이미지를 리턴하는 route.

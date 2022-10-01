@@ -66,9 +66,25 @@ public class HomeController : Controller
 	}
 
 	[Route("avatar_raw")]
-	public ActionResult Avatar_Raw(string code, string actionName, bool? bs)
+	public ActionResult Avatar_Raw(string code, string actionName, bool? bs, string? earType)
 	{
 		Add_X_request_ID();
+		if (earType == "ear")
+		{
+			avatar.EarType = 1;
+		}
+		if (earType == "lefEar")
+		{
+			avatar.EarType = 2;
+		}
+		else if (earType == "highlefEar")
+		{
+			avatar.EarType = 3;
+		}
+		else
+		{
+			avatar.EarType = 0;
+		}
 		return GetAvatar(code, actionName, bs);
 	}
 
@@ -90,12 +106,29 @@ public class HomeController : Controller
 		string? faceAccessory,
 		string? eyeAccessory,
 		string? actionName,
-		bool? bs
+		bool? bs,
+		string earType
 	)
 	{
 		string code="2000";
 		GearType? gearType = null;
 		Add_X_request_ID();
+		if (earType == "ear")
+		{
+			avatar.EarType = 1;
+		}
+		if (earType == "lefEar")
+		{
+			avatar.EarType = 2;
+		}
+		else if (earType == "highlefEar")
+		{
+			avatar.EarType = 3;
+		}
+		else
+		{
+			avatar.EarType = 0;
+		}
 		if (head != null)
 		{
 			gearType = get_geartype(head);
@@ -243,10 +276,26 @@ public class HomeController : Controller
 	}
 
 	[Route("head")]
-	public ActionResult Head(string code, string actionName, bool? bs)
+	public ActionResult Head(string code, string actionName, bool? bs, string earType)
 	{
 		Add_X_request_ID();
-		return ItemWithAction(code, actionName, GearType.head, "head", bs);
+		if (earType == "ear")
+		{
+			avatar.EarType = 1;
+		}
+		if (earType == "lefEar")
+		{
+			avatar.EarType = 2;
+		}
+		else if (earType == "highlefEar")
+		{
+			avatar.EarType = 3;
+		}
+		else
+		{
+			avatar.EarType = 0;
+		}
+		return ItemWithAction(code, actionName, GearType.head, "head", bs, avatar.EarType);
 	}
 
 	[Route("face")]
@@ -505,7 +554,7 @@ public class HomeController : Controller
 		return Gear.GetGearType(part.ID.Value);
 	}
 
-	private ActionResult ItemWithAction(string code, string actionName, GearType type, string typename, bool? bs)
+	private ActionResult ItemWithAction(string code, string actionName, GearType type, string typename, bool? bs, int earType = 0)
 	{
 		var m = GetFromCode(code);
 		if (m == null)
@@ -561,42 +610,67 @@ public class HomeController : Controller
 			{
 				part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
 			}
-			var effect_node = part_node.FindNodeByPath("0").FindNodeByPath("effect");
-			part_node = part_node.FindNodeByPath("0").FindNodeByPath(typename);
-			if (effect_node != null)
-			{
-				var part_bitmap = BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz);
-				var effect_bitmap = BitmapOrigin.CreateFromNode(effect_node, PluginManager.FindWz);
-				var rect = new Rectangle(part_bitmap.OpOrigin, part_bitmap.Bitmap.Size);
-				var newRect = new Rectangle(effect_bitmap.OpOrigin, effect_bitmap.Bitmap.Size);
-                rect = Rectangle.Union(rect, newRect);
-				
-				Bitmap bmp = new Bitmap(rect.Width, rect.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-				Graphics g = Graphics.FromImage(bmp);
-				g.DrawImage(effect_bitmap.Bitmap, effect_bitmap.OpOrigin.X - rect.X, effect_bitmap.OpOrigin.Y - rect.Y);
-				g.DrawImage(part_bitmap.Bitmap, part_bitmap.OpOrigin.X - rect.X, part_bitmap.OpOrigin.Y - rect.Y);
-				g.Dispose();
-				if (bs == true) return Content(Convert.ToBase64String(BitmapToByteArray(bmp)));
-				return base.File(BitmapToByteArray(bmp),"image/png");
-			}
+			part_node = part_node.FindNodeByPath("0");
 		}
 		else 
 		{
-			part_node = part.Node.FindNodeByPath(actionName);
+			part_node = FindActionFrameNode(part_node, new ActionFrame(actionName, 0));
 			if (part_node == null)
 			{
 				Console.WriteLine("Action Not Found");
 				return BadRequest("Action Not Found");
 			}
-			part_node = part_node.FindNodeByPath("0").FindNodeByPath(typename);
-			while(part_node.Value is Wz_Uol)
-			{
-				part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
-			}
 		}
-		var byteArray = BitmapToByteArray(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap);
-		if (bs == true) return Content(Convert.ToBase64String(byteArray));
-		return base.File(byteArray,"image/png");
+		Bone bodyRoot = new Bone("@root");
+		bodyRoot.Position = Point.Empty;
+		foreach (var childNode in part_node.Nodes)
+		{
+			Wz_Node linkNode = childNode;
+			while (linkNode?.Value is Wz_Uol uol)
+			{
+				linkNode = uol.HandleUol(linkNode);
+			}
+			if (linkNode == null || childNode.Text == "humanEar" && earType != 0 || childNode.Text == "ear" && earType != 1 || childNode.Text == "lefEar" && earType != 2 || childNode.Text == "highlefEar" && earType != 3)
+			{
+				continue;
+			}
+			Skin skin = new Skin();
+			skin.Name = childNode.Text;
+			skin.Image = BitmapOrigin.CreateFromNode(linkNode, PluginManager.FindWz);
+			var zNode = linkNode.FindNodeByPath("z");
+			if (zNode != null)
+			{
+				var val = zNode.Value;
+				var zIndex = zNode.GetValueEx<int?>(null);
+				if (zIndex != null)
+				{
+					skin.ZIndex = zIndex.Value;
+				}
+				else
+				{
+					skin.Z = zNode.GetValue<string>();
+				}
+			}
+			bodyRoot.Skins.Add(skin);
+		}
+		var layers = avatar.CreateFrameLayers(bodyRoot);
+		Rectangle rect = Rectangle.Empty;
+		foreach (var layer in layers)
+		{
+			var newRect = new Rectangle(layer.OpOrigin, layer.Bitmap.Size);
+			rect = rect.Size.IsEmpty ? newRect : Rectangle.Union(rect, newRect);
+		}
+
+		Bitmap bmp = new Bitmap(rect.Width, rect.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+		Graphics g = Graphics.FromImage(bmp);
+
+		foreach (var layer in layers)
+		{
+			g.DrawImage(layer.Bitmap, layer.OpOrigin.X - rect.X, layer.OpOrigin.Y - rect.Y);
+		}
+		g.Dispose();
+		if (bs == true) return Content(Convert.ToBase64String(BitmapToByteArray(bmp)));
+		return base.File(BitmapToByteArray(bmp),"image/png");
 	}
 
 	private ActionResult ItemWithEmotion(string code, GearType type, string typename, bool? bs)
@@ -630,6 +704,31 @@ public class HomeController : Controller
 		if (bs == true) return Content(Convert.ToBase64String(byteArray));
 		return base.File(byteArray,"image/png");
 	}
+
+	Wz_Node FindActionFrameNode(Wz_Node parent, ActionFrame actionFrame)
+        {
+            if (parent == null || actionFrame == null)
+            {
+                return null;
+            }
+            var actionNode = parent;
+            foreach (var path in new[] { actionFrame.Action, actionFrame.Frame.ToString() })
+            {
+                if (actionNode != null && !string.IsNullOrEmpty(path))
+                {
+                    actionNode = actionNode.FindNodeByPath(path);
+
+                    //处理uol
+                    Wz_Uol uol;
+                    while ((uol = actionNode.GetValueEx<Wz_Uol>(null)) != null)
+                    {
+                        actionNode = uol.HandleUol(actionNode);
+                    }
+                }
+            }
+
+            return actionNode;
+        }
 
 	Wz_Node? GetWzNode(Match m)
 	{
