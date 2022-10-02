@@ -1,11 +1,9 @@
 import logging
-import io
 from PIL import Image
 
 from ..Avatar.avatar import Avatar
 from ..server.config import Config
 from .WCR_caller import WCRCaller
-import base64
 
 
 class ImageProcessor:
@@ -27,42 +25,13 @@ class ImageProcessor:
         self.item_code_list = []
 
     async def is_contain(self, image_avatar, image_item) -> bool:
-        '''
-        pix_avatar = np.array(image_avatar)
-        pix_item = np.array(image_item)
-
-        size_avatar = np.array(image_avatar.size)
-        size_item = np.array(image_item.size)
-
-        start_point = []
-        for rows in range(size_avatar[0]):
-            for columns in range(size_item[1]):
-                if pix_avatar[rows][columns][3] == 255:
-                    if size_item[0] + rows < size_avatar[0]:
-                        if size_item[1] + columns < size_avatar[1]:
-                            start_point.append((rows,columns))
-
-        for idx in range(len(start_point)):
-            cnt=0
-            for rows in range(start_point[idx][0], start_point[idx][0] + size_item[0] + 1):
-                for col in range(start_point[idx][1], start_point[idx][1] + size_item[1] + 1):
-                    if pix_avatar == pix_item:
-                        cnt+=1
-            if cnt == size_item[0] * size_item[1]:
-                return True
-        '''
         return True
 
     async def infer(self, image: Image) -> Avatar:
         # TODO: implement
 
         avatar = Avatar("1" , "0" , "0" , '0')
-        a = WCRCaller()
-        response = await a.get_image(avatar=avatar)
-        bs64str = response.get("bs64")
-
-        item_image_data = base64.b64decode(bs64str)
-        item_image = Image.open(io.BytesIO(item_image_data))
+        item_image = self.caller.get_image(avatar=avatar)
 
         if self.is_contain(image, item_image):
             self.item_code_list.append('1')
@@ -127,6 +96,5 @@ class ImageProcessor:
 
         result = Avatar(f'{self.item_code_list[0]}',
         f'{self.item_code_list[1]}',f'{self.item_code_list[2]}',f'{self.item_code_list[3]}')
-
 
 '''

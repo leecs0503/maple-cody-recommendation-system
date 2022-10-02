@@ -7,6 +7,7 @@ from src.ImageServer.ImageProcessor.WCR_caller import WCRCaller
 from src.ImageServer.ImageProcessor.image_processor import ImageProcessor
 from src.ImageServer.server.config import Config
 from PIL import Image
+import os
 
 
 class CallerForTest:
@@ -35,7 +36,10 @@ class CallerForTest:
     """
 
     def __init__(self):
-        self.image_1 = Image.open('./test_data/item1.png')
+        base_uri = os.path.dirname(__file__)
+        item1_path = os.path.join(base_uri, 'test_data', 'item1.png')
+
+        self.image_1 = Image.open(item1_path)
 
     def get_image(self , avatar):
 
