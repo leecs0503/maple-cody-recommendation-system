@@ -25,7 +25,52 @@ class ImageProcessor:
         self.item_code_list = []
 
     async def is_contain(self, image_avatar, image_item) -> bool:
-        return True
+        av_size = image_avatar.size
+        item_size = image_item.size
+        num_item_pixel = item_size[0] * item_size[1]
+        num_item_empty_pixel = 0
+        for rows in range(item_size[0]):
+            for cols in range(item_size[1]):
+                if image_item.getpixel((rows , cols)) == (0 , 0 , 0 , 0):
+                    num_item_empty_pixel += 1
+        num_item_pixel = num_item_pixel - num_item_empty_pixel
+
+        result = False
+        for rows in range(av_size[0] - item_size[0]):
+            cnt = 0
+            if result:
+                break
+            for cols in range(av_size[1] - item_size[1]):
+                if result:
+                    break
+                cnt = 0
+                for compare_rows in range(item_size[0]):
+                    for compare_cols in range(item_size[1]):
+                        av_rgba = image_avatar.getpixel((rows + compare_rows, cols + compare_cols))
+                        item_rgba = image_item.getpixel((compare_rows, compare_cols))
+                        if item_rgba[3] == 0:
+                            continue
+
+                        if (av_rgba[0] == item_rgba[0]) and (av_rgba[1] == item_rgba[1]) and (av_rgba[2] == item_rgba[2]):
+                            cnt += 1
+                else:
+                    if num_item_pixel > 440:
+                        if num_item_pixel * 0.3 <= cnt:
+                            result = True
+
+                    if 400 < num_item_pixel <= 440:
+                        if num_item_pixel * 0.4 <= cnt:
+                            result = True
+
+                    if 300 < num_item_pixel <= 400:
+                        if num_item_pixel * 0.6 <= cnt:
+                            result = True
+
+                    if 0 < num_item_pixel <= 300:
+                        if num_item_pixel * 0.8 <= cnt:
+                            result = True
+
+        return result
 
     async def infer(self, image: Image) -> Avatar:
         # TODO: implement

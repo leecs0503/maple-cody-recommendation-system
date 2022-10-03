@@ -7,7 +7,6 @@ from src.ImageServer.Avatar.avatar import Avatar
 from src.ImageServer.ImageProcessor.image_processor import ImageProcessor
 
 
-# WCR Server을 mocking새ㅓ
 @pytest.mark.asyncio
 async def test_is_contain(test_image_processor: ImageProcessor):
     # image 1 로드
@@ -20,28 +19,32 @@ async def test_is_contain(test_image_processor: ImageProcessor):
     item2_path = os.path.join(base_uri, 'test_data', 'item2.png')
     item3_path = os.path.join(base_uri, 'test_data', 'item3.png')
     item4_path = os.path.join(base_uri, 'test_data', 'item4.png')
+    item5_path = os.path.join(base_uri, 'test_data', 'item5.png')
+    item6_path = os.path.join(base_uri, 'test_data', 'item6.png')
+    item7_path = os.path.join(base_uri, 'test_data', 'item7.png')
+    item8_path = os.path.join(base_uri, 'test_data', 'item8.png')
 
-    image_1 = Image.open(data1_path)
+    image_1 = Image.open(data1_path,)
     image_2 = Image.open(data2_path)
     item_1 = Image.open(item1_path)
     item_2 = Image.open(item2_path)
     item_3 = Image.open(item3_path)
     item_4 = Image.open(item4_path)
-#    item_5 = Image.open('./test_data/item5.png')
-#    item_6 = Image.open('./test_data/item6.png')
-#    item_7 = Image.open('./test_data/item7.png')
-#    item_8 = Image.open('./test_data/item8.png')
+    item_5 = Image.open(item5_path)
+    item_6 = Image.open(item6_path)
+    item_7 = Image.open(item7_path)
+    item_8 = Image.open(item8_path)
 
     avatar_list = [
         image_1, image_2
     ]
     item_list = [
-        item_1 , item_2 , item_3 , item_4
+        item_1 , item_2 , item_3 , item_4, item_5, item_6, item_7, item_8
     ]
+
     for idx, avatar in enumerate(avatar_list):
         for item in item_list:
-            assert await test_image_processor.is_contain(avatar, item) == True
-#            assert await test_image_processor.is_contain(avatar, item) == (True if idx == 0 else False)
+            assert await test_image_processor.is_contain(avatar, item) == (True if idx == 0 else False)
 
 
 @pytest.mark.asyncio
