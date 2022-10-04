@@ -57,8 +57,8 @@ avatar_raw와 동일한 작업을 하는 route.
 |faceAccessory|얼굴 장식에 대한 코드.|faceAccessory=1012757|
 |eyeAccessory|눈장식에 대한 코드.|eyeAccessory=1022277|
 |actionName|avatar_raw와 동일.|actionName=stand1|
-|bs|이미지를 base64 encoding한 문자열로 리턴할지 결정하는 boolean variable. default로는 false|
-|earType|아바타의 귀 종류, ear, humanEar, lefEar, highlefEar 중 하나. default로는 humanEar|
+|bs|이미지를 base64 encoding한 문자열로 리턴할지 결정하는 boolean variable. default로는 false|bs=false|
+|earType|아바타의 귀 종류, ear, humanEar, lefEar, highlefEar 중 하나. default로는 humanEar|earType=ear|
 
 ## /head/
 피부에 대한 개별 이미지를 리턴하는 route.

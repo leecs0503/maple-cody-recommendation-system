@@ -302,7 +302,51 @@ public class HomeController : Controller
 	public ActionResult Face(string code, bool? bs)
 	{
 		Add_X_request_ID();
-		return ItemWithEmotion(code, GearType.face, "face", bs);
+		var m = GetFromCode(code);
+		if (m == null)
+		{
+			return BadRequest("Wrong Code");
+		}
+		Wz_Node imgNode = GetWzNode(m);
+		if (imgNode == null)
+		{
+			Console.WriteLine("Image Node not found");
+			return BadRequest("wz file not found");
+		}
+		AvatarPart part = new AvatarPart(imgNode);
+		var gearType = Gear.GetGearType(part.ID.Value);
+		if(gearType != GearType.face)
+		{
+			Console.WriteLine("Type mismatch : " + gearType.ToString());
+			return BadRequest("item type mismatch");
+		}
+		var part_node = part.Node.FindNodeByPath("default").FindNodeByPath("face");
+
+		while(part_node.Value is Wz_Uol)
+		{
+			part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
+		}
+
+		if (m.Groups.Count >= 4 && Int32.TryParse(m.Result("$3"), out int mixColor) && Int32.TryParse(m.Result("$4"), out int mixOpacity))
+		{
+			Console.WriteLine("!!!");
+			part.MixColor = mixColor;
+			part.MixOpacity = mixOpacity;
+			var mix_node = part.MixNodes[mixColor].FindNodeByPath("default").FindNodeByPath("face");
+			while(part_node.Value is Wz_Uol)
+			{
+				part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
+			}
+			var byteArray = BitmapToByteArray(this.avatar.MixBitmaps(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap,BitmapOrigin.CreateFromNode(mix_node, PluginManager.FindWz).Bitmap,mixOpacity));
+			if (bs == true) return Content(Convert.ToBase64String(byteArray));
+			else return base.File(byteArray,"image/png");
+		}
+		else
+		{
+			var byteArray = BitmapToByteArray(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap);
+			if (bs == true) return Content(Convert.ToBase64String(byteArray));
+			return base.File(byteArray,"image/png");
+		}
 	}
 
 	[Route("hair")]
@@ -352,13 +396,13 @@ public class HomeController : Controller
 		}
 		else
 		{
-			var part_node = part.Node.FindNodeByPath(actionName);
+			var part_node = FindActionFrameNode(part.Node, new ActionFrame(actionName, 0));
 			if (part_node == null)
 			{
 				Console.WriteLine("Action Not Found");
 				return BadRequest("Action Not Found");
 			}
-			part_node = part_node.FindNodeByPath("0").FindNodeByPath("hair");
+			part_node = part_node.FindNodeByPath("hair");
 			while(part_node.Value is Wz_Uol)
 			{
 				part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
@@ -398,14 +442,14 @@ public class HomeController : Controller
 		{
 			part.MixColor = mixColor;
 			part.MixOpacity = mixOpacity;
-			var part_node = part.Node.FindNodeByPath(actionName);
+			var part_node = FindActionFrameNode(part.Node, new ActionFrame(actionName, 0));
 			if (part_node == null)
 			{
 				Console.WriteLine("Action Not Found");
 				return BadRequest("Action Not Found");
 			}
-			part_node = part_node.FindNodeByPath("0").FindNodeByPath("hairOverHead");
-			var mix_node = part.MixNodes[mixColor].FindNodeByPath(actionName).FindNodeByPath("0").FindNodeByPath("hairOverHead");
+			part_node = part_node.FindNodeByPath("hairOverHead");
+			var mix_node = part.MixNodes[mixColor].FindNodeByPath(actionName).FindNodeByPath("hairOverHead");
 			while(part_node.Value is Wz_Uol)
 			{
 				part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
@@ -781,6 +825,42 @@ public class HomeController : Controller
 			avatar.ActionName = "stand1";
 		}
 		if(code != null && LoadCode(code, 0)) {
+			var cap = avatar.Cap;
+			if(cap == null)
+			{
+				avatar.HairCover = false;
+			}
+			else
+			{
+				var cap_node = cap.Node;
+				while(cap_node.Value is Wz_Uol)
+				{
+					cap_node = cap_node.GetValue<Wz_Uol>().HandleUol(cap_node);
+				}
+				cap_node = FindActionFrameNode(cap_node, new ActionFrame(avatar.ActionName, 0));
+				while(cap_node.Value is Wz_Uol)
+				{
+					cap_node = cap_node.GetValue<Wz_Uol>().HandleUol(cap_node);
+				}
+				foreach(var childNode in cap_node.Nodes)
+				{
+					var cap_z = childNode.FindNodeByPath("z");
+					if(cap_z != null)
+					{
+						var cap_string = cap_z.GetValue<string>();
+						if (cap_string == "cap")
+						{
+							avatar.HairCover = true;
+						}
+						else
+						{
+							avatar.HairCover = false;
+						}
+						break;
+					}
+				}
+				
+			}
 			Console.WriteLine("성공");
 			var bone = this.avatar.CreateFrame(0, 0, 0);
 			var frame = this.avatar.DrawFrame(bone);
@@ -856,7 +936,6 @@ public class HomeController : Controller
 		}
 
 		List<int> failList = new List<int>();
-		bool HairCover = false;
 
 		foreach (Match m in matches)
 		{
@@ -870,12 +949,6 @@ public class HomeController : Controller
 					AvatarPart avatar_part = new AvatarPart(imgNode);
 
 					var gearType = Gear.GetGearType(avatar_part.ID.Value);
-
-					if (gearType == GearType.cap && imgNode.Text != "01002186.img" && imgNode.Text != "01004109.img")
-					{
-						HairCover = true;
-						
-					}
 
 					if (m.Groups.Count >= 4 && Int32.TryParse(m.Result("$3"), out int mixColor) && Int32.TryParse(m.Result("$4"), out int mixOpacity))
 					{
@@ -928,9 +1001,6 @@ public class HomeController : Controller
 				}
 			}
 		}
-
-		avatar.HairCover = HairCover;
-
 		//其他提示
 		if (failList.Count > 0)
 		{
