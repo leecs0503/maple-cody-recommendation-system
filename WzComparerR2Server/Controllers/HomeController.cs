@@ -43,6 +43,11 @@ public class HomeController : Controller
 	{
 		String ret = "{";
 		bool First = true;
+
+		if (current_node.Value is string)
+		{
+			return "\"" + current_node.GetValue<string>() + "\"";
+		}
 		
 		foreach(Wz_Node child_node in current_node.Nodes)
 		{
@@ -61,7 +66,13 @@ public class HomeController : Controller
 	[Route("code")]
 	public string Code()
 	{
-		if(query_result == null) query_result = get_code(Program.wz.WzNode);
+		if(query_result == null) 
+		{
+			var eqp_node = Program.wz.WzNode.FindNodeByPath("String").FindNodeByPath("Eqp.img");
+			var img = eqp_node.GetValue<Wz_Image>();
+			img.TryExtract();
+			query_result = get_code(img.Node.FindNodeByPath("Eqp"));
+		}
 		return query_result;
 	}
 
