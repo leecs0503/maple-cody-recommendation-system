@@ -37,7 +37,7 @@ class CallerForTest:
 
     def __init__(self):
         base_uri = os.path.dirname(__file__)
-        item1_path = os.path.join(base_uri, "test_data", "item1.png")
+        item1_path = os.path.join(base_uri, "test_data", "item", "item1.png")
 
         self.image_1 = Image.open(item1_path)
 
