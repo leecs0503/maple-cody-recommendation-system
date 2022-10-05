@@ -7,7 +7,7 @@ sudo apt-get update && \
   sudo apt-get install -y dotnet-sdk-6.0
 sudo apt install libc6-dev 
 sudo apt install libgdiplus
-dotnet dev-certs https -ep $/https/aspnetapp.pfx -p {password}
+dotnet dev-certs https -ep ${HOME}/.aspnet/https/aspnetapp.pfx -p 270e9908-480d-4647-a482-4503e3492e57
 dotnet dev-certs https --trust
 ```
 
