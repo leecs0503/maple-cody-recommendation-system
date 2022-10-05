@@ -45,7 +45,8 @@ def test_http_handler(config_for_test: Config, image_processor_for_test):
     )
     res.processor = image_processor_for_test(
         logger=logger,
-        config=config_for_test,)
+        config=config_for_test,
+    )
     return res
 
 

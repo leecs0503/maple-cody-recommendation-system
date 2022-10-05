@@ -12,38 +12,38 @@ import os
 
 class CallerForTest:
     """
-        이 Caller은 어떤 것을 해야하냐면
-        get_image 함수를 모킹
-        아이템 코드들에 대해 사전에 준비된 이미지를 반환하면 됨
-        없으면 exception
+    이 Caller은 어떤 것을 해야하냐면
+    get_image 함수를 모킹
+    아이템 코드들에 대해 사전에 준비된 이미지를 반환하면 됨
+    없으면 exception
 
-        아래 아이템에 대한 이미지들이 test_data에 저장되어 있어야 함
-          - 용용 아이스 머리띠
-          - 딸기 생크림
-          - 투명 안경
-          - 투명 귀고리
-          - 어둠의 흉터
-          - 프레피 멜빵
-          - 투명 블레이드
-          - 투명 장갑
-          - 핑크 젤리백
-          - 지나간 어둠
-          - 믹스 토벤 머리 검은색 84 주황색 16
-          - 믹스 도전적인 얼굴 파란색 50 에메랄드 50
-          - 홍조 꽃잎 피부
+    아래 아이템에 대한 이미지들이 test_data에 저장되어 있어야 함
+      - 용용 아이스 머리띠
+      - 딸기 생크림
+      - 투명 안경
+      - 투명 귀고리
+      - 어둠의 흉터
+      - 프레피 멜빵
+      - 투명 블레이드
+      - 투명 장갑
+      - 핑크 젤리백
+      - 지나간 어둠
+      - 믹스 토벤 머리 검은색 84 주황색 16
+      - 믹스 도전적인 얼굴 파란색 50 에메랄드 50
+      - 홍조 꽃잎 피부
 
-        저 데이터는 인구가 줄 예정
+    저 데이터는 인구가 줄 예정
     """
 
     def __init__(self):
         base_uri = os.path.dirname(__file__)
-        item1_path = os.path.join(base_uri, 'test_data', 'item1.png')
+        item1_path = os.path.join(base_uri, "test_data", "item1.png")
 
         self.image_1 = Image.open(item1_path)
 
-    def get_image(self , avatar):
+    def get_image(self, avatar):
 
-        if avatar == Avatar("1" , "0" , "0" , '0'):
+        if avatar == Avatar("1", "0", "0", "0"):
             return self.image_1
 
 

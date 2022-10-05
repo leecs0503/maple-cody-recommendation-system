@@ -15,14 +15,14 @@ from aiohttp import test_utils
 
 @pytest.mark.asyncio
 async def test_http_index_handler(http_handler: HTTPHandler):
-    request = make_mocked_request('GET', '/')
+    request = make_mocked_request("GET", "/")
     result = await http_handler.index_handler(request=request)
     assert result.status == 200
 
 
 @pytest.mark.asyncio
 async def test_http_healthcheck_handler(http_handler: HTTPHandler):
-    request = make_mocked_request('GET', '/healthcheck')
+    request = make_mocked_request("GET", "/healthcheck")
     result = await http_handler.helthcheck_handler(request=request)
     assert result.status == 200
 
@@ -35,26 +35,23 @@ class TempProtocol(asyncio.BaseProtocol):
 @pytest.mark.asyncio
 async def test_http_image_handler(test_http_handler: HTTPHandler):
     base_uri = os.path.dirname(__file__)
-    file_path = os.path.join(base_uri, '.data', 'test_image.png')
-    with open(file_path, 'rb') as img:
+    file_path = os.path.join(base_uri, ".data", "test_image.png")
+    with open(file_path, "rb") as img:
         base64_bstring = base64.b64encode(img.read())
-    reader = streams.StreamReader(
-        protocol=TempProtocol(),
-        limit=10000
-    )
+    reader = streams.StreamReader(protocol=TempProtocol(), limit=10000)
     bdata = bytes(
         urllib.parse.urlencode(
             {
-                "bs64": str(base64_bstring, encoding='utf-8'),
+                "bs64": str(base64_bstring, encoding="utf-8"),
             }
         ),
-        encoding='utf-8'
+        encoding="utf-8",
     )
     reader.feed_data(bdata)
     reader.feed_eof()
     request = test_utils.make_mocked_request(
         method="POST",
-        headers={'Content-Type' : 'application/x-www-form-urlencoded'},
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
         path="/image",
         payload=reader,
     )
