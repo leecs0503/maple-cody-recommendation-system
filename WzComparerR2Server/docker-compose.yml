@@ -19,7 +19,7 @@ services:
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
     volumes:
       - ~/.aspnet/https:/https:ro
-      - WzData:/app/Data
+      - WzData:/app/Data:ro
 volumes:
   WzData:
     external: true
