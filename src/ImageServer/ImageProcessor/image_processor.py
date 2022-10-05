@@ -1,5 +1,6 @@
 import logging
 import random
+import os
 from ..server.config import Config
 from .WCR_caller import WCRCaller
 from PIL import Image
@@ -64,6 +65,34 @@ class ImageProcessor:
             print("accuracy : ", maximum)
         return maximum
         """
+
+    def _correct_visualize(
+        self,
+        base_image: Image.Image,
+        test_image: Image.Image
+    ):
+        base_uri = os.path.dirname(__file__)
+
+        acc, px, py = self.is_contain(base_image, test_image)
+        test_format = base_image.copy()
+        (h, w) = test_image.size
+        pixels = test_format.load()
+        for x in range(h):
+            for y in range(w):
+                ax, ay = (px + x, py + y)
+                pa = base_image.getpixel((ax, ay))
+                ta = test_image.getpixel((x, y))
+                if not is_pixel_eq(pa, ta):
+#                  pixels[ax, ay] = (255 - pixels[ax, ay][0] , 255 - pixels[ax, ay][1], 255 - pixels[ax, ay][2], pixels[ax, ay][3])
+                  pixels[ax, ay] = (100 , 100, 100, pixels[ax, ay][3])
+
+        visualize_path = os.path.join(base_uri, "correct_visualize", f"visualize.png")
+
+        test_format.save(visualize_path)
+        print(f"original - made acc: {acc}")
+        return acc
+
+
     def _get_sample_pixel_list(
         self,
         image: Image.Image,
@@ -81,7 +110,7 @@ class ImageProcessor:
         assert num_item_pixel > 0
 
         sample_num = min(num_item_pixel, sample_size)
-        return random.sample(item_coord, sample_num)    
+        return random.sample(item_coord, sample_num)
 
     def _get_ratio(
         self,

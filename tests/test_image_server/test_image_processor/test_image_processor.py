@@ -3,6 +3,37 @@ import pytest
 from PIL import Image
 
 from src.ImageServer.ImageProcessor.image_processor import ImageProcessor, is_pixel_eq
+from pathlib import Path
+
+
+
+@pytest.mark.asyncio
+async def test_visualize(test_image_processor: ImageProcessor):
+
+    base_uri = os.path.dirname(__file__)
+
+    base_image_path = os.path.join(base_uri, "test_data","avatar", "data1.png")
+    base_image = Image.open(base_image_path)
+    visual_test1_path = os.path.join(base_uri, "test_data", "visual_test1.png")
+    visual_test2_path = os.path.join(base_uri, "test_data", "visual_test2.png")
+
+    visual_test1_image = Image.open(visual_test1_path)
+    visual_test2_image = Image.open(visual_test2_path)
+
+    parent_uri = Path(base_uri).parent.parent.parent
+    visualize_parent = parent_uri.joinpath('src','ImageServer','ImageProcessor','correct_visualize','visualize.png')
+
+
+    test1_acc = test_image_processor._correct_visualize(base_image, visual_test1_image)
+    visualize_image = Image.open(visualize_parent)
+    correct_visual1_acc = test_image_processor.is_contain(visualize_image, visual_test1_image)
+
+    test2_acc = test_image_processor._correct_visualize(base_image, visual_test2_image)
+    visualize_image = Image.open(visualize_parent)
+    correct_visual2_acc = test_image_processor.is_contain(visualize_image, visual_test2_image)
+
+
+    assert (test1_acc == correct_visual1_acc[0]) and (test2_acc == correct_visual2_acc[0])
 
 
 @pytest.mark.asyncio
@@ -50,21 +81,7 @@ async def test_is_contain(test_image_processor: ImageProcessor):
         "피부",
     ]
     print("")
-    
-    acc, px, py = test_image_processor.is_contain(avatar_list[0], test_image)
-    test_format = avatar_list[0].copy()
-    (h, w) = test_image.size
-    
-    pixels = test_format.load()
-    for x in range(h):
-        for y in range(w):
-            ax, ay = (px + x, py + y)
-            pa = avatar_list[0].getpixel((ax, ay))
-            ta = test_image.getpixel((x, y))
-            if not is_pixel_eq(pa, ta):
-              pixels[ax, ay] = (255 - pixels[ax, ay][0] , 255 - pixels[ax, ay][1], 255 - pixels[ax, ay][2], pixels[ax, ay][3])
-    test_format.save('./visualize.png')
-    print(f"original - made acc: {acc}")
+
     for idx, avatar in enumerate(avatar_list):
         for skin_idx, skin in enumerate(skin_list):
             skin_accuracy, _, _ = test_image_processor.is_contain(avatar, skin)
