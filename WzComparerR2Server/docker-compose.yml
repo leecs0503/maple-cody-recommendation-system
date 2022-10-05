@@ -16,9 +16,9 @@ services:
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - ASPNETCORE_HTTPS_PORT=7209
       - ASPNETCORE_Kestrel__Certificates__Default__Password=270e9908-480d-4647-a482-4503e3492e57
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/https/aspnetapp.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
     volumes:
-      - ./https/aspnetapp.pfx:/app/https/aspnetapp.pfx:ro
+      - ~/.aspnet/https:/https:ro
       - WzData:/app/Data
 volumes:
   WzData:
