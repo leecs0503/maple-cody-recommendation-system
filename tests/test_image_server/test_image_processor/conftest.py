@@ -3,7 +3,7 @@ import logging
 import pytest
 from src.ImageServer.Avatar.avatar import Avatar
 from src.ImageServer.ImageProcessor.WCR_caller import WCRCaller
-
+import aiohttp
 from src.ImageServer.ImageProcessor.image_processor import ImageProcessor
 from src.ImageServer.server.config import Config
 from PIL import Image
@@ -38,13 +38,20 @@ class CallerForTest:
     def __init__(self):
         base_uri = os.path.dirname(__file__)
         item1_path = os.path.join(base_uri, "test_data", "item", "item1.png")
-
         self.image_1 = Image.open(item1_path)
 
-    def get_image(self, avatar):
+    async def get_image(self, avatar: Avatar):
+        params = avatar.to_param()
+        for idx in range(len(params)):
+            if int(params[idx][1]) > 0:
+                code_params = params[idx]
+        print("code_params : ", code_params)
 
-        if avatar == Avatar("1", "0", "0", "0"):
-            return self.image_1
+        url = f"https://localhost:7209/{code_params[0]}/?code={code_params[1]}&bs=True"
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, ssl=False) as resp:
+                if resp.status == 200:
+                    return await resp.text()
 
 
 @pytest.fixture

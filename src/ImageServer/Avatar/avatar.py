@@ -4,24 +4,24 @@ from dataclasses import dataclass
 @dataclass
 class Avatar:
     face: str
-    hair: str
+    cap: str
     longcoat: str
     weapon: str
 
     def to_array(self):
         return [
             self.face,
-            self.hair,
+            self.cap,
             self.longcoat,
             self.weapon,
         ]
 
     def to_param(self):
         return [
-            ("Face", self.face),
-            ("Hair", self.hair),
-            ("Longcoat", self.longcoat),
-            ("Weapon", self.weapon),
+            ("face", self.face),
+            ("cap", self.cap),
+            ("longcoat", self.longcoat),
+            ("weapon", self.weapon),
         ]
 
 

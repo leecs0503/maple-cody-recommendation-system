@@ -2,18 +2,21 @@ import logging
 import random
 import os
 from ..server.config import Config
+from ..Avatar.avatar import Avatar
 from .WCR_caller import WCRCaller
 from PIL import Image
 from typing import List, Tuple
+import base64
+import io
+
 
 def is_pixel_eq(
     a: Tuple[int, int, int, int],
     b: Tuple[int, int, int, int],
 ):
-    return  abs(a[0] - b[0]) < 8 and \
-            abs(a[1] - b[1]) < 8 and \
-            abs(a[2] - b[2]) < 8 and \
-            abs(a[3] - b[3]) < 8 
+    return abs(a[0] - b[0]) < 8 and abs(a[1] - b[1]) < 8 and abs(a[2] - b[2]) < 8 and abs(a[3] - b[3]) < 8
+
+
 class ImageProcessor:
     def __init__(
         self,
@@ -34,7 +37,6 @@ class ImageProcessor:
 
     async def _naive_approach(
         item_coord,
-
     ):
         # TODO:
         """
@@ -66,11 +68,7 @@ class ImageProcessor:
         return maximum
         """
 
-    def _correct_visualize(
-        self,
-        base_image: Image.Image,
-        test_image: Image.Image
-    ):
+    def _correct_visualize(self, base_image: Image.Image, test_image: Image.Image):
         base_uri = os.path.dirname(__file__)
 
         acc, px, py = self.is_contain(base_image, test_image)
@@ -83,15 +81,14 @@ class ImageProcessor:
                 pa = base_image.getpixel((ax, ay))
                 ta = test_image.getpixel((x, y))
                 if not is_pixel_eq(pa, ta):
-#                  pixels[ax, ay] = (255 - pixels[ax, ay][0] , 255 - pixels[ax, ay][1], 255 - pixels[ax, ay][2], pixels[ax, ay][3])
-                  pixels[ax, ay] = (100 , 100, 100, pixels[ax, ay][3])
+                    # pixels[ax, ay] = (255 - pixels[ax, ay][0] , 255 - pixels[ax, ay][1], 255 - pixels[ax, ay][2], pixels[ax, ay][3])
+                    pixels[ax, ay] = (100, 100, 100, pixels[ax, ay][3])
 
-        visualize_path = os.path.join(base_uri, "correct_visualize", f"visualize.png")
+        visualize_path = os.path.join(base_uri, "correct_visualize", "visualize.png")
 
         test_format.save(visualize_path)
         print(f"original - made acc: {acc}")
         return acc
-
 
     def _get_sample_pixel_list(
         self,
@@ -107,6 +104,9 @@ class ImageProcessor:
                 if alpha != 0:
                     num_item_pixel += 1
                     item_coord.append((row, col))
+        if 0 <= num_item_pixel <= 1:
+            return -1
+
         assert num_item_pixel > 0
 
         sample_num = min(num_item_pixel, sample_size)
@@ -147,8 +147,8 @@ class ImageProcessor:
         item_image: Image.Image,
     ) -> bool:
         """
-            image_avatar:
-            image_item:
+        image_avatar:
+        image_item:
         """
         SAMPLE_SIZE = 10
         VALIDATE_SAMPLE_NUM = 3
@@ -157,11 +157,11 @@ class ImageProcessor:
         [avatar_height, avatar_width] = avatar_image.size
 
         sample_item_pixel_xy_list = self._get_sample_pixel_list(item_image, SAMPLE_SIZE)
-        all_item_pixel_xy_list = [
-            (x, y)
-            for x in range(0, item_height)
-            for y in range(0, item_width)
-        ]
+
+        if sample_item_pixel_xy_list == -1:
+            return (0, 0, 0)
+
+        all_item_pixel_xy_list = [(x, y) for x in range(0, item_height) for y in range(0, item_width)]
 
         pivot_data = []
         for pivot_row in range(avatar_height):
@@ -171,7 +171,7 @@ class ImageProcessor:
                     pivot_col=pivot_col,
                     avatar_image=avatar_image,
                     item_image=item_image,
-                    xy_list=sample_item_pixel_xy_list
+                    xy_list=sample_item_pixel_xy_list,
                 )
                 pivot_data.append((ratio, pivot_row, pivot_col))
         data = sorted(pivot_data, reverse=True)
@@ -188,3 +188,64 @@ class ImageProcessor:
             )
             result.append((correct_ratio, pivot_row, pivot_col))
         return sorted(result, reverse=True)[0]
+
+    async def infer_sub(self, image: Image.Image, avatar: Avatar, code_idx: int) -> int:
+
+        wcr_response = await self.caller.get_image(avatar=avatar)
+        if wcr_response is None:
+            return ((0, 0, 0), 0)
+
+        image_data = base64.b64decode(wcr_response)
+        item_image = Image.open(io.BytesIO(image_data))
+        acc = self.is_contain(avatar_image=image, item_image=item_image), code_idx
+        print("code_idx :", code_idx)
+        print("acc:", acc)
+        print("ㅡㅡㅡㅡㅡㅡㅡㅡ")
+        return acc
+
+    async def max_acc_code(self, acc_list: List) -> int:
+        max_acc = 0
+        for idx in range(len(acc_list)):
+            print(acc_list[idx][0][0])
+            if acc_list[idx][0][0] >= max_acc:
+                max_acc = acc_list[idx][0][0]
+                max_idx_acc = acc_list[idx][1]
+        return max_idx_acc
+
+    async def infer(self, image: Image) -> Avatar:
+        # TODO: implement
+        NUM_FACE = 20000
+        NUM_CAP = 1004999
+        NUM_LONGCOAT = 1052975
+        NUM_WEAPON = 1703238
+        NUM_COMPARE = 50
+
+        acc_list = []
+        for code_idx in range(NUM_FACE - NUM_COMPARE, NUM_FACE + NUM_COMPARE):
+            avatar = Avatar(f"{code_idx}", "0", "0", "0")
+            acc = await self.infer_sub(image=image, avatar=avatar, code_idx=code_idx)
+            acc_list.append(acc)
+        max_face_idx = await self.max_acc_code(acc_list)
+
+        acc_list = []
+        for code_idx in range(NUM_CAP - NUM_COMPARE, NUM_CAP + NUM_COMPARE):
+            avatar = Avatar("0", f"{code_idx}", "0", "0")
+            acc = await self.infer_sub(image=image, avatar=avatar, code_idx=code_idx)
+            acc_list.append(acc)
+        max_cap_idx = await self.max_acc_code(acc_list)
+
+        acc_list = []
+        for code_idx in range(NUM_LONGCOAT - NUM_COMPARE, NUM_LONGCOAT + NUM_COMPARE):
+            avatar = Avatar("0", "0", f"{code_idx}", "0")
+            acc = await self.infer_sub(image=image, avatar=avatar, code_idx=code_idx)
+            acc_list.append(acc)
+        max_longcoat_idx = await self.max_acc_code(acc_list)
+
+        acc_list = []
+        for code_idx in range(NUM_WEAPON - NUM_COMPARE, NUM_WEAPON + NUM_COMPARE):
+            avatar = Avatar("0", "0", "0", f"{code_idx}")
+            acc = await self.infer_sub(image=image, avatar=avatar, code_idx=code_idx)
+            acc_list.append(acc)
+        max_weapon_idx = await self.max_acc_code(acc_list)
+
+        return Avatar(f"{max_face_idx}", f"{max_cap_idx}", f"{max_longcoat_idx}", f"{max_weapon_idx}")

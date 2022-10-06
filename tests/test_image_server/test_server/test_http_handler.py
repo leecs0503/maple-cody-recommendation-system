@@ -35,7 +35,7 @@ class TempProtocol(asyncio.BaseProtocol):
 @pytest.mark.asyncio
 async def test_http_image_handler(test_http_handler: HTTPHandler):
     base_uri = os.path.dirname(__file__)
-    file_path = os.path.join(base_uri, ".data", "test_image.png")
+    file_path = os.path.join(base_uri, "data", "test_image.png")
     with open(file_path, "rb") as img:
         base64_bstring = base64.b64encode(img.read())
     reader = streams.StreamReader(protocol=TempProtocol(), limit=10000)
