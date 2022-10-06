@@ -42,7 +42,7 @@ namespace WzComparerR2.Avatar
 
         public bool LoadZ()
         {
-            return LoadZ(PluginBase.PluginManager.FindWz("Base\\zmap.img"));
+            return LoadZ(PluginBase.PluginManager.FindWz(Path.Combine("Base","zmap.img")));
         }
 
         public bool LoadZ(Wz_Node zMapNode)
@@ -259,6 +259,9 @@ namespace WzComparerR2.Avatar
             AvatarPart part = new AvatarPart(imgNode);
 
             var gearType = Gear.GetGearType(part.ID.Value);
+
+            // Console.WriteLine(gearType);
+
             switch (gearType)
             {
                 case GearType.body: this.Body = part; break;
@@ -1336,7 +1339,7 @@ namespace WzComparerR2.Avatar
             return null;
         }
 
-        private unsafe Bitmap MixBitmaps(Bitmap baseBitmap, Bitmap mixBitmap, int mixRatio)
+        public unsafe Bitmap MixBitmaps(Bitmap baseBitmap, Bitmap mixBitmap, int mixRatio) // TODO : private
         {
             float baseOpacity = (100 - mixRatio) / (float)100;
             float mixOpacity = mixRatio / (float)100;

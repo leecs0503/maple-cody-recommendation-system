@@ -13,9 +13,6 @@
         "packagesPath": "/home/lawali/.nuget/packages/",
         "outputPath": "/home/lawali/projects/maple-cody-recommendation-system/WzComparerR2Server/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "/usr/share/dotnet/sdk/NuGetFallbackFolder"
-        ],
         "configFilePaths": [
           "/home/lawali/.nuget/NuGet/NuGet.Config"
         ],
@@ -41,6 +38,10 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "CoreCompat.libgdiplus": {
+              "target": "Package",
+              "version": "[6.0.4-ci-84, )"
+            },
             "ImageManipulation": {
               "target": "Package",
               "version": "[1.0.0, )"
@@ -68,6 +69,14 @@
             "SharpDX.Mathematics": {
               "target": "Package",
               "version": "[4.2.0, )"
+            },
+            "SixLabors.ImageSharp": {
+              "target": "Package",
+              "version": "[2.1.3, )"
+            },
+            "SkiaSharp": {
+              "target": "Package",
+              "version": "[2.88.2, )"
             },
             "System.Drawing.Common": {
               "target": "Package",
