@@ -41,15 +41,14 @@ class CallerForTest:
         self.image_1 = Image.open(item1_path)
 
     async def get_image(self, avatar: Avatar):
+        URL = "https://localhost:7209/{item}/?code={code}&bs=True"
         params = avatar.to_param()
         for idx in range(len(params)):
             if int(params[idx][1]) > 0:
                 code_params = params[idx]
-        print("code_params : ", code_params)
-
-        url = f"https://localhost:7209/{code_params[0]}/?code={code_params[1]}&bs=True"
+        # 무기 처리 코드 추가
         async with aiohttp.ClientSession() as session:
-            async with session.get(url, ssl=False) as resp:
+            async with session.get(URL.format(item=code_params[0], code=code_params[1]), ssl=False) as resp:
                 if resp.status == 200:
                     return await resp.text()
 

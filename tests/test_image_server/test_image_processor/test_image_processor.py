@@ -82,10 +82,19 @@ async def test_infer(test_image_processor: ImageProcessor):
     NUM_CAP = 1004999
     NUM_LONGCOAT = 1052975
     NUM_WEAPON = 1703238
+    NUM_COMPARE = 50
+
+    num_items = (NUM_FACE, NUM_CAP, NUM_LONGCOAT, NUM_WEAPON)
 
     base_uri = os.path.dirname(__file__)
 
     user_path = os.path.join(base_uri, "test_data", "avatar", "data1.png")
     avatar_image = Image.open(user_path)
-    result = test_image_processor.infer(image=avatar_image)
+
+    item_list = []
+    for idx, num_item in enumerate(num_items):
+        for code_idx in range(num_item - NUM_COMPARE, num_item + NUM_COMPARE):
+            item_list.append((idx, f"{code_idx}"))
+
+    result = test_image_processor.infer(avatar_image, item_list)
     assert await result == Avatar(f"{NUM_FACE}", f"{NUM_CAP}", f"{NUM_LONGCOAT}", f"{NUM_WEAPON}")

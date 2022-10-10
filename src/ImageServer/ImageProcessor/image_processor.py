@@ -5,7 +5,7 @@ from ..server.config import Config
 from ..Avatar.avatar import Avatar
 from .WCR_caller import WCRCaller
 from PIL import Image
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 import base64
 import io
 
@@ -14,7 +14,10 @@ def is_pixel_eq(
     a: Tuple[int, int, int, int],
     b: Tuple[int, int, int, int],
 ):
-    return abs(a[0] - b[0]) < 8 and abs(a[1] - b[1]) < 8 and abs(a[2] - b[2]) < 8 and abs(a[3] - b[3]) < 8
+    return  abs(a[0] - b[0]) < 8 and \
+            abs(a[1] - b[1]) < 8 and \
+            abs(a[2] - b[2]) < 8 and \
+            abs(a[3] - b[3]) < 8
 
 
 class ImageProcessor:
@@ -104,8 +107,8 @@ class ImageProcessor:
                 if alpha != 0:
                     num_item_pixel += 1
                     item_coord.append((row, col))
-        if 0 <= num_item_pixel <= 1:
-            return -1
+        if (num_item_pixel) == 0 or (num_item_pixel == 1):
+            return []
 
         assert num_item_pixel > 0
 
@@ -145,7 +148,7 @@ class ImageProcessor:
         self,
         avatar_image: Image.Image,
         item_image: Image.Image,
-    ) -> bool:
+    ) -> Tuple[int, int, int]:
         """
         image_avatar:
         image_item:
@@ -158,7 +161,7 @@ class ImageProcessor:
 
         sample_item_pixel_xy_list = self._get_sample_pixel_list(item_image, SAMPLE_SIZE)
 
-        if sample_item_pixel_xy_list == -1:
+        if len(sample_item_pixel_xy_list) == 0:
             return (0, 0, 0)
 
         all_item_pixel_xy_list = [(x, y) for x in range(0, item_height) for y in range(0, item_width)]
@@ -189,7 +192,7 @@ class ImageProcessor:
             result.append((correct_ratio, pivot_row, pivot_col))
         return sorted(result, reverse=True)[0]
 
-    async def infer_sub(self, image: Image.Image, avatar: Avatar, code_idx: int) -> int:
+    async def infer_sub(self, image: Image.Image, avatar: Avatar, code: str) -> Tuple[Tuple[int, int, int], int]:
 
         wcr_response = await self.caller.get_image(avatar=avatar)
         if wcr_response is None:
@@ -197,55 +200,32 @@ class ImageProcessor:
 
         image_data = base64.b64decode(wcr_response)
         item_image = Image.open(io.BytesIO(image_data))
-        acc = self.is_contain(avatar_image=image, item_image=item_image), code_idx
-        print("code_idx :", code_idx)
-        print("acc:", acc)
-        print("ㅡㅡㅡㅡㅡㅡㅡㅡ")
+        acc = self.is_contain(avatar_image=image, item_image=item_image), code
         return acc
 
-    async def max_acc_code(self, acc_list: List) -> int:
+    async def max_acc_code(self, acc_list: List[Tuple[Tuple[int, int, int], int]]) -> int:
         max_acc = 0
-        for idx in range(len(acc_list)):
-            print(acc_list[idx][0][0])
-            if acc_list[idx][0][0] >= max_acc:
-                max_acc = acc_list[idx][0][0]
-                max_idx_acc = acc_list[idx][1]
+        for acc in acc_list:
+            if acc[0][0] >= max_acc:
+                max_acc = acc[0][0]
+                max_idx_acc = acc[1]
         return max_idx_acc
 
-    async def infer(self, image: Image) -> Avatar:
+    async def infer(self, image: Image, item_list: Optional[List[Tuple[int, str]]] = None) -> Avatar:
         # TODO: implement
-        NUM_FACE = 20000
-        NUM_CAP = 1004999
-        NUM_LONGCOAT = 1052975
-        NUM_WEAPON = 1703238
-        NUM_COMPARE = 50
 
-        acc_list = []
-        for code_idx in range(NUM_FACE - NUM_COMPARE, NUM_FACE + NUM_COMPARE):
-            avatar = Avatar(f"{code_idx}", "0", "0", "0")
-            acc = await self.infer_sub(image=image, avatar=avatar, code_idx=code_idx)
-            acc_list.append(acc)
-        max_face_idx = await self.max_acc_code(acc_list)
+        avatar = Avatar()
 
-        acc_list = []
-        for code_idx in range(NUM_CAP - NUM_COMPARE, NUM_CAP + NUM_COMPARE):
-            avatar = Avatar("0", f"{code_idx}", "0", "0")
-            acc = await self.infer_sub(image=image, avatar=avatar, code_idx=code_idx)
-            acc_list.append(acc)
-        max_cap_idx = await self.max_acc_code(acc_list)
+        if item_list is not None:
+            acc_lists = [[] for _ in range(4)]
+            for idx, code in item_list:
+                avatar.add_parts(idx, code)
+                acc = await self.infer_sub(image=image, avatar=avatar, code=code)
+                acc_lists[idx].append(acc)
+                avatar.reset()
+            for idx, acc_list in enumerate(acc_lists):
+                max_acc = await self.max_acc_code(acc_list)
+                avatar.add_parts(idx, max_acc)
+            return avatar
 
-        acc_list = []
-        for code_idx in range(NUM_LONGCOAT - NUM_COMPARE, NUM_LONGCOAT + NUM_COMPARE):
-            avatar = Avatar("0", "0", f"{code_idx}", "0")
-            acc = await self.infer_sub(image=image, avatar=avatar, code_idx=code_idx)
-            acc_list.append(acc)
-        max_longcoat_idx = await self.max_acc_code(acc_list)
-
-        acc_list = []
-        for code_idx in range(NUM_WEAPON - NUM_COMPARE, NUM_WEAPON + NUM_COMPARE):
-            avatar = Avatar("0", "0", "0", f"{code_idx}")
-            acc = await self.infer_sub(image=image, avatar=avatar, code_idx=code_idx)
-            acc_list.append(acc)
-        max_weapon_idx = await self.max_acc_code(acc_list)
-
-        return Avatar(f"{max_face_idx}", f"{max_cap_idx}", f"{max_longcoat_idx}", f"{max_weapon_idx}")
+        # TODO: 모든코드

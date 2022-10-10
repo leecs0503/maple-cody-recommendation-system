@@ -3,9 +3,10 @@ import logging
 from functools import cached_property
 
 import requests
-
+import os
 from .config import Config
 from .http_server import HTTPServer
+from ..util.item_manager import ItemManager
 
 
 class AppRunner:
@@ -32,13 +33,15 @@ class AppRunner:
             logger=self.logger,
             config=self.config,
         )
+        self.itemManager = ItemManager()
 
     @cached_property
     def logger(self):
         logger = logging.getLogger(__name__)
 
         formatter = logging.Formatter("%(asctime)s %(levelname)s [%(name)s] [%(filename)s:%(lineno)d] - %(message)s")
-
+        if not os.path.exists('logs'):
+            os.makedirs("logs")
         file_handler = logging.FileHandler("logs/app_runner_log.log")
         file_handler.setFormatter(formatter)
         file_handler.setLevel(logging.INFO)
@@ -53,6 +56,8 @@ class AppRunner:
 
         self.logger.info("start loading base_wz")
         self._load_base_wz()
+        self.itemManager.read(self.base_wz)
+        # TODO : HTTPServer에 itemManager 넘겨주기
         self.logger.info("complete loading base_wz")
 
         self.logger.info("start HTTPServer")
@@ -60,14 +65,19 @@ class AppRunner:
 
     def _load_base_wz(self) -> None:
         if self.config.base_wz_code_path:
-            base_wz_code_path = self.config.base_wz_code_path
-            with open(base_wz_code_path) as f:
-                self.base_wz = json.load(f)
-        else:
-            wcr_server_protocol = self.config.wcr_server_protocol
-            wcr_server_host = self.config.wcr_server_host
-            wcr_server_port = self.config.wcr_server_port
+            if os.path.isfile(self.config.base_wz_code_path):
+                base_wz_code_path = self.config.base_wz_code_path
+                with open(base_wz_code_path) as f:
+                    self.base_wz = json.load(f)
+                    return
+        wcr_server_protocol = self.config.wcr_server_protocol
+        wcr_server_host = self.config.wcr_server_host
+        wcr_server_port = self.config.wcr_server_port
 
-            url = f"{wcr_server_protocol}://{wcr_server_host}:{wcr_server_port}/code"
-            response = requests.get(url)
-            self.base_wz = json.load(response)
+        url = f"{wcr_server_protocol}://{wcr_server_host}:{wcr_server_port}/code"
+        response = requests.get(url, verify=False)
+        self.base_wz = json.loads(response.text)
+
+        if self.config.base_wz_code_path:
+            with open(self.config.base_wz_code_path, "w") as f:
+                json.dump(self.base_wz, f, ensure_ascii=False, indent="\t")
