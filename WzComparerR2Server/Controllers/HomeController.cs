@@ -42,18 +42,60 @@ public class HomeController : Controller
 	private String dfs(Wz_Node current_node)
 	{
 		String ret = "{";
+		String temp;
+		StringBuilder sb = new StringBuilder();
 		bool First = true;
 
 		if (current_node.Value is string)
 		{
-			return "\"" + current_node.GetValue<string>() + "\"";
+			temp = current_node.GetValue<string>();
+			foreach(var ch in temp) {
+				if(ch == '\r') {
+					sb.Append('\\');
+					sb.Append('r');
+				}
+				else if(ch == '\n') {
+					sb.Append('\\');
+					sb.Append('n');
+				}
+				else if(ch == '\"') {
+					sb.Append('\\');
+					sb.Append('\"');
+				}
+				else if(ch == '\\') {
+					sb.Append('\\');
+					sb.Append('\\');
+				}
+				else sb.Append(ch);
+			}
+			return "\"" + sb.ToString() + "\"";
 		}
 		
 		foreach(Wz_Node child_node in current_node.Nodes)
 		{
 			if (First) First = false;
 			else ret += ", ";
-			ret += "\"" + child_node.Text + "\": " + dfs(child_node);
+			sb.Clear();
+			foreach(var ch in child_node.Text) {
+				if(ch == '\r') {
+					sb.Append('\\');
+					sb.Append('r');
+				}
+				else if(ch == '\n') {
+					sb.Append('\\');
+					sb.Append('n');
+				}
+				else if(ch == '\"') {
+					sb.Append('\\');
+					sb.Append('\"');
+				}
+				else if(ch == '\\') {
+					sb.Append('\\');
+					sb.Append('\\');
+				}
+				else sb.Append(ch);
+			}
+			ret += "\"" + sb.ToString() + "\": " + dfs(child_node);
 		}
 		return ret + "}";
 	}
