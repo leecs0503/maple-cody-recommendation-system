@@ -1,5 +1,7 @@
 import os
 import pytest
+import time
+import numpy as np
 from PIL import Image
 
 from src.ImageServer.Avatar.avatar import Avatar
@@ -62,12 +64,24 @@ async def test_is_contain(test_image_processor: ImageProcessor):
     ]
     print("")
 
-    for idx, avatar in enumerate(avatar_list):
-        for skin_idx, skin in enumerate(skin_list):
-            skin_accuracy, _, _ = test_image_processor.is_contain(avatar, skin)
-            print(f"idx: {idx + 1}, item: {skin_idx + 1} acc: {skin_accuracy: .3f}")
-        print("-" * 30)
+    for avatar in avatar_list:
+        img = np.array(avatar)
+        idx = np.where(img[:, :, 3] > 0)
+        x0, y0, x1, y1 = idx[1].min(), idx[0].min(), idx[1].max(), idx[0].max()
+        avatar = Image.fromarray(img[y0:y1+1, x0:x1+1, :])
+
+    avatar_pixel_list = [(list(avatar.getdata()), avatar.size[0], avatar.size[1]) for avatar in avatar_list]
+    skin_pixel_list = [(list(skin.getdata()), skin.size[0], skin.size[1]) for skin in skin_list]
+
+    ct = time.time()
+
+    for idx, (avatar, avatar_height, avatar_width) in enumerate(avatar_pixel_list):
+        for skin_idx, (skin, skin_height, skin_width) in enumerate(skin_pixel_list):
+            skin_accuracy, _, _ = test_image_processor.is_contain(avatar, avatar_height, avatar_width, skin, skin_height, skin_width)
+        #     print(f"idx: {idx + 1}, item: {skin_idx + 1} acc: {skin_accuracy: .3f}")
+        # print("-" * 30)
     # assert test_image_processor.is_contain(avatar_list[0], avatar_list[0]) == 1
+    print(time.time() - ct)
     return
     for item_idx, item in enumerate(item_list):
         for idx, avatar in enumerate(avatar_list):
