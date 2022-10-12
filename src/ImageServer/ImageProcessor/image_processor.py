@@ -13,15 +13,16 @@ import base64
 import io
 
 
+PIXEL = Tuple[int, int, int, int]
+
 def is_pixel_eq(
-	a: Tuple[int, int, int, int],
-	b: Tuple[int, int, int, int],
+	a: PIXEL,
+	b: PIXEL,
 ):
 	return  abs(a[0] - b[0]) < 8 and \
 			abs(a[1] - b[1]) < 8 and \
 			abs(a[2] - b[2]) < 8 and \
 			abs(a[3] - b[3]) < 8
-
 
 class ImageProcessor:
 	def __init__(
@@ -41,38 +42,6 @@ class ImageProcessor:
 		)
 		self.item_code_list = []
 
-	async def _naive_approach(
-		item_coord,
-	):
-		# TODO:
-		"""
-		SAMPLE_SIZE = 500
-		AVATAR_COORD_RATIO = 1
-
-		sample_pix_coord = random.sample(item_coord, min(len(item_coord), SAMPLE_SIZE))
-
-		prob_compare = []
-		for rows in sample_row_coord:
-			cnt = 0
-			for cols in sample_col_coord:
-				cnt = 0
-				for compare_rows, compare_cols in sample_pix_coord:
-					av_rgba = image_avatar.getpixel((rows + compare_rows, cols + compare_cols))
-					item_rgba = image_item.getpixel((compare_rows, compare_cols))
-					if (
-						(av_rgba[0] == item_rgba[0])
-						and (av_rgba[1] == item_rgba[1])
-						and (av_rgba[2] == item_rgba[2])
-					):
-						cnt += 1
-				else:
-					prob = cnt / len(sample_pix_coord)
-					prob_compare.append(prob)
-		else:
-			maximum = max(prob_compare)
-			print("accuracy : ", maximum)
-		return maximum
-		"""
 
 	def _correct_visualize(self, base_image: Image.Image, test_image: Image.Image):
 		base_uri = os.path.dirname(__file__)
@@ -104,7 +73,10 @@ class ImageProcessor:
 	):
 		item_coord = [(idx % height, idx // height, pixel) for idx, pixel in enumerate(pixel_data) if pixel[3] != 0]
 		num_item_pixel = len(item_coord)
-		if num_item_pixel < 2:
+
+		# PIXEL 크기 1인 이미지는 is_contained 로직으로 판단하기 어렵기 때문에,
+		# 1 pixel인 경우도 빈 리스트를 반환.
+		if num_item_pixel <= 1:
 			return []
 
 		assert num_item_pixel > 0
@@ -114,10 +86,10 @@ class ImageProcessor:
 		self,
 		pivot_row: int,
 		pivot_col: int,
-		avatar_pixel_data: List[Tuple[int, int, int, int]],
+		avatar_pixel_data: List[PIXEL],
 		avatar_height: int,
 		avatar_width: int,
-		xy_list: List[Tuple[int, int, Tuple[int, int, int, int]]],
+		xy_list: List[Tuple[int, int, PIXEL]],
 	):
 		correct_count = 0
 		for dx, dy, item_pixel in xy_list:
@@ -135,17 +107,17 @@ class ImageProcessor:
 	@multimethod
 	def is_contain(
 		self,
-		avatar_pixel_data: List[Tuple[int, int, int, int]],
-		avatar_height: int,
-		avatar_width: int,
-		item_pixel_data: List[Tuple[int, int, int, int]],
-		item_height: int,
-		item_width: int,
+		avatar_pixel_list: List[PIXEL],
+		avatar_size: Tuple[int, int],
+		item_pixel_list: List[PIXEL],
+		item_size: Tuple[int, int],
 	) -> Tuple[int, int, int]:
 		SAMPLE_SIZE = 10
 		VALIDATE_SAMPLE_NUM = 3
+		[avatar_height, avatar_width] = avatar_size
+		[item_height, item_width] = item_size
 
-		all_item_pixel_xy_list = self._get_pixel_list(item_pixel_data, item_height, item_width)
+		all_item_pixel_xy_list = self._get_pixel_list(item_pixel_list, item_height, item_width)
 
 		if len(all_item_pixel_xy_list) == 0:
 			return (0, 0, 0)
@@ -160,7 +132,7 @@ class ImageProcessor:
 				ratio = self._get_ratio(
 					pivot_row=pivot_row,
 					pivot_col=pivot_col,
-					avatar_pixel_data=avatar_pixel_data,
+					avatar_pixel_data=avatar_pixel_list,
 					avatar_height=avatar_height,
 					avatar_width=avatar_width,
 					xy_list=sample_item_pixel_xy_list,
@@ -174,7 +146,7 @@ class ImageProcessor:
 			correct_ratio = self._get_ratio(
 				pivot_row=pivot_row,
 				pivot_col=pivot_col,
-				avatar_pixel_data=avatar_pixel_data,
+				avatar_pixel_data=avatar_pixel_list,
 				avatar_height=avatar_height,
 				avatar_width=avatar_width,
 				xy_list=all_item_pixel_xy_list,
@@ -192,23 +164,17 @@ class ImageProcessor:
 		image_avatar:
 		image_item:
 		"""
-		[item_height, item_width] = item_image.size
-		[avatar_height, avatar_width] = avatar_image.size
-
-		avatar_pixel_data = list(avatar_image.getdata())
-		item_pixel_data = list(item_image.getdata())
+		avatar_pixel_list = list(avatar_image.getdata())
+		item_pixel_list = list(item_image.getdata())
 
 		return self.is_contain(
-			avatar_pixel_data,
-			avatar_height,
-			avatar_width,
-			item_pixel_data,
-			item_height,
-			item_width,
+			avatar_pixel_list=avatar_pixel_list,
+			avatar_size=avatar_image.size,
+			item_pixel_list=item_pixel_list,
+			item_size=item_image.size,
 		)
 
 	async def infer_sub(self, image: Image.Image, avatar: Avatar, code: str) -> Tuple[Tuple[int, int, int], int]:
-
 		wcr_response = await self.caller.get_image(avatar=avatar)
 		if wcr_response is None:
 			return ((0, 0, 0), 0)
