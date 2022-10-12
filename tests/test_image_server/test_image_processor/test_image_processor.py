@@ -5,13 +5,12 @@ import numpy as np
 from PIL import Image
 
 from src.ImageServer.Avatar.avatar import Avatar
-from src.ImageServer.ImageProcessor.image_processor import ImageProcessor, is_pixel_eq
+from src.ImageServer.ImageProcessor.image_processor import ImageProcessor
 from pathlib import Path
 
 
 @pytest.mark.asyncio
 async def test_visualize(test_image_processor: ImageProcessor):
-
     base_uri = os.path.dirname(__file__)
 
     base_image_path = os.path.join(base_uri, "test_data", "avatar", "data1.png")
@@ -46,12 +45,10 @@ async def test_is_contain(test_image_processor: ImageProcessor):
     item_path = [os.path.join(base_uri, "test_data", "item", f"item{idx + 1}.png") for idx in range(NUM_ITEM)]
     user_path = [os.path.join(base_uri, "test_data", "avatar", f"data{idx + 1}.png") for idx in range(NUM_USER)]
     skin_path = [os.path.join(base_uri, "test_data", "skin", f"피부{idx + 1}.png") for idx in range(NUM_SKIN)]
-    test_path = os.path.join(base_uri, "test_data", "test.png")
 
     item_list = [Image.open(path) for path in item_path]
     skin_list = [Image.open(path) for path in skin_path]
     avatar_list = [Image.open(path) for path in user_path]
-    test_image = Image.open(test_path)
     item_name = [
         "모자",
         "무기",
@@ -68,7 +65,7 @@ async def test_is_contain(test_image_processor: ImageProcessor):
         img = np.array(avatar)
         idx = np.where(img[:, :, 3] > 0)
         x0, y0, x1, y1 = idx[1].min(), idx[0].min(), idx[1].max(), idx[0].max()
-        avatar = Image.fromarray(img[y0:y1+1, x0:x1+1, :])
+        avatar = Image.fromarray(img[y0:y1 + 1, x0:x1 + 1, :])
 
     avatar_pixel_list = [(list(avatar.getdata()), avatar.size[0], avatar.size[1]) for avatar in avatar_list]
     skin_pixel_list = [(list(skin.getdata()), skin.size[0], skin.size[1]) for skin in skin_list]
@@ -77,7 +74,12 @@ async def test_is_contain(test_image_processor: ImageProcessor):
 
     for idx, (avatar, avatar_height, avatar_width) in enumerate(avatar_pixel_list):
         for skin_idx, (skin, skin_height, skin_width) in enumerate(skin_pixel_list):
-            skin_accuracy, _, _ = test_image_processor.is_contain(avatar, avatar_height, avatar_width, skin, skin_height, skin_width)
+            skin_accuracy, _, _ = test_image_processor.is_contain_by_list(
+                avatar_pixel_list=avatar,
+                avatar_size=(avatar_height, avatar_width),
+                item_pixel_list=skin,
+                item_size=(skin_height, skin_width)
+            )
         #     print(f"idx: {idx + 1}, item: {skin_idx + 1} acc: {skin_accuracy: .3f}")
         # print("-" * 30)
     # assert test_image_processor.is_contain(avatar_list[0], avatar_list[0]) == 1
