@@ -108,7 +108,7 @@ class ImageProcessor:
         ratio = correct_count / len(xy_list)
         return ratio
 
-    def is_contain(
+    def is_contain_by_list(
         self,
         avatar_pixel_list: List[PIXEL],
         avatar_size: Tuple[int, int],
@@ -156,7 +156,7 @@ class ImageProcessor:
             result = max(result, (correct_ratio, pivot_row, pivot_col))
         return result
 
-    def is_contain_by_list(
+    def is_contain(
         self,
         avatar_image: Image.Image,
         item_image: Image.Image,
