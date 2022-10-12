@@ -4,8 +4,9 @@ import time
 import numpy as np
 from PIL import Image
 
+
 from src.ImageServer.Avatar.avatar import Avatar
-from src.ImageServer.ImageProcessor.image_processor import ImageProcessor
+from src.ImageServer.ImageProcessor.image_processor import ImageProcessor, is_contain, is_contain_by_list
 from pathlib import Path
 
 
@@ -26,11 +27,11 @@ async def test_visualize(test_image_processor: ImageProcessor):
 
     test1_acc = test_image_processor._correct_visualize(base_image, visual_test1_image)
     visualize_image = Image.open(visualize_parent)
-    correct_visual1_acc = test_image_processor.is_contain(visualize_image, visual_test1_image)
+    correct_visual1_acc = is_contain(visualize_image, visual_test1_image)
 
     test2_acc = test_image_processor._correct_visualize(base_image, visual_test2_image)
     visualize_image = Image.open(visualize_parent)
-    correct_visual2_acc = test_image_processor.is_contain(visualize_image, visual_test2_image)
+    correct_visual2_acc = is_contain(visualize_image, visual_test2_image)
 
     assert (test1_acc == correct_visual1_acc[0]) and (test2_acc == correct_visual2_acc[0])
 
@@ -74,7 +75,7 @@ async def test_is_contain(test_image_processor: ImageProcessor):
 
     for idx, (avatar, avatar_height, avatar_width) in enumerate(avatar_pixel_list):
         for skin_idx, (skin, skin_height, skin_width) in enumerate(skin_pixel_list):
-            skin_accuracy, _, _ = test_image_processor.is_contain_by_list(
+            skin_accuracy, _, _ = is_contain_by_list(
                 avatar_pixel_list=avatar,
                 avatar_size=(avatar_height, avatar_width),
                 item_pixel_list=skin,
@@ -114,3 +115,5 @@ async def test_infer(test_image_processor: ImageProcessor):
 
     result = test_image_processor.infer(avatar_image, item_list)
     assert await result == Avatar(f"{NUM_FACE}", f"{NUM_CAP}", f"{NUM_LONGCOAT}", f"{NUM_WEAPON}")
+
+    result = await test_image_processor.infer(avatar_image)

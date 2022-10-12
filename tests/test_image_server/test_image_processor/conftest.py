@@ -1,6 +1,8 @@
+import json
 import logging
 
 import pytest
+from src.ImageServer.util.item_manager import ItemManager
 from src.ImageServer.Avatar.avatar import Avatar
 from src.ImageServer.ImageProcessor.WCR_caller import WCRCaller
 import aiohttp
@@ -63,9 +65,22 @@ def test_image_processor(config_for_test: Config, caller_for_test: CallerForTest
     # mocking된 Caller를 인자로 갖는 ImageProcessor을 반환
     # caller_for_test=caller_for_test()
     logger = logging.getLogger(__name__)
+    base_uri = os.path.dirname(__file__)
+    json_path = os.path.join(base_uri, "base_wz_code.json")
+
+    item_manager = ItemManager()
+
+    with open(json_path, "r", encoding="UTF-8") as file:
+        data = json.load(file)
+        item_manager.read(data)
+
+    
+    
+
     res = ImageProcessor(
         logger=logger,
         config=config_for_test,
+        item_manager=item_manager,
     )
     res.caller = caller_for_test
     return res

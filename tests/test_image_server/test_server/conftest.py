@@ -1,6 +1,7 @@
 import logging
 
 import pytest
+from src.ImageServer.util.item_manager import ItemManager
 
 from src.ImageServer.server.config import Config
 from src.ImageServer.server.http_handler import HTTPHandler
@@ -42,6 +43,7 @@ def test_http_handler(config_for_test: Config, image_processor_for_test):
     res = HTTPHandler(
         logger=logger,
         config=config_for_test,
+        item_manager=ItemManager(),
     )
     res.processor = image_processor_for_test(
         logger=logger,
@@ -53,8 +55,8 @@ def test_http_handler(config_for_test: Config, image_processor_for_test):
 @pytest.fixture
 def http_handler(config_for_test: Config):
     logger = logging.getLogger(__name__)
-
     return HTTPHandler(
         logger=logger,
         config=config_for_test,
+        item_manager=ItemManager(),
     )

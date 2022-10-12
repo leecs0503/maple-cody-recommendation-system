@@ -29,11 +29,12 @@ class AppRunner:
             wcr_caller_timeout=wcr_caller_timeout,
             wcr_caller_backoff=wcr_caller_backoff,
         )
+        self.item_manager = ItemManager()
         self.HTTPServer = HTTPServer(
             logger=self.logger,
             config=self.config,
+            item_manager=self.item_manager,
         )
-        self.itemManager = ItemManager()
 
     @cached_property
     def logger(self):
@@ -56,7 +57,7 @@ class AppRunner:
 
         self.logger.info("start loading base_wz")
         self._load_base_wz()
-        self.itemManager.read(self.base_wz)
+        self.item_manager.read(self.base_wz)
         # TODO : HTTPServer에 itemManager 넘겨주기
         self.logger.info("complete loading base_wz")
 

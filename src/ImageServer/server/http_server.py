@@ -11,6 +11,7 @@ class HTTPServer:
         self,
         logger: logging.Logger,
         config: Config,
+        item_manager,
     ) -> None:
         self.logger = logger
         self.app = web.Application()
@@ -18,6 +19,7 @@ class HTTPServer:
         self.HTTPHandler = HTTPHandler(
             logger=self.logger,
             config=config,
+            item_manager=item_manager,
         )
         self.routes = self.HTTPHandler.get_routes()
         self.app.add_routes(self.routes)

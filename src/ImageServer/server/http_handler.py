@@ -15,11 +15,13 @@ class HTTPHandler:
         self,
         logger: logging.Logger,
         config: Config,
+        item_manager,
     ):
         self.logger = logger
         self.processor = ImageProcessor(
             logger=self.logger,
             config=config,
+            item_manager=item_manager,
         )
 
     def get_routes(self):
