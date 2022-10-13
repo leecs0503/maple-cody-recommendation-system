@@ -147,7 +147,7 @@ class ImageProcessor:
         self,
         logger: logging.Logger,
         config: Config,
-        item_manager,
+        item_manager: ItemManager,
     ):
         self.logger = logger
         self.caller = WCRCaller(
@@ -161,6 +161,7 @@ class ImageProcessor:
         )
         self.item_code_list = []
         self.item_manager=item_manager
+        self.item_manager.caller = self.caller
         self.pool = multiprocessing.Pool(10)
 
     def _correct_visualize(self, base_image: Image.Image, test_image: Image.Image):

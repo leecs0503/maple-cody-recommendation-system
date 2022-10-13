@@ -2,6 +2,8 @@ import logging
 
 from aiohttp import web
 
+from ..util.item_manager import ItemManager
+
 from .config import Config
 from .http_handler import HTTPHandler
 
@@ -11,7 +13,7 @@ class HTTPServer:
         self,
         logger: logging.Logger,
         config: Config,
-        item_manager,
+        item_manager: ItemManager,
     ) -> None:
         self.logger = logger
         self.app = web.Application()

@@ -16,6 +16,7 @@ class Avatar:
     shoes: str = "0"
     faceAccessory: str = "0"
     eyeAccessory: str = "0"
+    earrings: str = "0"
     skin: str = "0"
 
     def add_parts(self, idx, code):
@@ -46,6 +47,8 @@ class Avatar:
         elif idx == 12:
             self.eyeAccessory = code
         elif idx == 13:
+            self.earrings = code
+        elif idx == 14:
             self.skin = code
         else:
             assert 0
@@ -64,6 +67,7 @@ class Avatar:
         self.shoes = "0"
         self.faceAccessory = "0"
         self.eyeAccessory = "0"
+        self.earrings = "0"
         self.skin = "0"
 
     def to_array(self):
@@ -81,6 +85,7 @@ class Avatar:
             self.shoes,
             self.faceAccessory,
             self.eyeAccessory,
+            self.earrings,
             self.skin
         ]
 
@@ -99,6 +104,7 @@ class Avatar:
             ("shoes", self.shoes),
             ("faceAccessory", self.faceAccessory),
             ("eyeAccessory", self.eyeAccessory),
+            ("earrings", self.earrings),
             ("head", self.skin)
         ]
 

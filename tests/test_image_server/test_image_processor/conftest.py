@@ -1,5 +1,6 @@
 import json
 import logging
+from typing import Optional
 
 import pytest
 from src.ImageServer.util.item_manager import ItemManager
@@ -42,9 +43,12 @@ class CallerForTest:
         item1_path = os.path.join(base_uri, "test_data", "item", "item1.png")
         self.image_1 = Image.open(item1_path)
 
-    async def get_image(self, avatar: Avatar):
+    async def get_image(self, avatar: Avatar, ActionQuery: Optional[str] = None):
         URL = "https://localhost:7209/{item}/?code={code}&bs=True"
         params = avatar.to_param()
+        if ActionQuery is not None:
+            URL += "&actionName="
+            URL += ActionQuery
         for idx in range(len(params)):
             if int(params[idx][1]) > 0:
                 code_params = params[idx]
@@ -66,23 +70,29 @@ def test_image_processor(config_for_test: Config, caller_for_test: CallerForTest
     # caller_for_test=caller_for_test()
     logger = logging.getLogger(__name__)
     base_uri = os.path.dirname(__file__)
-    json_path = os.path.join(base_uri, "base_wz_code.json")
+    raw_json_path = os.path.join(base_uri, "base_wz_code.json")
+    data_json_path = os.path.join(base_uri, "valid_wz_code.json")
 
     item_manager = ItemManager()
-
-    with open(json_path, "r", encoding="UTF-8") as file:
-        data = json.load(file)
-        item_manager.read(data)
-
-    
-    
 
     res = ImageProcessor(
         logger=logger,
         config=config_for_test,
         item_manager=item_manager,
     )
+
     res.caller = caller_for_test
+    res.item_manager.caller = caller_for_test
+
+    if os.path.isfile(data_json_path):
+        with open(data_json_path, "r", encoding="UTF-8") as file:
+            data = json.load(file)
+            item_manager.read(data)
+    elif os.path.isfile(raw_json_path):
+        with open(raw_json_path, "r", encoding="UTF-8") as file:
+            data = json.load(file)
+            item_manager.read_raw(data)
+
     return res
 
 

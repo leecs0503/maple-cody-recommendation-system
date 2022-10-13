@@ -14,6 +14,8 @@ from pathlib import Path
 async def test_visualize(test_image_processor: ImageProcessor):
     base_uri = os.path.dirname(__file__)
 
+    await test_image_processor.item_manager.validate()
+
     base_image_path = os.path.join(base_uri, "test_data", "avatar", "data1.png")
     base_image = Image.open(base_image_path)
     visual_test1_path = os.path.join(base_uri, "test_data", "visual_test1.png")
@@ -73,6 +75,8 @@ async def test_is_contain(test_image_processor: ImageProcessor):
 
     ct = time.time()
 
+    await test_image_processor.item_manager.validate()
+
     for idx, (avatar, avatar_height, avatar_width) in enumerate(avatar_pixel_list):
         for skin_idx, (skin, skin_height, skin_width) in enumerate(skin_pixel_list):
             skin_accuracy, _, _ = is_contain_by_list(
@@ -113,8 +117,10 @@ async def test_infer(test_image_processor: ImageProcessor):
         for code_idx in range(num_item - NUM_COMPARE, num_item + NUM_COMPARE):
             item_list.append((idx, f"{code_idx}"))
 
+    await test_image_processor.item_manager.validate()
+
+    
     result = test_image_processor.infer(avatar_image, item_list)
     assert await result == Avatar(f"{NUM_FACE}", f"{NUM_CAP}", f"{NUM_LONGCOAT}", f"{NUM_WEAPON}")
 
-    await test_image_processor.item_manager.validate(test_image_processor.caller)
     result = await test_image_processor.infer(avatar_image)
