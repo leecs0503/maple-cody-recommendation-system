@@ -156,21 +156,10 @@ avatar_raw와 동일한 작업을 하는 route.
 |actionName|캐릭터의 모션을 지정. stand1(한손무기 모션) 또는 stand2(두손무기 모션)만을 받음. default로는 stand1.|
 |bs|이미지를 base64 encoding한 문자열로 리턴할지 결정하는 boolean variable. default로는 false|
 
-## /lglove/
-왼손 장갑에 대한 개별 이미지를 리턴하는 route.
+## /glove/
+장갑에 대한 개별 이미지를 리턴하는 route.
 
- - 예시 : /lglove/?code=1082002&actionName=stand1
-
-|query parameter|description|
-|:---:|---|
-|code|장갑의 아이템 코드.|
-|actionName|캐릭터의 모션을 지정. stand1(한손무기 모션) 또는 stand2(두손무기 모션)만을 받음. default로는 stand1.|
-|bs|이미지를 base64 encoding한 문자열로 리턴할지 결정하는 boolean variable. default로는 false|
-
-## /rglove/
-오른손 장갑에 대한 개별 이미지를 리턴하는 route.
-
- - 예시 : /rglove/?code=1082002&actionName=stand1
+ - 예시 : /glove/?code=1082002&actionName=stand1
 
 |query parameter|description|
 |:---:|---|

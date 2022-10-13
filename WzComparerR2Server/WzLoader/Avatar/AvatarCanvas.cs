@@ -855,7 +855,7 @@ namespace WzComparerR2.Avatar
             }
         }
 
-        private Bone AppendBone(Bone root, Bone parentBone, Skin skin, string mapName, Point mapOrigin)
+        public Bone AppendBone(Bone root, Bone parentBone, Skin skin, string mapName, Point mapOrigin)
         {
             Bone bone = root.FindChild(mapName);
             bool exists;

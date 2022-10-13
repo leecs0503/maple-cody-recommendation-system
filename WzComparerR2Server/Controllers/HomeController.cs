@@ -741,7 +741,34 @@ public class HomeController : Controller
 					skin.Z = zNode.GetValue<string>();
 				}
 			}
-			bodyRoot.Skins.Add(skin);
+			Wz_Node mapNode = linkNode.FindNodeByPath("map");
+			if (mapNode != null)
+			{
+				Bone parentBone = null;
+				foreach (var map in mapNode.Nodes)
+				{
+					string mapName = map.Text;
+					Point mapOrigin = map.GetValue<Wz_Vector>();
+
+					if (mapName == "muzzle") //特殊处理 忽略
+					{
+						continue;
+					}
+
+					if (parentBone == null) //主骨骼
+					{
+						parentBone = avatar.AppendBone(bodyRoot, null, skin, mapName, mapOrigin);
+					}
+					else //级联骨骼
+					{
+						avatar.AppendBone(bodyRoot, parentBone, skin, mapName, mapOrigin);
+					}
+				}
+			}
+			else
+			{
+				bodyRoot.Skins.Add(skin);
+			}
 		}
 		var layers = avatar.CreateFrameLayers(bodyRoot);
 		Rectangle rect = Rectangle.Empty;
