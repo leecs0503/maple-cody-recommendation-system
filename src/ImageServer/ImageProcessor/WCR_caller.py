@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from typing import Optional
 
 import aiohttp
 
@@ -30,9 +31,11 @@ class WCRCaller:
         delay = self.backoff * (2**step)
         await asyncio.sleep(delay)
 
-    async def get_image(self, avatar: Avatar):
+    async def get_image(self, avatar: Avatar, ActionQuery: Optional[str] = None):
         retry_num = self.retry_num if self.retry_num >= 0 else 1e9
         params = avatar.to_param()
+        if ActionQuery is not None:
+            params.append(("actionName", ActionQuery))
         for step in range(retry_num):
             url = f"{self.wcr_server_protocol}://{self.wcr_server_host}:{self.wcr_server_port}/image"
             async with aiohttp.ClientSession() as session:

@@ -99,7 +99,7 @@ class Avatar:
             ("shoes", self.shoes),
             ("faceAccessory", self.faceAccessory),
             ("eyeAccessory", self.eyeAccessory),
-            ("skin", self.skin)
+            ("head", self.skin)
         ]
 
 
