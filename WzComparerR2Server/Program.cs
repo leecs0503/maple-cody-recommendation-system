@@ -83,6 +83,10 @@ public class Program
 		app.MapControllerRoute(
 			name: "head",
 			pattern: "{controller=Home}/{action=Head}");
+		
+		app.MapControllerRoute(
+			name: "body",
+			pattern: "{controller=Home}/{action=Body}");
 
 		app.MapControllerRoute(
 			name: "face",

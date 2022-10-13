@@ -143,24 +143,24 @@ public class HomeController : Controller
 
 	[Route("avatar")]
 	public ActionResult Avatar(
-		string? head,
-		string? face,
-		string? hair,
-		string? cap,
-		string? coat,
-		string? longcoat,
-		string? pants,
-		string? shoes,
-		string? glove,
-		string? shield,
-		string? cape,
-		string? weapon,
-		string? earrings,
-		string? faceAccessory,
-		string? eyeAccessory,
-		string? actionName,
-		bool? bs,
-		string earType
+		string? head = null,
+		string? face = null,
+		string? hair = null,
+		string? cap = null,
+		string? coat = null,
+		string? longcoat = null,
+		string? pants = null,
+		string? shoes = null,
+		string? glove = null,
+		string? shield = null,
+		string? cape = null,
+		string? weapon = null,
+		string? earrings = null,
+		string? faceAccessory = null,
+		string? eyeAccessory = null,
+		string? actionName = null,
+		bool? bs = null,
+		string ?earType = null
 	)
 	{
 		string code="2000";
@@ -349,6 +349,12 @@ public class HomeController : Controller
 			avatar.EarType = 0;
 		}
 		return ItemWithAction(code, actionName, GearType.head, bs, avatar.EarType);
+	}
+
+	[Route("body")]
+	public ActionResult Body(string code, string actionName, bool? bs, string earType)
+	{
+		return Avatar(code, null, null, null, null, null, null, null, null, null, null, null, null, null, null, actionName, bs, earType);
 	}
 
 	[Route("face")]
