@@ -113,12 +113,8 @@ public class Program
 			pattern: "{controller=Home}/{action=Shoes}");
 
 		app.MapControllerRoute(
-			name: "lglove",
-			pattern: "{controller=Home}/{action=lGlove}");
-
-		app.MapControllerRoute(
-			name: "rglove",
-			pattern: "{controller=Home}/{action=rGlove}");
+			name: "glove",
+			pattern: "{controller=Home}/{action=Glove}");
 
 		app.MapControllerRoute(
 			name: "shield",

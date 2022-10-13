@@ -348,7 +348,7 @@ public class HomeController : Controller
 		{
 			avatar.EarType = 0;
 		}
-		return ItemWithAction(code, actionName, GearType.head, "head", bs, avatar.EarType);
+		return ItemWithAction(code, actionName, GearType.head, bs, avatar.EarType);
 	}
 
 	[Route("face")]
@@ -368,7 +368,7 @@ public class HomeController : Controller
 		}
 		AvatarPart part = new AvatarPart(imgNode);
 		var gearType = Gear.GetGearType(part.ID.Value);
-		if(gearType != GearType.face)
+		if(!Gear.IsFace((GearType)gearType))
 		{
 			Console.WriteLine("Type mismatch : " + gearType.ToString());
 			return BadRequest("item type mismatch");
@@ -535,77 +535,70 @@ public class HomeController : Controller
 	public ActionResult Cap(string code, string actionName, bool? bs)
 	{
 		Add_X_request_ID();
-		return ItemWithAction(code, actionName, GearType.cap, "default", bs);
+		return ItemWithAction(code, actionName, GearType.cap, bs);
 	}
 
 	[Route("coat")]
 	public ActionResult Coat(string code, string actionName, bool? bs)
 	{
 		Add_X_request_ID();
-		return ItemWithAction(code, actionName, GearType.coat, "mail", bs);
+		return ItemWithAction(code, actionName, GearType.coat, bs);
 	}
 
 	[Route("longcoat")]
 	public ActionResult Longcoat(string code, string actionName, bool? bs)
 	{
 		Add_X_request_ID();
-		return ItemWithAction(code, actionName, GearType.longcoat, "mail", bs);
+		return ItemWithAction(code, actionName, GearType.longcoat, bs);
 	}
 
 	[Route("pants")]
 	public ActionResult Pants(string code, string actionName, bool? bs)
 	{
 		Add_X_request_ID();
-		return ItemWithAction(code, actionName, GearType.pants, "pants", bs);
+		return ItemWithAction(code, actionName, GearType.pants, bs);
 	}
 
 	[Route("shoes")]
 	public ActionResult Shoes(string code, string actionName, bool? bs)
 	{
 		Add_X_request_ID();
-		return ItemWithAction(code, actionName, GearType.shoes, "shoes", bs);
+		return ItemWithAction(code, actionName, GearType.shoes, bs);
 	}
 
-	[Route("lglove")]
+	[Route("glove")]
 	public ActionResult lGlove(string code, string actionName, bool? bs)
 	{
 		Add_X_request_ID();
-		return ItemWithAction(code, actionName, GearType.glove, "lGlove", bs);
-	}
-
-	[Route("rglove")]
-	public ActionResult rGlove(string code, string actionName, bool? bs)
-	{
-		Add_X_request_ID();
-		return ItemWithAction(code, actionName, GearType.glove, "rGlove", bs);
+		return ItemWithAction(code, actionName, GearType.glove, bs);
 	}
 
 	[Route("shield")]
 	public ActionResult Shield(string code, string actionName, bool? bs)
 	{
 		Add_X_request_ID();
-		return ItemWithAction(code, actionName, GearType.shield, "shield", bs);
+		return ItemWithAction(code, actionName, GearType.shield, bs);
 	}
 
 	[Route("cape")]
 	public ActionResult Cape(string code, string actionName, bool? bs)
 	{
 		Add_X_request_ID();
-		return ItemWithAction(code, actionName, GearType.cape, "default", bs);
+		return ItemWithAction(code, actionName, GearType.cape, bs);
 	}
 
 	[Route("weapon")]
 	public ActionResult Weapon(string code, string actionName, bool? bs)
 	{
 		Add_X_request_ID();
-		return ItemWithAction(code, actionName, GearType.weapon, "weapon", bs);
+		return ItemWithAction(code, actionName, GearType.weapon, bs);
 	}
 
 	[Route("earrings")]
 	public ActionResult Earrings(string code, string actionName, bool? bs)
 	{
 		Add_X_request_ID();
-		return ItemWithAction(code, actionName, GearType.earrings, "default", bs);
+		return ItemWithAction(code, actionName, GearType.earrings, bs);
 	}
 
 	[Route("faceAccessory")]
@@ -651,7 +644,7 @@ public class HomeController : Controller
 		return Gear.GetGearType(part.ID.Value);
 	}
 
-	private ActionResult ItemWithAction(string code, string actionName, GearType type, string typename, bool? bs, int earType = 0)
+	private ActionResult ItemWithAction(string code, string actionName, GearType type, bool? bs, int earType = 0)
 	{
 		var m = GetFromCode(code);
 		if (m == null)
