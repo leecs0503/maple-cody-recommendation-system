@@ -120,7 +120,5 @@ async def test_infer(test_image_processor: ImageProcessor):
     await test_image_processor.item_manager.validate()
 
     # await test_image_processor.save_all_image()
-    result = await test_image_processor.infer(avatar_image, item_list)
-    assert await result == Avatar(f"{NUM_FACE}", f"{NUM_CAP}", f"{NUM_LONGCOAT}", f"{NUM_WEAPON}")
 
     result = await test_image_processor.infer(avatar_image)

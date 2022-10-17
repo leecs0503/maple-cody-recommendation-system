@@ -1,15 +1,18 @@
 import json
 from ..Avatar.avatar import Avatar
-
+from ..ImageProcessor.WCR_caller import WCRCaller
 
 NUM_ITEM = 15
 
 
 class ItemManager:
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        caller: WCRCaller,
+    ) -> None:
         self.raw = None
         self.data = None
-        self.caller = None
+        self.caller = caller
 
         self.item_codes = [[] for _ in range(NUM_ITEM)]
         self.item_name = dict()
@@ -61,8 +64,14 @@ class ItemManager:
                     self.item_name[item_code] = self.data[parts][item_code]["name"]
 
     async def validate(self):
-        if self.raw is None or self.data is not None or self.caller is not None:
+        # FIXME: print를 logger로 변경
+        if self.raw is None:
             return
+        if self.data is not None:
+            return
+        if self.caller is None:
+            return
+
         print("Start processing")
         valid_item_num = 0
         self.data = dict()

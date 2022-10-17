@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import random
+import json
 import os
 from heapq import heappush, heappop
 from ..util import item_manager
@@ -9,7 +10,7 @@ from ..server.config import Config
 from ..Avatar.avatar import Avatar
 from .WCR_caller import WCRCaller
 from PIL import Image
-from typing import List, Tuple, Optional
+from typing import List, Tuple
 import base64
 import io
 import multiprocessing
@@ -151,9 +152,9 @@ class ImageProcessor:
         self,
         logger: logging.Logger,
         config: Config,
-        item_manager: ItemManager,
     ):
         self.logger = logger
+        self.base_wz_code_path = config.base_wz_code_path
         self.caller = WCRCaller(
             logger=self.logger,
             wcr_server_host=config.wcr_server_host,
@@ -164,9 +165,35 @@ class ImageProcessor:
             backoff=config.wcr_caller_backoff,
         )
         self.item_code_list = []
-        self.item_manager = item_manager
-        self.item_manager.caller = self.caller
+        self.item_manager = ItemManager(
+            caller=self.caller
+        )
         self.pool = multiprocessing.Pool(10)
+        loop = asyncio.get_event_loop()
+        base_wz = loop.run_until_complete(
+            self._load_base_wz()
+        )
+        self.item_manager.read_raw(base_wz)
+        loop.run_until_complete(
+            self.item_manager.validate()
+        )
+        print(self.item_manager.data)
+
+    async def _load_base_wz(self) -> dict:
+        if self.base_wz_code_path:
+            if os.path.isfile(self.base_wz_code_path):
+                base_wz_code_path = self.base_wz_code_path
+                with open(base_wz_code_path) as f:
+                    base_wz = json.load(f)
+                    return base_wz
+
+        base_wz = await self.caller.get_base_wz()
+
+        if self.base_wz_code_path:
+            with open(self.base_wz_code_path, "w") as f:
+                json.dump(base_wz, f, ensure_ascii=False, indent="\t")
+        return base_wz
+
 
     def _correct_visualize(self, base_image: Image.Image, test_image: Image.Image):
         base_uri = os.path.dirname(__file__)
@@ -181,18 +208,11 @@ class ImageProcessor:
                 pa = base_image.getpixel((ax, ay))
                 ta = test_image.getpixel((x, y))
                 if not is_pixel_eq(pa, ta):
-                    # pixels[ax, ay] = (
-                    #     255 - pixels[ax, ay][0],
-                    #     255 - pixels[ax, ay][1],
-                    #     255 - pixels[ax, ay][2],
-                    #     pixels[ax, ay][3]
-                    # )
                     pixels[ax, ay] = (100, 100, 100, pixels[ax, ay][3])
 
         visualize_path = os.path.join(base_uri, "correct_visualize", "visualize.png")
 
         test_format.save(visualize_path)
-        print(f"original - made acc: {acc}")
         return acc
 
     async def image_of(self, avatar: Avatar):
@@ -212,7 +232,7 @@ class ImageProcessor:
         acc = is_contain(avatar_image=image, item_image=item_image), code
         return acc
 
-    async def max_acc_code(self, acc_list: List[Tuple[Tuple[int, int, int], str]]) -> Tuple[int, int]:
+    def max_acc_code(self, acc_list: List[Tuple[Tuple[int, int, int], str]]) -> Tuple[int, int]:
         max_acc = 0
         max_idx_acc = "0"
         for acc in acc_list:
@@ -238,50 +258,46 @@ class ImageProcessor:
                     if wcr_image:
                         wcr_image.save(os.path.join('.', '.data', f'parts{item_num}', f'item{idx+v}.png'))
 
-    async def infer(self, image: Image, item_list: Optional[List[Tuple[int, str]]] = None) -> Avatar:
-        # TODO: implement
+    def process_wcr_images(
+        self,
+        image: Image.Image,
+        wcr_images: List[Image.Image],
+        item_list: List[str],
+    ) -> Tuple[Tuple[int, int, int], str]:
+        query = [
+            (
+                image,
+                wcr_image,
+                item_code
+            )
+            for wcr_image, item_code in zip(wcr_images, item_list)
+        ]
+        result = self.pool.starmap(_is_contain, query)
+        return result
 
+    async def infer(self, image: Image.Image) -> Avatar:
+        # FIXME: 현재 autoscale metric에 부적합한 구조 수정 필요
         avatar = Avatar()
+        result_part = []
+        for item_num in range(item_manager.NUM_ITEM):
+            acc_list: Tuple[Tuple[int, int, int], str] = []
+            item_list = self.item_manager.get_item_list(idx=item_num)
+            BK_SIZE = 20
+            for idx in range(0, len(item_list), BK_SIZE):
+                coroutines = [
+                    self.image_of(Avatar.single_item_avatar_of(item_num, code))
+                    for code in item_list[idx:idx + BK_SIZE]
+                ]
+                wcr_images = await asyncio.gather(*coroutines)
 
-        if item_list is not None:
-            acc_lists = [[] for _ in range(item_manager.NUM_ITEM)]
-            for idx, code in item_list:
-                avatar.add_parts(idx, code)
-                acc = await self.infer_sub(image=image, avatar=avatar, code=code)
-                acc_lists[idx].append(acc)
-                avatar.reset()
-            for idx, acc_list in enumerate(acc_lists):
-                if len(acc_list) != 0:
-                    max_acc, max_acc_idx = await self.max_acc_code(acc_list)
-                    print(self.item_manager.parts_index_to_str(idx), max_acc_idx)
-                    avatar.add_parts(idx, max_acc_idx)
-        else:
-            result_part = []
-            for item_num in range(item_manager.NUM_ITEM):
-                acc_list = []
-                item_list = self.item_manager.get_item_list(idx=item_num)
-                print(self.item_manager.parts_index_to_str(item_num), len(item_list))
-                BK_SIZE = 20
-                for idx in range(0, len(item_list), BK_SIZE):
-                    coroutines = []
-                    for code in item_list[idx:idx + BK_SIZE]:
-                        avatar = Avatar()
-                        avatar.add_parts(item_num, code)
-                        coroutines.append(self.image_of(avatar))
-                    wcr_images = await asyncio.gather(*coroutines)
-                    query = [
-                        (
-                            image,
-                            wcr_image,
-                            item_code
-                        )
-                        for wcr_image, item_code in zip(wcr_images, item_list[idx:idx + BK_SIZE])
-                    ]
-                    result = self.pool.starmap(_is_contain, query)
-                    acc_list += result
-                max_acc, max_acc_idx = await self.max_acc_code(acc_list)
-                print(max_acc, ":", self.item_manager.get_item_name(max_acc_idx), "(", max_acc_idx, ")")
-                result_part.append(max_acc_idx)
-            for idx, max_acc_idx in enumerate(result_part):
-                avatar.add_parts(idx, max_acc_idx)
+                result = self.process_wcr_images(
+                    image=image,
+                    wcr_images=wcr_images,
+                    item_list=item_list[idx:idx + BK_SIZE]
+                )
+                acc_list += result
+            _, max_acc_idx = self.max_acc_code(acc_list)
+            result_part.append(max_acc_idx)
+        for idx, max_acc_idx in enumerate(result_part):
+            avatar.add_parts(idx, max_acc_idx)
         return avatar

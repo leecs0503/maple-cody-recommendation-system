@@ -108,37 +108,8 @@ class Avatar:
             ("head", self.skin)
         ]
 
-
-# TODO: 안정화 후 사용
-# @dataclass
-# class Avatar:
-#     Accessory: str
-#     Cap: str
-#     Cape: str
-#     Coat: str
-#     Face: str
-#     Glove: str
-#     Hair: str
-#     Longcoat: str
-#     Pants: str
-#     Ring: str
-#     Shield: str
-#     Shoes: str
-#     Weapon: str
-
-#     def to_arr(self):
-#         return [
-#             self.Accessory,
-#             self.Cap,
-#             self.Cape,
-#             self.Coat,
-#             self.Face,
-#             self.Glove,
-#             self.Hair,
-#             self.Longcoat,
-#             self.Pants,
-#             self.Ring,
-#             self.Shield,
-#             self.Shoes,
-#             self.Weapon,
-#         ]
+    @staticmethod
+    def single_item_avatar_of(item_num, code):
+        avatar = Avatar()
+        avatar.add_parts(item_num, code)
+        return avatar

@@ -1,4 +1,5 @@
 import asyncio
+import json
 import logging
 from typing import Optional
 
@@ -31,15 +32,36 @@ class WCRCaller:
         delay = self.backoff * (2**step)
         await asyncio.sleep(delay)
 
+    async def get_base_wz(self):
+        url = f"{self.wcr_server_protocol}://{self.wcr_server_host}:{self.wcr_server_port}/code"
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, ssl=False) as resp:
+                if resp.status == 200:
+                    return json.loads(await resp.text())
+        raise Exception("err: get_base_wz")
+
+
     async def get_image(self, avatar: Avatar, ActionQuery: Optional[str] = None):
+        """ caller의 get image """
+        URL = f"{self.wcr_server_protocol}://{self.wcr_server_host}:{self.wcr_server_port}" \
+              + "/{item}/?code={code}&bs=True"
         retry_num = self.retry_num if self.retry_num >= 0 else 1000000000
         params = avatar.to_param()
+
+        # FIXME: temp code
         if ActionQuery is not None:
-            params.append(("actionName", ActionQuery))
+            URL += "&actionName="
+            URL += ActionQuery
+
+        for idx in range(len(params)):
+            if int(params[idx][1]) > 0:
+                code_params = params[idx]
+
         for step in range(retry_num):
-            url = f"{self.wcr_server_protocol}://{self.wcr_server_host}:{self.wcr_server_port}/image"
+            url = URL.format(item=code_params[0], code=code_params[1])
             async with aiohttp.ClientSession() as session:
-                async with session.get(url, params=params, ssl=False) as resp:
+                # TODO: 무기 처리 코드 추가
+                async with session.get(url, ssl=False) as resp:
                     if resp.status == 200:
                         return await resp.text()
             await self.exponential_backoff(step)

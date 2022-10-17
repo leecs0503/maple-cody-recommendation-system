@@ -29,11 +29,9 @@ class AppRunner:
             wcr_caller_timeout=wcr_caller_timeout,
             wcr_caller_backoff=wcr_caller_backoff,
         )
-        self.item_manager = ItemManager()
         self.HTTPServer = HTTPServer(
             logger=self.logger,
             config=self.config,
-            item_manager=self.item_manager,
         )
 
     @cached_property
@@ -63,22 +61,3 @@ class AppRunner:
 
         self.logger.info("start HTTPServer")
         self.HTTPServer.run()
-
-    def _load_base_wz(self) -> None:
-        if self.config.base_wz_code_path:
-            if os.path.isfile(self.config.base_wz_code_path):
-                base_wz_code_path = self.config.base_wz_code_path
-                with open(base_wz_code_path) as f:
-                    self.base_wz = json.load(f)
-                    return
-        wcr_server_protocol = self.config.wcr_server_protocol
-        wcr_server_host = self.config.wcr_server_host
-        wcr_server_port = self.config.wcr_server_port
-
-        url = f"{wcr_server_protocol}://{wcr_server_host}:{wcr_server_port}/code"
-        response = requests.get(url, verify=False)
-        self.base_wz = json.loads(response.text)
-
-        if self.config.base_wz_code_path:
-            with open(self.config.base_wz_code_path, "w") as f:
-                json.dump(self.base_wz, f, ensure_ascii=False, indent="\t")
