@@ -44,6 +44,7 @@ def _get_pixel_list(
     assert num_item_pixel > 0
     return item_coord
 
+
 def _get_ratio(
     pivot_row: int,
     pivot_col: int,
@@ -64,6 +65,7 @@ def _get_ratio(
 
     ratio = correct_count / len(xy_list)
     return ratio
+
 
 def is_contain_by_list(
     avatar_pixel_list: List[PIXEL],
@@ -112,6 +114,7 @@ def is_contain_by_list(
         result = max(result, (correct_ratio, pivot_row, pivot_col))
     return result
 
+
 def is_contain(
     avatar_image: Image.Image,
     item_image: Image.Image,
@@ -133,6 +136,7 @@ def is_contain(
         item_pixel_list=item_pixel_list,
         item_size=item_image.size,
     )
+
 
 def _is_contain(
     avatar_image: Image.Image,
@@ -160,7 +164,7 @@ class ImageProcessor:
             backoff=config.wcr_caller_backoff,
         )
         self.item_code_list = []
-        self.item_manager=item_manager
+        self.item_manager = item_manager
         self.item_manager.caller = self.caller
         self.pool = multiprocessing.Pool(10)
 
@@ -191,9 +195,8 @@ class ImageProcessor:
         print(f"original - made acc: {acc}")
         return acc
 
-
-    
     async def image_of(self, avatar: Avatar):
+        # FIXME: naming: _of suffix는 side effect가 없어야 함
         wcr_response = await self.caller.get_image(avatar=avatar)
         if wcr_response is None:
             return None
@@ -217,6 +220,23 @@ class ImageProcessor:
                 max_acc = acc[0][0]
                 max_idx_acc = acc[1]
         return max_acc, max_idx_acc
+
+    async def save_all_image(self):
+        # FIXME: refactoring
+        BK_SIZE = 20
+        for item_num in range(item_manager.NUM_ITEM):
+            item_list = self.item_manager.get_item_list(idx=item_num)
+            for idx in range(0, len(item_list), BK_SIZE):
+                coroutines = []
+                for code in item_list[idx:idx + BK_SIZE]:
+                    avatar = Avatar()
+                    avatar.add_parts(item_num, code)
+                    coroutines.append(self.image_of(avatar))
+                wcr_images = await asyncio.gather(*coroutines)
+                for v, wcr_image in enumerate(wcr_images):
+                    os.makedirs(os.path.join('.', '.data', f'parts{item_num}'), exist_ok=True)
+                    if wcr_image:
+                        wcr_image.save(os.path.join('.', '.data', f'parts{item_num}', f'item{idx+v}.png'))
 
     async def infer(self, image: Image, item_list: Optional[List[Tuple[int, str]]] = None) -> Avatar:
         # TODO: implement
@@ -244,7 +264,7 @@ class ImageProcessor:
                 BK_SIZE = 20
                 for idx in range(0, len(item_list), BK_SIZE):
                     coroutines = []
-                    for code in item_list[idx:idx+BK_SIZE]:
+                    for code in item_list[idx:idx + BK_SIZE]:
                         avatar = Avatar()
                         avatar.add_parts(item_num, code)
                         coroutines.append(self.image_of(avatar))
@@ -255,12 +275,12 @@ class ImageProcessor:
                             wcr_image,
                             item_code
                         )
-                        for wcr_image, item_code in zip(wcr_images, item_list[idx:idx+BK_SIZE])
+                        for wcr_image, item_code in zip(wcr_images, item_list[idx:idx + BK_SIZE])
                     ]
                     result = self.pool.starmap(_is_contain, query)
                     acc_list += result
                 max_acc, max_acc_idx = await self.max_acc_code(acc_list)
-                print(max_acc,":", self.item_manager.get_item_name(max_acc_idx), "(", max_acc_idx, ")")
+                print(max_acc, ":", self.item_manager.get_item_name(max_acc_idx), "(", max_acc_idx, ")")
                 result_part.append(max_acc_idx)
             for idx, max_acc_idx in enumerate(result_part):
                 avatar.add_parts(idx, max_acc_idx)

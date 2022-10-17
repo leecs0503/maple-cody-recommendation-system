@@ -1,6 +1,5 @@
 import json
 from ..Avatar.avatar import Avatar
-from ..ImageProcessor.WCR_caller import WCRCaller
 
 
 NUM_ITEM = 15
@@ -11,45 +10,47 @@ class ItemManager:
         self.raw = None
         self.data = None
         self.caller = None
-        self.index_to_raw_parts = []
-        self.index_to_parts = []
+
         self.item_codes = [[] for _ in range(NUM_ITEM)]
         self.item_name = dict()
-        self.index_to_raw_parts.append("Face")
-        self.index_to_raw_parts.append("Cap")
-        self.index_to_raw_parts.append("Longcoat")
-        self.index_to_raw_parts.append("Weapon")
-        self.index_to_raw_parts.append("Cape")
-        self.index_to_raw_parts.append("Coat")
-        self.index_to_raw_parts.append("Glove")
-        self.index_to_raw_parts.append("Hair")
-        self.index_to_raw_parts.append("Pants")
-        self.index_to_raw_parts.append("Shield")
-        self.index_to_raw_parts.append("Shoes")
-        self.index_to_raw_parts.append("Accessory")
-        self.index_to_raw_parts.append("Accessory")
-        self.index_to_raw_parts.append("Accessory")
-        self.index_to_raw_parts.append("Skin")
-
-        self.index_to_parts.append("face")
-        self.index_to_parts.append("cap")
-        self.index_to_parts.append("longcoat")
-        self.index_to_parts.append("weapon")
-        self.index_to_parts.append("cape")
-        self.index_to_parts.append("coat")
-        self.index_to_parts.append("glove")
-        self.index_to_parts.append("hair")
-        self.index_to_parts.append("pants")
-        self.index_to_parts.append("shield")
-        self.index_to_parts.append("Shoes")
-        self.index_to_parts.append("faceAccessory")
-        self.index_to_parts.append("eyeAccessory")
-        self.index_to_parts.append("earrings")
-        self.index_to_parts.append("head")
+        self.index_to_raw_parts = [
+            "Face",
+            "Cap",
+            "Longcoat",
+            "Weapon",
+            "Cape",
+            "Coat",
+            "Glove",
+            "Hair",
+            "Pants",
+            "Shield",
+            "Shoes",
+            "Accessory",
+            "Accessory",
+            "Accessory",
+            "Skin",
+        ]
+        self.index_to_parts = [
+            "face",
+            "cap",
+            "longcoat",
+            "weapon",
+            "cape",
+            "coat",
+            "glove",
+            "hair",
+            "pants",
+            "shield",
+            "Shoes",
+            "faceAccessory",
+            "eyeAccessory",
+            "earrings",
+            "head",
+        ]
 
     def read_raw(self, raw_data: dict):
         self.raw = raw_data
-        
+
     def read(self, data: dict):
         self.data = data
         for idx, parts in enumerate(self.index_to_parts):

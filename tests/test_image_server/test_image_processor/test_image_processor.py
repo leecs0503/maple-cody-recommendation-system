@@ -4,7 +4,6 @@ import time
 import numpy as np
 from PIL import Image
 
-
 from src.ImageServer.Avatar.avatar import Avatar
 from src.ImageServer.ImageProcessor.image_processor import ImageProcessor, is_contain, is_contain_by_list
 from pathlib import Path
@@ -99,6 +98,7 @@ async def test_is_contain(test_image_processor: ImageProcessor):
 
 @pytest.mark.asyncio
 async def test_infer(test_image_processor: ImageProcessor):
+    # FIXME: 테스트시 WzServer 의존성 제거
     NUM_FACE = 20000
     NUM_CAP = 1004999
     NUM_LONGCOAT = 1052975
@@ -119,8 +119,8 @@ async def test_infer(test_image_processor: ImageProcessor):
 
     await test_image_processor.item_manager.validate()
 
-    
-    result = test_image_processor.infer(avatar_image, item_list)
+    # await test_image_processor.save_all_image()
+    result = await test_image_processor.infer(avatar_image, item_list)
     assert await result == Avatar(f"{NUM_FACE}", f"{NUM_CAP}", f"{NUM_LONGCOAT}", f"{NUM_WEAPON}")
 
     result = await test_image_processor.infer(avatar_image)
