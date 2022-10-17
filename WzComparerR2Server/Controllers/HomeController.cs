@@ -41,7 +41,6 @@ public class HomeController : Controller
 
 
 	private String dfs(Wz_Node current_node)
-<<<<<<< HEAD
 	{
 		String ret = "{";
 		String temp;
@@ -101,68 +100,6 @@ public class HomeController : Controller
 		}
 		return ret + "}";
 	}
-=======
-   {
-      String ret = "{";
-      String temp;
-      StringBuilder sb = new StringBuilder();
-      bool First = true;
-
-      if (current_node.Value is string)
-      {
-         temp = current_node.GetValue<string>();
-         foreach(var ch in temp) {
-            if(ch == '\r') {
-               sb.Append('\\');
-               sb.Append('r');
-            }
-            else if(ch == '\n') {
-               sb.Append('\\');
-               sb.Append('n');
-            }
-            else if(ch == '\"') {
-               sb.Append('\\');
-               sb.Append('\"');
-            }
-            else if(ch == '\\') {
-               sb.Append('\\');
-               sb.Append('\\');
-            }
-            else sb.Append(ch);
-         }
-         return "\"" + sb.ToString() + "\"";
-      }
-
-      foreach(Wz_Node child_node in current_node.Nodes)
-      {
-         if (First) First = false;
-         else ret += ", ";
-         sb.Clear();
-         foreach(var ch in child_node.Text) {
-            if(ch == '\r') {
-               sb.Append('\\');
-               sb.Append('r');
-            }
-            else if(ch == '\n') {
-               sb.Append('\\');
-               sb.Append('n');
-            }
-            else if(ch == '\"') {
-               sb.Append('\\');
-               sb.Append('\"');
-            }
-            else if(ch == '\\') {
-               sb.Append('\\');
-               sb.Append('\\');
-            }
-            else sb.Append(ch);
-         }
-         ret += "\"" + sb.ToString() + "\": " + dfs(child_node);
-      }
-      return ret + "}";
-   }
-
->>>>>>> test: image_processor 테스트 코드 수정 및 base_wz_code 관련 코드 추가
 
 	private string get_code(Wz_Node root)
 	{
