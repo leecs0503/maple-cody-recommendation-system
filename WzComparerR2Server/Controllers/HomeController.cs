@@ -42,18 +42,60 @@ public class HomeController : Controller
 	private String dfs(Wz_Node current_node)
 	{
 		String ret = "{";
+		String temp;
+		StringBuilder sb = new StringBuilder();
 		bool First = true;
 
 		if (current_node.Value is string)
 		{
-			return "\"" + current_node.GetValue<string>() + "\"";
+			temp = current_node.GetValue<string>();
+			foreach(var ch in temp) {
+				if(ch == '\r') {
+					sb.Append('\\');
+					sb.Append('r');
+				}
+				else if(ch == '\n') {
+					sb.Append('\\');
+					sb.Append('n');
+				}
+				else if(ch == '\"') {
+					sb.Append('\\');
+					sb.Append('\"');
+				}
+				else if(ch == '\\') {
+					sb.Append('\\');
+					sb.Append('\\');
+				}
+				else sb.Append(ch);
+			}
+			return "\"" + sb.ToString() + "\"";
 		}
 		
 		foreach(Wz_Node child_node in current_node.Nodes)
 		{
 			if (First) First = false;
 			else ret += ", ";
-			ret += "\"" + child_node.Text + "\": " + dfs(child_node);
+			sb.Clear();
+			foreach(var ch in child_node.Text) {
+				if(ch == '\r') {
+					sb.Append('\\');
+					sb.Append('r');
+				}
+				else if(ch == '\n') {
+					sb.Append('\\');
+					sb.Append('n');
+				}
+				else if(ch == '\"') {
+					sb.Append('\\');
+					sb.Append('\"');
+				}
+				else if(ch == '\\') {
+					sb.Append('\\');
+					sb.Append('\\');
+				}
+				else sb.Append(ch);
+			}
+			ret += "\"" + sb.ToString() + "\": " + dfs(child_node);
 		}
 		return ret + "}";
 	}
@@ -101,24 +143,24 @@ public class HomeController : Controller
 
 	[Route("avatar")]
 	public ActionResult Avatar(
-		string? head,
-		string? face,
-		string? hair,
-		string? cap,
-		string? coat,
-		string? longcoat,
-		string? pants,
-		string? shoes,
-		string? glove,
-		string? shield,
-		string? cape,
-		string? weapon,
-		string? earrings,
-		string? faceAccessory,
-		string? eyeAccessory,
-		string? actionName,
-		bool? bs,
-		string earType
+		string? head = null,
+		string? face = null,
+		string? hair = null,
+		string? cap = null,
+		string? coat = null,
+		string? longcoat = null,
+		string? pants = null,
+		string? shoes = null,
+		string? glove = null,
+		string? shield = null,
+		string? cape = null,
+		string? weapon = null,
+		string? earrings = null,
+		string? faceAccessory = null,
+		string? eyeAccessory = null,
+		string? actionName = null,
+		bool? bs = null,
+		string ?earType = null
 	)
 	{
 		string code="2000";
@@ -306,7 +348,13 @@ public class HomeController : Controller
 		{
 			avatar.EarType = 0;
 		}
-		return ItemWithAction(code, actionName, GearType.head, "head", bs, avatar.EarType);
+		return ItemWithAction(code, actionName, GearType.head, bs, avatar.EarType);
+	}
+
+	[Route("body")]
+	public ActionResult Body(string code, string actionName, bool? bs, string earType)
+	{
+		return Avatar(code, null, null, null, null, null, null, null, null, null, null, null, null, null, null, actionName, bs, earType);
 	}
 
 	[Route("face")]
@@ -326,7 +374,7 @@ public class HomeController : Controller
 		}
 		AvatarPart part = new AvatarPart(imgNode);
 		var gearType = Gear.GetGearType(part.ID.Value);
-		if(gearType != GearType.face)
+		if(!Gear.IsFace((GearType)gearType))
 		{
 			Console.WriteLine("Type mismatch : " + gearType.ToString());
 			return BadRequest("item type mismatch");
@@ -493,77 +541,70 @@ public class HomeController : Controller
 	public ActionResult Cap(string code, string actionName, bool? bs)
 	{
 		Add_X_request_ID();
-		return ItemWithAction(code, actionName, GearType.cap, "default", bs);
+		return ItemWithAction(code, actionName, GearType.cap, bs);
 	}
 
 	[Route("coat")]
 	public ActionResult Coat(string code, string actionName, bool? bs)
 	{
 		Add_X_request_ID();
-		return ItemWithAction(code, actionName, GearType.coat, "mail", bs);
+		return ItemWithAction(code, actionName, GearType.coat, bs);
 	}
 
 	[Route("longcoat")]
 	public ActionResult Longcoat(string code, string actionName, bool? bs)
 	{
 		Add_X_request_ID();
-		return ItemWithAction(code, actionName, GearType.longcoat, "mail", bs);
+		return ItemWithAction(code, actionName, GearType.longcoat, bs);
 	}
 
 	[Route("pants")]
 	public ActionResult Pants(string code, string actionName, bool? bs)
 	{
 		Add_X_request_ID();
-		return ItemWithAction(code, actionName, GearType.pants, "pants", bs);
+		return ItemWithAction(code, actionName, GearType.pants, bs);
 	}
 
 	[Route("shoes")]
 	public ActionResult Shoes(string code, string actionName, bool? bs)
 	{
 		Add_X_request_ID();
-		return ItemWithAction(code, actionName, GearType.shoes, "shoes", bs);
+		return ItemWithAction(code, actionName, GearType.shoes, bs);
 	}
 
-	[Route("lglove")]
+	[Route("glove")]
 	public ActionResult lGlove(string code, string actionName, bool? bs)
 	{
 		Add_X_request_ID();
-		return ItemWithAction(code, actionName, GearType.glove, "lGlove", bs);
-	}
-
-	[Route("rglove")]
-	public ActionResult rGlove(string code, string actionName, bool? bs)
-	{
-		Add_X_request_ID();
-		return ItemWithAction(code, actionName, GearType.glove, "rGlove", bs);
+		return ItemWithAction(code, actionName, GearType.glove, bs);
 	}
 
 	[Route("shield")]
 	public ActionResult Shield(string code, string actionName, bool? bs)
 	{
 		Add_X_request_ID();
-		return ItemWithAction(code, actionName, GearType.shield, "shield", bs);
+		return ItemWithAction(code, actionName, GearType.shield, bs);
 	}
 
 	[Route("cape")]
 	public ActionResult Cape(string code, string actionName, bool? bs)
 	{
 		Add_X_request_ID();
-		return ItemWithAction(code, actionName, GearType.cape, "default", bs);
+		return ItemWithAction(code, actionName, GearType.cape, bs);
 	}
 
 	[Route("weapon")]
 	public ActionResult Weapon(string code, string actionName, bool? bs)
 	{
 		Add_X_request_ID();
-		return ItemWithAction(code, actionName, GearType.weapon, "weapon", bs);
+		return ItemWithAction(code, actionName, GearType.weapon, bs);
 	}
 
 	[Route("earrings")]
 	public ActionResult Earrings(string code, string actionName, bool? bs)
 	{
 		Add_X_request_ID();
-		return ItemWithAction(code, actionName, GearType.earrings, "default", bs);
+		return ItemWithAction(code, actionName, GearType.earrings, bs);
 	}
 
 	[Route("faceAccessory")]
@@ -609,7 +650,7 @@ public class HomeController : Controller
 		return Gear.GetGearType(part.ID.Value);
 	}
 
-	private ActionResult ItemWithAction(string code, string actionName, GearType type, string typename, bool? bs, int earType = 0)
+	private ActionResult ItemWithAction(string code, string actionName, GearType type, bool? bs, int earType = 0)
 	{
 		var m = GetFromCode(code);
 		if (m == null)
@@ -706,7 +747,34 @@ public class HomeController : Controller
 					skin.Z = zNode.GetValue<string>();
 				}
 			}
-			bodyRoot.Skins.Add(skin);
+			Wz_Node mapNode = linkNode.FindNodeByPath("map");
+			if (mapNode != null)
+			{
+				Bone parentBone = null;
+				foreach (var map in mapNode.Nodes)
+				{
+					string mapName = map.Text;
+					Point mapOrigin = map.GetValue<Wz_Vector>();
+
+					if (mapName == "muzzle") //特殊处理 忽略
+					{
+						continue;
+					}
+
+					if (parentBone == null) //主骨骼
+					{
+						parentBone = avatar.AppendBone(bodyRoot, null, skin, mapName, mapOrigin);
+					}
+					else //级联骨骼
+					{
+						avatar.AppendBone(bodyRoot, parentBone, skin, mapName, mapOrigin);
+					}
+				}
+			}
+			else
+			{
+				bodyRoot.Skins.Add(skin);
+			}
 		}
 		var layers = avatar.CreateFrameLayers(bodyRoot);
 		Rectangle rect = Rectangle.Empty;
