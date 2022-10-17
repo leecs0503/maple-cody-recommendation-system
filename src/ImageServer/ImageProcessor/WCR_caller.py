@@ -40,7 +40,6 @@ class WCRCaller:
                     return json.loads(await resp.text())
         raise Exception("err: get_base_wz")
 
-
     async def get_image(self, avatar: Avatar, ActionQuery: Optional[str] = None):
         """ caller의 get image """
         URL = f"{self.wcr_server_protocol}://{self.wcr_server_host}:{self.wcr_server_port}" \
@@ -65,3 +64,5 @@ class WCRCaller:
                     if resp.status == 200:
                         return await resp.text()
             await self.exponential_backoff(step)
+
+        raise Exception("err: get_image")

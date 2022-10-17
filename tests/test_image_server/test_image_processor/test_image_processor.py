@@ -4,13 +4,13 @@ import time
 import numpy as np
 from PIL import Image
 
-from src.ImageServer.Avatar.avatar import Avatar
 from src.ImageServer.ImageProcessor.image_processor import ImageProcessor, is_contain, is_contain_by_list
 from pathlib import Path
 
 
 @pytest.mark.asyncio
 async def test_visualize(test_image_processor: ImageProcessor):
+    # FIXME: 테스트 코드 수정
     base_uri = os.path.dirname(__file__)
 
     await test_image_processor.item_manager.validate()
@@ -26,11 +26,11 @@ async def test_visualize(test_image_processor: ImageProcessor):
     parent_uri = Path(base_uri).parent.parent.parent
     visualize_parent = parent_uri.joinpath("src", "ImageServer", "ImageProcessor", "correct_visualize", "visualize.png")
 
-    test1_acc = test_image_processor._correct_visualize(base_image, visual_test1_image)
+    test1_acc = test_image_processor._visualize_correct(base_image, visual_test1_image)
     visualize_image = Image.open(visualize_parent)
     correct_visual1_acc = is_contain(visualize_image, visual_test1_image)
 
-    test2_acc = test_image_processor._correct_visualize(base_image, visual_test2_image)
+    test2_acc = test_image_processor._visualize_correct(base_image, visual_test2_image)
     visualize_image = Image.open(visualize_parent)
     correct_visual2_acc = is_contain(visualize_image, visual_test2_image)
 
@@ -39,6 +39,7 @@ async def test_visualize(test_image_processor: ImageProcessor):
 
 @pytest.mark.asyncio
 async def test_is_contain(test_image_processor: ImageProcessor):
+    # FIXME: 테스트가 매우매우매우느림. WCR 수정 필요 그 후 논의
     NUM_USER = 10
     NUM_ITEM = 8
     NUM_SKIN = 20
@@ -73,8 +74,6 @@ async def test_is_contain(test_image_processor: ImageProcessor):
     skin_pixel_list = [(list(skin.getdata()), skin.size[0], skin.size[1]) for skin in skin_list]
 
     ct = time.time()
-
-    await test_image_processor.item_manager.validate()
 
     for idx, (avatar, avatar_height, avatar_width) in enumerate(avatar_pixel_list):
         for skin_idx, (skin, skin_height, skin_width) in enumerate(skin_pixel_list):
@@ -122,3 +121,4 @@ async def test_infer(test_image_processor: ImageProcessor):
     # await test_image_processor.save_all_image()
 
     result = await test_image_processor.infer(avatar_image)
+    # TODO: result assert logic 필요

@@ -2,11 +2,9 @@ import json
 import logging
 from functools import cached_property
 
-import requests
 import os
 from .config import Config
 from .http_server import HTTPServer
-from ..util.item_manager import ItemManager
 
 
 class AppRunner:

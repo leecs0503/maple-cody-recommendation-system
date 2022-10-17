@@ -2,8 +2,6 @@ import logging
 
 from aiohttp import web
 
-from ..util.item_manager import ItemManager
-
 from .config import Config
 from .http_handler import HTTPHandler
 

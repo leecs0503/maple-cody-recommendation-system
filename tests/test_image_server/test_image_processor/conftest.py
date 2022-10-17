@@ -1,19 +1,15 @@
-import json
 import logging
-from typing import Optional
 
 import pytest
-from src.ImageServer.util.item_manager import ItemManager
 from src.ImageServer.Avatar.avatar import Avatar
 from src.ImageServer.ImageProcessor.WCR_caller import WCRCaller
-import aiohttp
 from src.ImageServer.ImageProcessor.image_processor import ImageProcessor
 from src.ImageServer.server.config import Config
 from PIL import Image
-import os
 
 
 # class CallerForTest:
+#     FIXME: 이거 짜야함
 #     """
 #     이 Caller은 어떤 것을 해야하냐면
 #     get_image 함수를 모킹
@@ -68,13 +64,13 @@ import os
 
 
 @pytest.fixture
-def test_image_processor(config_for_test: Config): #, caller_for_test: CallerForTest):
+def test_image_processor(config_for_test: Config):  # , caller_for_test: CallerForTest):
     # mocking된 Caller를 인자로 갖는 ImageProcessor을 반환
     # caller_for_test=caller_for_test()
     logger = logging.getLogger(__name__)
-    base_uri = os.path.dirname(__file__)
-    raw_json_path = os.path.join(base_uri, "base_wz_code.json")
-    data_json_path = os.path.join(base_uri, "valid_wz_code.json")
+    # base_uri = os.path.dirname(__file__)
+    # raw_json_path = os.path.join(base_uri, "base_wz_code.json")
+    # data_json_path = os.path.join(base_uri, "valid_wz_code.json")
 
     # item_manager = ItemManager()
 

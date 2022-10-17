@@ -1,7 +1,6 @@
 import logging
 
 import pytest
-from src.ImageServer.util.item_manager import ItemManager
 
 from src.ImageServer.server.config import Config
 from src.ImageServer.server.http_handler import HTTPHandler

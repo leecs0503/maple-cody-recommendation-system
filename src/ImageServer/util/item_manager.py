@@ -10,6 +10,7 @@ class ItemManager:
         self,
         caller: WCRCaller,
     ) -> None:
+        # item manager이 caller이 있는 것ㄷ이 어색함
         self.raw = None
         self.data = None
         self.caller = caller
@@ -65,6 +66,7 @@ class ItemManager:
 
     async def validate(self):
         # FIXME: print를 logger로 변경
+        # FIXME: refactoring (WCR 수정 후)
         if self.raw is None:
             return
         if self.data is not None:

@@ -120,11 +120,6 @@ def is_contain(
     avatar_image: Image.Image,
     item_image: Image.Image,
 ) -> Tuple[int, int, int]:
-    """
-    image_avatar:
-    image_item:
-    """
-
     if avatar_image is None or item_image is None:
         return (0, 0, 0)
 
@@ -194,8 +189,7 @@ class ImageProcessor:
                 json.dump(base_wz, f, ensure_ascii=False, indent="\t")
         return base_wz
 
-
-    def _correct_visualize(self, base_image: Image.Image, test_image: Image.Image):
+    def _visualize_correct(self, base_image: Image.Image, test_image: Image.Image):
         base_uri = os.path.dirname(__file__)
 
         acc, px, py = is_contain(base_image, test_image)
