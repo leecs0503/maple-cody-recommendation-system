@@ -1,1 +1,1 @@
-BASE_URI_PATH = '.data'
+BASE_URI_PATH = ".data"

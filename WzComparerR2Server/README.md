@@ -1,6 +1,9 @@
 # WzComparerR2Server
 WzComparerR2 API 서버
 
+# Wz 파일 준비
+Data 폴더에 wz
+
 # Installation
 ```
 sudo apt-get update && \
@@ -9,6 +12,7 @@ sudo apt install libc6-dev
 sudo apt install libgdiplus
 dotnet dev-certs https -ep ${HOME}/.aspnet/https/aspnetapp.pfx -p 270e9908-480d-4647-a482-4503e3492e57
 dotnet dev-certs https --trust
+chmod 755 ~/.aspnet/https/aspnetapp.pfx
 ```
 
 # 실행
