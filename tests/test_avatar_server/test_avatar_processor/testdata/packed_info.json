@@ -32,7 +32,7 @@
         "weapon_id": 238,
         "weapon_gender": 3,
         "hair_mix_color": 5,
-        "hair_mix_ratio": 50
+        "hair_mix_ratio": 16
     },
     "user2": {
         "str": "LBDGMFNKHKPCFEIKMLCAECJDBELMLLADNFHDAJPIHJAJBKFCLMKKLDLDFNPBOGEAODPEMPCBIPCCGBIOFPCCKGIKKDLILAOACAHHIKACLAKLKKNPFILHBLIPKKMHGAFEADKBHCIPDBJHOKFGCGFHFAKMOHCDBPJKPHNGBGCLMOLDJHHFFEBKEJFNKBJMEJNFPLDEOLKCALAGNADDIDPACEPGMLMCBHHAGKOFFPKKNHKJOJPELKPFKODNDFPBHCBF",
@@ -99,7 +99,7 @@
         "cape_gender": -1,
         "shield_id": -1,
         "shield_gender": -1,
-        "weapon_id": 265,
+        "weapon_id": 276,
         "weapon_gender": 2,
         "hair_mix_color": 6,
         "hair_mix_ratio": 50

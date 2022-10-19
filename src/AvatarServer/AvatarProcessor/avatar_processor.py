@@ -132,6 +132,7 @@ class AvatarProcessor:
             version = data[119]
 
         result = PackedCharacterInfo()
+
         for now in STRUCTURE[version]:
             value = 0
             for i in range(now.bits):
