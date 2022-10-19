@@ -1,6 +1,6 @@
 import pytest
 
-from src.ImageServer.server.config import Config
+from src.AvatarServer.server.config import Config
 
 
 @pytest.fixture

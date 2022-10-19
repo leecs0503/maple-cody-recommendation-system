@@ -1,10 +1,10 @@
 import logging
 
 import pytest
-from src.ImageServer.Avatar.avatar import Avatar
-from src.ImageServer.ImageProcessor.WCR_caller import WCRCaller
-from src.ImageServer.ImageProcessor.image_processor import ImageProcessor
-from src.ImageServer.server.config import Config
+from src.AvatarServer.Avatar.avatar import Avatar
+from src.AvatarServer.ImageProcessor.WCR_caller import WCRCaller
+from src.AvatarServer.ImageProcessor.image_processor import ImageProcessor
+from src.AvatarServer.server.config import Config
 from PIL import Image
 
 

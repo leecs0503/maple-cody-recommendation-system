@@ -6,10 +6,10 @@ import json
 import urllib
 
 from aiohttp import streams
-from src.ImageServer.server.http_handler import HTTPHandler
+from src.AvatarServer.server.http_handler import HTTPHandler
 
 import base64
-from src.ImageServer.Avatar.avatar import Avatar
+from src.AvatarServer.Avatar.avatar import Avatar
 from aiohttp import test_utils
 
 

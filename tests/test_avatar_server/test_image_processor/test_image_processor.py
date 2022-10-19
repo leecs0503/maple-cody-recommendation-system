@@ -4,7 +4,7 @@ import time
 import numpy as np
 from PIL import Image
 
-from src.ImageServer.ImageProcessor.image_processor import ImageProcessor, is_contain, is_contain_by_list
+from src.AvatarServer.ImageProcessor.image_processor import ImageProcessor, is_contain, is_contain_by_list
 from pathlib import Path
 
 
@@ -24,7 +24,7 @@ async def test_visualize(test_image_processor: ImageProcessor):
     visual_test2_image = Image.open(visual_test2_path)
 
     parent_uri = Path(base_uri).parent.parent.parent
-    visualize_parent = parent_uri.joinpath("src", "ImageServer", "ImageProcessor", "correct_visualize", "visualize.png")
+    visualize_parent = parent_uri.joinpath("src", "AvatarServer", "ImageProcessor", "correct_visualize", "visualize.png")
 
     test1_acc = test_image_processor._visualize_correct(base_image, visual_test1_image)
     visualize_image = Image.open(visualize_parent)

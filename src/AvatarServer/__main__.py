@@ -9,7 +9,7 @@ def main():
     parser.add_argument("--wcr-server-host", type=str, help="wcr server host", default="localhost")
     parser.add_argument("--wcr-server-port", type=int, help="wcr server host", default=7209)
     parser.add_argument("--wcr-server-protocol", type=str, help="wcr server host", default="https")
-    parser.add_argument("--base-wz-code-path", type=str, help="base", default="./src/ImageServer/base_wz_code.json")
+    parser.add_argument("--base-wz-code-path", type=str, help="base", default="./src/AvatarServer/base_wz_code.json")
     parser.add_argument("--wcr-caller-retry-num", type=int, help="wcr server host", default=-1)
     parser.add_argument("--wcr-caller-timeout", type=float, help="wcr server host", default=2.5)
     parser.add_argument("--wcr-caller-backoff", type=float, help="wcr server host", default=1)

@@ -1,4 +1,4 @@
-from src.ImageServer.Avatar.avatar import Avatar
+from src.AvatarServer.Avatar.avatar import Avatar
 
 
 def test_avartar():
