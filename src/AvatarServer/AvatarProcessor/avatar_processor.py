@@ -65,3 +65,7 @@ class AvatarProcessor:
         image_data = base64.b64decode(wcr_response)
         item_image = Image.open(io.BytesIO(image_data))
         return item_image
+
+    def infer(self, packed_character_look: str) -> Avatar:
+        # TODO: implement
+        return Avatar()
