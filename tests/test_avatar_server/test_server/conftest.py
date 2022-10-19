@@ -5,11 +5,11 @@ import pytest
 from src.AvatarServer.server.config import Config
 from src.AvatarServer.server.http_handler import HTTPHandler
 from src.AvatarServer.Avatar.avatar import Avatar
-from src.AvatarServer.ImageProcessor.WCR_caller import WCRCaller
+from src.AvatarServer.AvatarProcessor.WCR_caller import WCRCaller
 from PIL import Image
 
 
-class ImageProcessorForTest:
+class AvatarProcessorForTest:
     def __init__(
         self,
         logger: logging.Logger,
@@ -33,7 +33,7 @@ class ImageProcessorForTest:
 
 @pytest.fixture
 def image_processor_for_test():
-    return ImageProcessorForTest
+    return AvatarProcessorForTest
 
 
 @pytest.fixture

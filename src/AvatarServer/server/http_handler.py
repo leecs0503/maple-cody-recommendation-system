@@ -6,7 +6,7 @@ from http import HTTPStatus
 from aiohttp import web
 from PIL import Image
 
-from ..ImageProcessor.image_processor import ImageProcessor
+from ..AvatarProcessor.avatar_processor import AvatarProcessor
 from ..server.config import Config
 
 
@@ -17,7 +17,7 @@ class HTTPHandler:
         config: Config,
     ):
         self.logger = logger
-        self.processor = ImageProcessor(
+        self.processor = AvatarProcessor(
             logger=self.logger,
             config=config,
         )
