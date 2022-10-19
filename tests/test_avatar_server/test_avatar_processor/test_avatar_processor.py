@@ -46,6 +46,9 @@ def test_infer(avatar_processor_for_test: AvatarProcessor):
 
     with open(json_path, 'r') as file:
         data: dict = json.load(file)
+
+    is_not_fail = True
+    faile_set = set()
     for user_name, user_data in data.items():
         expected_return_data = PackedCharacterInfo()
         for k, v in user_data.items():
@@ -55,16 +58,19 @@ def test_infer(avatar_processor_for_test: AvatarProcessor):
 
         packed_character_look = user_data["str"]
         return_data = avatar_processor_for_test.infer(packed_character_look=packed_character_look)
+
+        # for printing
         for k, v in user_data.items():
             if k == "str":
                 continue
             v1 = getattr(return_data, k)
             v2 = getattr(expected_return_data, k)
-            if v1 != v2:
+            if v2 != -1 and v1 != v2:
                 print(f"!! {user_name}: {k} is different ({v1} <-> {v2}).")
+                is_not_fail = False
+                faile_set.add(user_name)
 
-        assert expected_return_data == return_data
-
+    assert is_not_fail, f"fail list: {faile_set}"
 
 @pytest.mark.asyncio
 def test_process_image():

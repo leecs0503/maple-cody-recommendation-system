@@ -11,6 +11,12 @@ import base64
 import io
 import dataclasses
 
+from Crypto.Cipher import AES
+from .structure import STRUCTURE
+
+MS_ABIV = bytes([17, 23, 205, 16, 4, 63, 142, 122, 18, 21, 128, 17, 93, 25, 79, 16])
+MS_ABKEY = bytes([16, 4, 63, 17, 23, 205, 18, 21, 93, 142, 122, 25, 128, 17, 79, 20])
+
 
 @dataclasses.dataclass
 class PackedCharacterInfo:
@@ -105,5 +111,34 @@ class AvatarProcessor:
         return item_image
 
     def infer(self, packed_character_look: str) -> Avatar:
-        # TODO: implement
-        return PackedCharacterInfo()
+        crypt = [
+            ((ord(packed_character_look[i]) - ord('A')) << 4)
+            + (ord(packed_character_look[i + 1]) - ord('A'))
+            for i in range(0, len(packed_character_look), 2)
+        ]
+        cipher = AES.new(
+            key=MS_ABKEY,
+            mode=AES.MODE_CBC,
+            iv=MS_ABIV,
+        )
+
+        data = cipher.decrypt(bytes(crypt))
+
+        version = -1
+        offset = 0
+        if len(data) == 48:
+            version = data[23]
+        elif len(data) == 128:
+            version = data[119]
+
+        result = PackedCharacterInfo()
+        for now in STRUCTURE[version]:
+            value = 0
+            for i in range(now.bits):
+                if (data[(offset + i) // 8] & (1 << ((offset + i) % 8))) != 0:
+                    value |= 1 << i
+            offset += now.bits
+            if hasattr(result, now.name):
+                setattr(result, now.name, value)
+
+        return result
