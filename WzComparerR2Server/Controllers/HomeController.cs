@@ -11,6 +11,10 @@ using WzComparerR2.CharaSim;
 using MainProgram;
 using System;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text.Unicode;
+using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -22,14 +26,53 @@ public class HomeController : Controller
 {
 
 	AvatarCanvas avatar;
-	string query_result;
+	string ?query_result;
 	bool inited;
 	public StringLinker DefaultStringLinker;
+
+	public class Json_data
+	{
+		public Dictionary<string, Dictionary<string, string>> face { get; set; }
+		public Dictionary<string, Dictionary<string, string>> cap { get; set; }
+		public Dictionary<string, Dictionary<string, string>> longcoat { get; set; }
+		public Dictionary<string, Dictionary<string, string>> weapon { get; set; }
+		public Dictionary<string, Dictionary<string, string>> cape { get; set; }
+		public Dictionary<string, Dictionary<string, string>> coat { get; set; }
+		public Dictionary<string, Dictionary<string, string>> glove { get; set; }
+		public Dictionary<string, Dictionary<string, string>> hair { get; set; }
+		public Dictionary<string, Dictionary<string, string>> pants { get; set; }
+		public Dictionary<string, Dictionary<string, string>> shield { get; set; }
+		public Dictionary<string, Dictionary<string, string>> shoes { get; set; }
+		public Dictionary<string, Dictionary<string, string>> faceAccessory { get; set; }
+		public Dictionary<string, Dictionary<string, string>> eyeAccessory { get; set; }
+		public Dictionary<string, Dictionary<string, string>> earrings { get; set; }
+		public Dictionary<string, Dictionary<string, string>> head { get; set; }
+
+		public Json_data()
+		{
+			face = new Dictionary<string, Dictionary<string, string>>();
+			cap = new Dictionary<string, Dictionary<string, string>>();
+			longcoat = new Dictionary<string, Dictionary<string, string>>();
+			weapon = new Dictionary<string, Dictionary<string, string>>();
+			cape = new Dictionary<string, Dictionary<string, string>>();
+			coat = new Dictionary<string, Dictionary<string, string>>();
+			glove = new Dictionary<string, Dictionary<string, string>>();
+			hair = new Dictionary<string, Dictionary<string, string>>();
+			pants = new Dictionary<string, Dictionary<string, string>>();
+			shield = new Dictionary<string, Dictionary<string, string>>();
+			shoes = new Dictionary<string, Dictionary<string, string>>();
+			faceAccessory = new Dictionary<string, Dictionary<string, string>>();
+			eyeAccessory = new Dictionary<string, Dictionary<string, string>>();
+			earrings = new Dictionary<string, Dictionary<string, string>>();
+			head = new Dictionary<string, Dictionary<string, string>>();
+		}
+	}
 
 	public HomeController()
 	{
 		this.avatar = new AvatarCanvas();
 		this.DefaultStringLinker = new StringLinker();
+		this.query_result = null;
 	}
 
 	[Route("")]
@@ -39,84 +82,104 @@ public class HomeController : Controller
 		// return base.File(imageFileStream,"image/png");
 	}
 
-
-	private String dfs(Wz_Node current_node)
+	private KeyValuePair<string, Dictionary<string, string>> add_json_data(Wz_Node code_node)
 	{
-		String ret = "{";
-		String temp;
-		StringBuilder sb = new StringBuilder();
-		bool First = true;
-
-		if (current_node.Value is string)
-		{
-			temp = current_node.GetValue<string>();
-			foreach(var ch in temp) {
-				if(ch == '\r') {
-					sb.Append('\\');
-					sb.Append('r');
-				}
-				else if(ch == '\n') {
-					sb.Append('\\');
-					sb.Append('n');
-				}
-				else if(ch == '\"') {
-					sb.Append('\\');
-					sb.Append('\"');
-				}
-				else if(ch == '\\') {
-					sb.Append('\\');
-					sb.Append('\\');
-				}
-				else sb.Append(ch);
-			}
-			return "\"" + sb.ToString() + "\"";
+		string key = code_node.Text;
+		Dictionary<string, string> json_dict;
+		json_dict = new Dictionary<string, string>();
+		foreach(Wz_Node description_node in code_node.Nodes) {
+			json_dict[description_node.Text]=description_node.GetValue<string>();
 		}
-		
-		foreach(Wz_Node child_node in current_node.Nodes)
-		{
-			if (First) First = false;
-			else ret += ", ";
-			sb.Clear();
-			foreach(var ch in child_node.Text) {
-				if(ch == '\r') {
-					sb.Append('\\');
-					sb.Append('r');
-				}
-				else if(ch == '\n') {
-					sb.Append('\\');
-					sb.Append('n');
-				}
-				else if(ch == '\"') {
-					sb.Append('\\');
-					sb.Append('\"');
-				}
-				else if(ch == '\\') {
-					sb.Append('\\');
-					sb.Append('\\');
-				}
-				else sb.Append(ch);
-			}
-			ret += "\"" + sb.ToString() + "\": " + dfs(child_node);
-		}
-		return ret + "}";
-	}
-
-	private string get_code(Wz_Node root)
-	{
-		return "{\"" + root.Text + "\": " + dfs(root) + "}";
+		return new KeyValuePair<string, Dictionary<string, string>>(key, json_dict);
 	}
 
 	[Route("code")]
 	public string Code()
 	{
-		if(query_result == null) 
+		if(this.query_result == null) 
 		{
 			var eqp_node = Program.wz.WzNode.FindNodeByPath("String").FindNodeByPath("Eqp.img");
 			var img = eqp_node.GetValue<Wz_Image>();
 			img.TryExtract();
-			query_result = get_code(img.Node.FindNodeByPath("Eqp"));
+			var cur_node = img.Node.FindNodeByPath("Eqp");
+			var json_data = new Json_data();
+			foreach(Wz_Node part_node in cur_node.Nodes) {
+				foreach(Wz_Node code_node in part_node.Nodes) {
+					var gear = get_geartype(code_node.Text);
+					if(gear == null) continue;
+					var geartype = gear ?? (GearType)0;
+					if(Gear.IsFace(geartype)) {
+						var data = add_json_data(code_node);
+						json_data.face.Add(data.Key, data.Value);
+					}
+					else if(geartype == GearType.cap) {
+						var data = add_json_data(code_node);
+						json_data.cap.Add(data.Key, data.Value);
+					}
+					else if(geartype == GearType.longcoat) {
+						var data = add_json_data(code_node);
+						json_data.longcoat.Add(data.Key, data.Value);
+					}
+					else if(Gear.IsWeapon(geartype) || geartype == GearType.cashWeapon) {
+						var data = add_json_data(code_node);
+						json_data.weapon.Add(data.Key, data.Value);
+					}
+					else if(geartype == GearType.cape) {
+						var data = add_json_data(code_node);
+						json_data.cape.Add(data.Key, data.Value);
+					}
+					else if(geartype == GearType.coat) {
+						var data = add_json_data(code_node);
+						json_data.coat.Add(data.Key, data.Value);
+					}
+					else if(geartype == GearType.glove) {
+						var data = add_json_data(code_node);
+						json_data.glove.Add(data.Key, data.Value);
+					}
+					else if(Gear.IsHair(geartype)) {
+						var data = add_json_data(code_node);
+						json_data.hair.Add(data.Key, data.Value);
+					}
+					else if(geartype == GearType.pants) {
+						var data = add_json_data(code_node);
+						json_data.pants.Add(data.Key, data.Value);
+					}
+					else if(geartype == GearType.shield) {
+						var data = add_json_data(code_node);
+						json_data.shield.Add(data.Key, data.Value);
+					}
+					else if(geartype == GearType.shoes) {
+						var data = add_json_data(code_node);
+						json_data.shoes.Add(data.Key, data.Value);
+					}
+					else if(geartype == GearType.faceAccessory) {
+						var data = add_json_data(code_node);
+						json_data.faceAccessory.Add(data.Key, data.Value);
+					}
+					else if(geartype == GearType.eyeAccessory) {
+						var data = add_json_data(code_node);
+						json_data.eyeAccessory.Add(data.Key, data.Value);
+					}
+					else if(geartype == GearType.earrings) {
+						var data = add_json_data(code_node);
+						json_data.earrings.Add(data.Key, data.Value);
+					}
+					else if(geartype == GearType.head) {
+						var data = add_json_data(code_node);
+						json_data.head.Add(data.Key, data.Value);
+					}
+				}
+			}
+			TextEncoderSettings encoderSettings = new();
+			encoderSettings.AllowRange(UnicodeRanges.All);
+			JsonSerializerOptions settings = new()
+			{
+				Encoder = JavaScriptEncoder.Create(encoderSettings),
+				AllowTrailingCommas = true
+			};
+			this.query_result = JsonSerializer.Serialize<Json_data>(json_data, settings);
 		}
-		return query_result;
+		return this.query_result;
 	}
 
 	[Route("avatar_raw")]
