@@ -15,6 +15,7 @@ PySocks = "^1.7.1"
 aiohttp = "^3.8.3"
 Pillow = "^9.2.0"
 multimethod = "^1.9"
+pycryptodome = "^3.15.0"
 
 
 [tool.poetry.group.dev.dependencies]
