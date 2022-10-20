@@ -22,9 +22,10 @@ MS_ABKEY = bytes([16, 4, 63, 17, 23, 205, 18, 21, 93, 142, 122, 25, 128, 17, 79,
 class PackedCharacterInfo:
     gender: int = -1
     skin_id: int = -1
+    face_type: int = -1
     face_id: int = -1
     face_gender: int = -1
-    is_hair_over_40000: int = -1
+    hair_type: int = -1
     hair_id: int = -1
     hair_gender: int = -1
     cap_id: int = -1
