@@ -72,6 +72,11 @@ def test_infer(avatar_processor_for_test: AvatarProcessor):
 
     assert is_not_fail, f"fail list: {faile_set}"
 
+
+def test_get_avatar():
+    pass
+
+
 @pytest.mark.asyncio
 def test_process_image():
     # TODO: implement
