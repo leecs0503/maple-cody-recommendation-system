@@ -1,5 +1,6 @@
 from src.AvatarServer.util.item_manager import ItemManager
-from src.AvatarServer.AvatarProcessor.avatar_processor import AvatarProcessor, PackedCharacterInfo
+from src.AvatarServer.AvatarProcessor.avatar_processor import AvatarProcessor
+from src.AvatarServer.AvatarProcessor.packed_character_info import PackedCharacterInfo
 from src.AvatarServer.AvatarProcessor.WCR_caller import WCRCaller
 from src.AvatarServer.server.config import Config
 from src.AvatarServer.Avatar.avatar import Avatar
@@ -74,7 +75,27 @@ def test_infer(avatar_processor_for_test: AvatarProcessor):
 
 
 def test_get_avatar():
-    pass
+    cwd = os.path.dirname(__file__)
+    json_path = os.path.join(cwd, 'testdata', 'packed_info.json')
+
+    with open(json_path, 'r') as file:
+        data: dict = json.load(file)
+
+    result_json_path = os.path.join(cwd, 'testdata', 'avatar_info.json')
+
+    with open(result_json_path, 'r') as file:
+        expected_data: dict = json.load(file)
+
+    for user_name, user_data in data.items():
+        input_data = PackedCharacterInfo()
+        for k, v in user_data.items():
+            if k == "str":
+                continue
+            setattr(input_data, k, v)
+        avatar = input_data.get_avatar()
+        for k, v in expected_data[user_name].items():
+            assert getattr(avatar, k) == v
+
 
 
 @pytest.mark.asyncio
