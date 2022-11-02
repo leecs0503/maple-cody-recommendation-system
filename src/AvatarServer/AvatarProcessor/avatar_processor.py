@@ -99,7 +99,7 @@ class AvatarProcessor:
         result = PackedCharacterInfo()
 
         if version not in STRUCTURE:
-            raise LookStringVersionException("AvatarProcessor.infer: version not exists")
+            raise LookStringVersionException(f"AvatarProcessor.infer: version not exists({version})")
 
         for now in STRUCTURE[version]:
             value = 0

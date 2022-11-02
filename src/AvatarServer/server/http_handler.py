@@ -45,5 +45,11 @@ class HTTPHandler:
             result = asdict(avatar)
             return web.json_response(result)
         except LookStringVersionException as err:
-            print(str(err))
-            raise err
+            raise web.HTTPBaddRequest(
+                body=f"Bad Request Error 400: {str(err)}"
+            )
+        except Exception as err:
+            raise web.HTTPInternalServerError(
+                body=f"Internal Server Error 500: {str(err)}"
+            )
+
