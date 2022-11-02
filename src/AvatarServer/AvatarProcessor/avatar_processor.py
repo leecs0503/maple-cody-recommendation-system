@@ -19,6 +19,10 @@ MS_ABIV = bytes([17, 23, 205, 16, 4, 63, 142, 122, 18, 21, 128, 17, 93, 25, 79, 
 MS_ABKEY = bytes([16, 4, 63, 17, 23, 205, 18, 21, 93, 142, 122, 25, 128, 17, 79, 20])
 
 
+class LookStringVersionException(Exception):
+    """ 해당 버전에 대한 structure가 존재하지 않는 예외 """
+
+
 class AvatarProcessor:
     def __init__(
         self,
@@ -93,6 +97,9 @@ class AvatarProcessor:
             version = data[119]
 
         result = PackedCharacterInfo()
+
+        if version not in STRUCTURE:
+            raise LookStringVersionException("AvatarProcessor.infer: version not exists")
 
         for now in STRUCTURE[version]:
             value = 0

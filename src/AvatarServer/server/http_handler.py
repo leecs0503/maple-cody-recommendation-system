@@ -4,7 +4,7 @@ from http import HTTPStatus
 
 from aiohttp import web
 
-from ..AvatarProcessor.avatar_processor import AvatarProcessor
+from ..AvatarProcessor.avatar_processor import AvatarProcessor, LookStringVersionException
 from ..server.config import Config
 
 
@@ -44,7 +44,6 @@ class HTTPHandler:
             avatar = packed_character_info.get_avatar()
             result = asdict(avatar)
             return web.json_response(result)
-        except Exception as err:
-            raise web.HTTPInternalServerError(
-                body=f"Internal Server Error 500: {str(err)}"
-            )
+        except LookStringVersionException as err:
+            print(str(err))
+            raise err
