@@ -10,6 +10,16 @@
 └── tests: 각 작업의 테스트 코드
 ```
 
+# 실행
+docker-compose를 이용해 테스트 가능 (현재는 avatar server에 대해서만 docker-compose 구성)
+## docker-compose up
+> docker-compose -f docker-compose-dev.yml up
+## docker-compose down
+> docker-compose -f docker-compose-dev.yml down
+
+## WzComparerR2Server
+WzComparerR2Server에 해당되는 docker-compose는 해당 디렉토리 내부에 있음 (WzComparerR2Server/docker-compose.yml)
+
 # 의존성 관리
 
 의존성은 기본적으로 [poetry](https://python-poetry.org/)를 활용해 관리
