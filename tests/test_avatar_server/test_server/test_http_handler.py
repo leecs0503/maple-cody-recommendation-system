@@ -1,16 +1,12 @@
 import asyncio
-import os
 import pytest
 from aiohttp.test_utils import make_mocked_request
-import json
 import urllib
 
 from typing import Dict
 from aiohttp import streams
 from src.AvatarServer.server.http_handler import HTTPHandler
 
-import base64
-from src.AvatarServer.Avatar.avatar import Avatar
 from aiohttp import test_utils
 from aiohttp import web
 
@@ -32,7 +28,6 @@ async def test_http_healthcheck_handler(test_http_handler: HTTPHandler):
 class TempProtocol(asyncio.BaseProtocol):
     def __init__(self):
         self._reading_paused = False
-
 
 
 def _make_mocked_request(obj: Dict[str, str], request_path: str) -> web.Request:

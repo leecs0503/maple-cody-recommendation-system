@@ -79,11 +79,11 @@ class PackedCharacterInfo:
     glove_gender: int = -1
     cape_id: int = -1
     cape_gender: int = -1
-    is_not_blade: int = -1
-    is_sub_weapon: int = -1
+    is_not_blade: int = 0
+    is_sub_weapon: int = 0
     shield_id: int = -1
     shield_gender: int = -1
-    is_cash_weapon: int = -1
+    is_cash_weapon: int = 0
     weapon_id: int = -1
     weapon_gender: int = -1
     weapon_type: int = -1

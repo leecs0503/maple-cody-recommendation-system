@@ -1,11 +1,8 @@
-import base64
-import io
 import logging
 from dataclasses import asdict
 from http import HTTPStatus
 
 from aiohttp import web
-from PIL import Image
 
 from ..AvatarProcessor.avatar_processor import AvatarProcessor
 from ..server.config import Config
