@@ -50,6 +50,16 @@ def test_infer(avatar_processor_for_test: AvatarProcessor):
 
     is_not_fail = True
     faile_set = set()
+
+    """
+        TODO, FIXME: user 3에 대해 아래 정답으로도 pass 되어야 함
+        아직 복호화 로직을 몰라서 추후 처리 예정
+        packed_info.json:
+        "hair_mix_color": -1 -> 6,
+        "hair_mix_ratio": -1 -> 50
+        avatar_info.json:
+        "hair": "30005" -> "30005+6*50"
+    """
     for user_name, user_data in data.items():
         expected_return_data = PackedCharacterInfo()
         for k, v in user_data.items():

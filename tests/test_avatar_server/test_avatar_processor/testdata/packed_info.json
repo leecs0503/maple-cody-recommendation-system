@@ -113,7 +113,7 @@
         "is_cash_weapon": 0,
         "weapon_id": 276,
         "weapon_gender": 2,
-        "hair_mix_color": 6,
-        "hair_mix_ratio": 50
+        "hair_mix_color": -1,
+        "hair_mix_ratio": -1
     }
 }
