@@ -10,6 +10,16 @@
 └── tests: 각 작업의 테스트 코드
 ```
 
+# 실행
+docker-compose를 이용해 테스트 가능 (현재는 avatar server에 대해서만 docker-compose 구성)
+## docker-compose up
+> docker-compose -f docker-compose-dev.yml up
+## docker-compose down
+> docker-compose -f docker-compose-dev.yml down
+
+## WzComparerR2Server
+WzComparerR2Server에 해당되는 docker-compose는 해당 디렉토리 내부에 있음 (WzComparerR2Server/docker-compose.yml)
+
 # 의존성 관리
 
 의존성은 기본적으로 [poetry](https://python-poetry.org/)를 활용해 관리
@@ -59,28 +69,9 @@ pytest .
 - main에 직접 commit하는 경우는 지양
 - commit명의 prefix는 "feat", "docs", "refactor", "deploy"중 하나를 선택
 
-# git 사용 법
-## branch 추가하는 법
-```
-git checkout -b {branch name}
-```
-
-## branch 이동하는 법
-```
-git checkout {branch name}
-```
-
-## branch 리스트 보는 법
-```
-git branch
-```
-
-## branch 변경 전 commit이후 내용 임시 저장
-```
-git stash
-```
-
-## commit하는 법
-```
-git commit -m "커밋 메세지"
-```
+# docker
+ - 기본적으로 빌드는 build_XXXserver_docker.sh에 빌드 관련 스크립트를 작성
+ - dockerfile들은 docker/Dockerfile.XXXXX, docker/Dockerfile.XXXXX.dockerignore 형식으로 작성
+ - build시 export DOCKER_BUILDKIT=1로 설정해서 dockerignore이 인식되도록 처리
+ - python server의 경우 requirements.txt를 뽑아내서 처리 (이후 multistage build로 변경 예정)
+ 

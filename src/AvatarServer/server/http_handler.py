@@ -25,7 +25,6 @@ class HTTPHandler:
         return [
             web.get("/", self.index_handler),
             web.get("/healthcheck", self.healthcheck_handler),
-            web.post("/image", self.image_handler),
             web.post('/packed_character_look', self.packed_character_look_handler)
         ]
 

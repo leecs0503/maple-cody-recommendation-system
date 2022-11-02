@@ -39,21 +39,21 @@ class AvatarProcessor:
         )
         self.item_code_list = []
         self.item_manager = ItemManager()
+        self.logger.info("start loading base_wz")
         loop = asyncio.get_event_loop()
         base_wz = loop.run_until_complete(
             self._load_base_wz()
         )
         self.item_manager.read(base_wz)
+        self.logger.info("complete loading base_wz")
 
     async def _load_base_wz(self) -> dict:
-        # TODO: 위치 논의 필요
         if self.base_wz_code_path:
             if os.path.isfile(self.base_wz_code_path):
                 base_wz_code_path = self.base_wz_code_path
                 with open(base_wz_code_path) as f:
                     base_wz = json.load(f)
                     return base_wz
-            raise Exception(f"AvatarProcessor._load_base_wz: {base_wz_code_path} is not a file")
 
         base_wz = await self.caller.get_base_wz()
 

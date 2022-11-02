@@ -51,11 +51,5 @@ class AppRunner:
     def run(self) -> None:
         self.logger.info(f"now config: {json.dumps(self.config.to_json())}")
 
-        self.logger.info("start loading base_wz")
-        self._load_base_wz()
-        self.item_manager.read(self.base_wz)
-        # TODO : HTTPServer에 itemManager 넘겨주기
-        self.logger.info("complete loading base_wz")
-
         self.logger.info("start HTTPServer")
         self.HTTPServer.run()

@@ -1,0 +1,8 @@
+**/WzComparerR2Server/
+tests/
+notebook/
+**/__pycache__
+**/.venv/
+**/.git/
+# TODO: WzComparerR2Server docker-compose 연동 후 data ignore 예정
+# data/
