@@ -62,3 +62,7 @@ async def test_http_image_handler(test_http_handler: HTTPHandler):
 @pytest.mark.asyncio
 async def test_http_image_handler(test_http_handler: HTTPHandler):
     pass
+
+@pytest.mark.asyncio
+async def test_packed_character_look_handler(test_http_handler: HTTPHandler):
+    request = make_mocked_request("POST", "/packed_character_look", headers={"packed_character_look": ""})
