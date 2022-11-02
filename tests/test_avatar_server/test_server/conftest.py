@@ -4,9 +4,8 @@ import pytest
 
 from src.AvatarServer.server.config import Config
 from src.AvatarServer.server.http_handler import HTTPHandler
-from src.AvatarServer.Avatar.avatar import Avatar
 from src.AvatarServer.AvatarProcessor.WCR_caller import WCRCaller
-from PIL import Image
+from src.AvatarServer.AvatarProcessor.packed_character_info import PackedCharacterInfo
 
 
 class AvatarProcessorForTest:
@@ -25,10 +24,11 @@ class AvatarProcessorForTest:
             timeout=config.wcr_caller_timeout,
             backoff=config.wcr_caller_backoff,
         )
+        self.infer_count = 0
 
-    async def infer(self, image: Image) -> Avatar:
-        result = Avatar("1", "1", "1", "1")
-        return result
+    def infer(self, packed_character_look: str) -> PackedCharacterInfo:
+        self.infer_count += 1
+        return PackedCharacterInfo()
 
 
 @pytest.fixture

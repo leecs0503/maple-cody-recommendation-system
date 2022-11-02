@@ -40,16 +40,6 @@ class HTTPHandler:
         """ """
         return web.Response(body="200 OK", status=HTTPStatus.OK)
 
-    # TODO: deprecated
-    async def image_handler(self, request: web.Request):
-        """ """
-        post = await request.post()
-        bs64str = post.get("bs64")
-        image_data = base64.b64decode(bs64str)
-        image = Image.open(io.BytesIO(image_data))
-        result = await self.processor.infer(image=image)
-        return web.json_response(result.to_array())
-
     async def packed_character_look_handler(self, request: web.Request):
         post = await request.post()
         packed_character_look = post.get("packed_character_look")
