@@ -181,9 +181,8 @@ class PackedCharacterInfo:
         )
 
     def _add_weapon_to(self, avatar: Avatar) -> None:
-        if not self._is_valid_ID(self.weapon_id):
-            return
-        if CharacterInfoType.get_weapon_type(self.weapon_type) == _INVALID_WEAPON_TYPE_CODE:
+        if not self._is_valid_ID(self.weapon_id) \
+           and CharacterInfoType.get_weapon_type(self.weapon_type) == _INVALID_WEAPON_TYPE_CODE:
             return
 
         if self.is_cash_weapon:
