@@ -14,16 +14,16 @@ from aiohttp import test_utils
 
 
 @pytest.mark.asyncio
-async def test_http_index_handler(http_handler: HTTPHandler):
+async def test_http_index_handler(test_http_handler: HTTPHandler):
     request = make_mocked_request("GET", "/")
-    result = await http_handler.index_handler(request=request)
+    result = await test_http_handler.index_handler(request=request)
     assert result.status == 200
 
 
 @pytest.mark.asyncio
-async def test_http_healthcheck_handler(http_handler: HTTPHandler):
+async def test_http_healthcheck_handler(test_http_handler: HTTPHandler):
     request = make_mocked_request("GET", "/healthcheck")
-    result = await http_handler.helthcheck_handler(request=request)
+    result = await test_http_handler.helthcheck_handler(request=request)
     assert result.status == 200
 
 

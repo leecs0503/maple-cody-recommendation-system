@@ -32,28 +32,19 @@ class AvatarProcessorForTest:
 
 
 @pytest.fixture
-def image_processor_for_test():
-    return AvatarProcessorForTest
-
-
-@pytest.fixture
-def test_http_handler(config_for_test: Config, image_processor_for_test):
-    logger = logging.getLogger(__name__)
-    res = HTTPHandler(
+def avatar_processor_for_test(config_for_test) -> AvatarProcessorForTest:
+    logger = logging.getLogger(__file__)
+    return AvatarProcessorForTest(
         logger=logger,
         config=config_for_test,
     )
-    res.processor = image_processor_for_test(
-        logger=logger,
-        config=config_for_test,
-    )
-    return res
 
 
 @pytest.fixture
-def http_handler(config_for_test: Config):
+def test_http_handler(config_for_test: Config, avatar_processor_for_test: AvatarProcessorForTest):
     logger = logging.getLogger(__name__)
     return HTTPHandler(
         logger=logger,
         config=config_for_test,
+        processor=avatar_processor_for_test
     )
