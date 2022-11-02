@@ -20,7 +20,6 @@ class AvatarType(IntEnum):
     SKIN = 14
 
 
-
 @dataclass
 class Avatar:
     face: str = "0"

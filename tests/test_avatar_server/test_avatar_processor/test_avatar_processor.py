@@ -107,7 +107,6 @@ def test_get_avatar():
             assert getattr(avatar, k) == v
 
 
-
 @pytest.mark.asyncio
 def test_process_image():
     # TODO: implement

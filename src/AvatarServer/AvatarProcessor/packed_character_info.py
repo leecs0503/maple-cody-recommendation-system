@@ -4,6 +4,7 @@ from ..Avatar.avatar import Avatar, AvatarType
 TYPE_MULTIPLIER = 10000
 GENDER_MULTIPLIER = 1000
 
+
 class CharacterInfoType:
     HEAD = 1
     FACE = 2
@@ -25,7 +26,7 @@ class CharacterInfoType:
     BLADE = 134
     SUBWEAPON = 135
     CASHWEAPON = 170
-    _WEAPONS = [-1, 130, 131, 132, 133, 137, 138, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, -1, 134, 152, 153, -1, 136, 121, 122, 123, 124, 156, 157, 126, 158, 127, 128]
+    _WEAPONS = [-1, 130, 131, 132, 133, 137, 138, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, -1, 134, 152, 153, -1, 136, 121, 122, 123, 124, 156, 157, 126, 158, 127, 128]  # noqa: E501
 
     @classmethod
     def get_weapon_type(cls, weapon_id):
@@ -76,9 +77,14 @@ class PackedCharacterInfo:
 
     def _is_valid_ID(self, item_id: int) -> bool:
         return item_id != -1 and item_id != 1023
-    
+
     def _is_mix_hair(self) -> bool:
-        return 0 <= self.hair_mix_color and self.hair_mix_color < 8 and 0 < self.hair_mix_ratio and self.hair_mix_ratio < 100
+        return (
+            0 <= self.hair_mix_color
+            and self.hair_mix_color < 8
+            and 0 < self.hair_mix_ratio
+            and self.hair_mix_ratio < 100
+        )
 
     def _get_ID(self, item_type: int, item_gender: int, item_id: int) -> str:
         return str(item_type * TYPE_MULTIPLIER + item_gender * GENDER_MULTIPLIER + item_id)
