@@ -1,6 +1,6 @@
 import json
 from ..Avatar.avatar import Avatar
-from ..ImageProcessor.WCR_caller import WCRCaller
+from ..AvatarProcessor.WCR_caller import WCRCaller
 
 NUM_ITEM = 15
 

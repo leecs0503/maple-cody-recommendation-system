@@ -1,0 +1,53 @@
+{
+    "user1": {
+        "face": "20100",
+        "cap": "1004999",
+        "longcoat": "1052975",
+        "weapon": "0",
+        "cape": "1103204",
+        "coat": "0",
+        "glove": "1082102",
+        "hair": "30000+2*16",
+        "pants": "0",
+        "shield": "1342069",
+        "shoes": "1073670",
+        "faceAccessory": "1012673",
+        "eyeAccessory": "1022079",
+        "earrings": "1032024",
+        "skin": "12016"
+    },
+    "user2": {
+        "face": "27065",
+        "cap": "1005781",
+        "longcoat": "1050583",
+        "weapon": "0",
+        "cape": "1103332",
+        "coat": "0",
+        "glove": "1082102",
+        "hair": "46980+3*23",
+        "pants": "0",
+        "shield": "0",
+        "shoes": "1073534",
+        "faceAccessory": "0",
+        "eyeAccessory": "1022285",
+        "earrings": "1032024",
+        "skin": "12015"
+    },
+    "user3": {
+        "face": "20302",
+        "cap": "1002133",
+        "longcoat": "0",
+        "weapon": "0",
+        "cape": "0",
+        "coat": "1040013",
+        "glove": "1082609",
+        "hair": "30005",
+        "pants": "1060007",
+        "shield": "0",
+        "shoes": "1072038",
+        "faceAccessory": "0",
+        "eyeAccessory": "0",
+        "earrings": "0",
+        "skin": "12000"
+    }
+}

@@ -1,4 +1,23 @@
 from dataclasses import dataclass
+from enum import IntEnum
+
+
+class AvatarType(IntEnum):
+    FACE = 0
+    CAP = 1
+    LONGCOAT = 2
+    WEAPON = 3
+    CAPE = 4
+    COAT = 5
+    GLOVE = 6
+    HAIR = 7
+    PANTS = 8
+    SHIELD = 9
+    SHOES = 10
+    FACE_ACCESSORY = 11
+    EYE_ACCESSORY = 12
+    EARRINGS = 13
+    SKIN = 14
 
 
 @dataclass
@@ -19,39 +38,44 @@ class Avatar:
     earrings: str = "0"
     skin: str = "0"
 
-    def add_parts(self, idx, code):
-        if idx == 0:
+    def add_parts(
+        self,
+        idx: AvatarType,
+        code: str,
+    ) -> None:
+        # TODO : COAT + PANTS와 LONGCOAT 동시에 불가능하게 로직 추가
+        if idx == AvatarType.FACE:
             self.face = code
-        elif idx == 1:
+        elif idx == AvatarType.CAP:
             self.cap = code
-        elif idx == 2:
+        elif idx == AvatarType.LONGCOAT:
             self.longcoat = code
-        elif idx == 3:
+        elif idx == AvatarType.WEAPON:
             self.weapon = code
-        elif idx == 4:
+        elif idx == AvatarType.CAPE:
             self.cape = code
-        elif idx == 5:
+        elif idx == AvatarType.COAT:
             self.coat = code
-        elif idx == 6:
+        elif idx == AvatarType.GLOVE:
             self.glove = code
-        elif idx == 7:
+        elif idx == AvatarType.HAIR:
             self.hair = code
-        elif idx == 8:
+        elif idx == AvatarType.PANTS:
             self.pants = code
-        elif idx == 9:
+        elif idx == AvatarType.SHIELD:
             self.shield = code
-        elif idx == 10:
+        elif idx == AvatarType.SHOES:
             self.shoes = code
-        elif idx == 11:
+        elif idx == AvatarType.FACE_ACCESSORY:
             self.faceAccessory = code
-        elif idx == 12:
+        elif idx == AvatarType.EYE_ACCESSORY:
             self.eyeAccessory = code
-        elif idx == 13:
+        elif idx == AvatarType.EARRINGS:
             self.earrings = code
-        elif idx == 14:
+        elif idx == AvatarType.SKIN:
             self.skin = code
         else:
-            assert 0
+            raise Exception('Avatar.add_parts : Wrong Type')
 
     def reset(self):
         self.face = "0"
