@@ -58,3 +58,7 @@ async def test_http_image_handler(test_http_handler: HTTPHandler):
 
     result = await test_http_handler.image_handler(request=request)
     assert result.text == json.dumps(Avatar("1", "1", "1", "1").to_array())
+
+@pytest.mark.asyncio
+async def test_http_image_handler(test_http_handler: HTTPHandler):
+    pass

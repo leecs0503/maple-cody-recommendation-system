@@ -71,7 +71,7 @@ class AvatarProcessor:
         item_image = Image.open(io.BytesIO(image_data))
         return item_image
 
-    def infer(self, packed_character_look: str) -> Avatar:
+    def infer(self, packed_character_look: str) -> PackedCharacterInfo:
         crypt = [
             ((ord(packed_character_look[i]) - ord('A')) << 4)
             + (ord(packed_character_look[i + 1]) - ord('A'))
