@@ -297,8 +297,8 @@ class PackedCharacterInfo:
             (self.cape_id, AvatarType.CAPE, CharacterInfoType.CAPE, self.cape_gender),
             (self.glove_id, AvatarType.GLOVE, CharacterInfoType.GLOVE, self.glove_gender),
             (self.shoes_id, AvatarType.SHOES, CharacterInfoType.SHOES, self.shoes_gender),
-            (self.face_accessory_id, AvatarType.FACE_ACCESSORY, CharacterInfoType.FACE_ACCESSORY, self.face_accessory_gender),
-            (self.eye_accessory_id, AvatarType.EYE_ACCESSORY, CharacterInfoType.EYE_ACCESSORY, self.eye_accessory_gender),
+            (self.face_accessory_id, AvatarType.FACE_ACCESSORY, CharacterInfoType.FACE_ACCESSORY, self.face_accessory_gender),  # noqa: E501
+            (self.eye_accessory_id, AvatarType.EYE_ACCESSORY, CharacterInfoType.EYE_ACCESSORY, self.eye_accessory_gender),  # noqa: E501
             (self.ear_accessory_id, AvatarType.EARRINGS, CharacterInfoType.EAR_ACCESSORY, self.ear_accessory_gender),
         ]
         for item_id, avatar_type, item_type, item_gender in generalized_item_part_lists:

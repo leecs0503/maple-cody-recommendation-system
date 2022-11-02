@@ -38,17 +38,12 @@ class AvatarProcessor:
             backoff=config.wcr_caller_backoff,
         )
         self.item_code_list = []
-        self.item_manager = ItemManager(
-            caller=self.caller
-        )
+        self.item_manager = ItemManager()
         loop = asyncio.get_event_loop()
         base_wz = loop.run_until_complete(
             self._load_base_wz()
         )
-        self.item_manager.read_raw(base_wz)
-        loop.run_until_complete(
-            self.item_manager.validate()
-        )
+        self.item_manager.read(base_wz)
 
     async def _load_base_wz(self) -> dict:
         # TODO: 위치 논의 필요
@@ -58,6 +53,7 @@ class AvatarProcessor:
                 with open(base_wz_code_path) as f:
                     base_wz = json.load(f)
                     return base_wz
+            raise Exception(f"AvatarProcessor._load_base_wz: {base_wz_code_path} is not a file")
 
         base_wz = await self.caller.get_base_wz()
 

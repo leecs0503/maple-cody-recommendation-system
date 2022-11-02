@@ -15,12 +15,13 @@ class HTTPHandler:
         self,
         logger: logging.Logger,
         config: Config,
+        processor: AvatarProcessor = None
     ):
         self.logger = logger
         self.processor = AvatarProcessor(
             logger=self.logger,
             config=config,
-        )
+        ) if processor is None else processor
 
     def get_routes(self):
         return [

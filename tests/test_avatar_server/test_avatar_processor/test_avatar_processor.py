@@ -1,4 +1,3 @@
-from src.AvatarServer.util.item_manager import ItemManager
 from src.AvatarServer.AvatarProcessor.avatar_processor import AvatarProcessor
 from src.AvatarServer.AvatarProcessor.packed_character_info import PackedCharacterInfo
 from src.AvatarServer.AvatarProcessor.WCR_caller import WCRCaller
@@ -29,11 +28,6 @@ def caller_for_test() -> CallerForTest:
 
 @pytest.fixture
 def avatar_processor_for_test(config_for_test: Config, caller_for_test: CallerForTest) -> AvatarProcessor:
-
-    # FIXME: validate 로직 제거 예정
-    async def tmp(*args, **kwargs):
-        pass
-    ItemManager.validate = tmp
     return AvatarProcessor(
         logger=logging.getLogger(__file__),
         config=config_for_test,
