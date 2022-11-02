@@ -59,28 +59,9 @@ pytest .
 - main에 직접 commit하는 경우는 지양
 - commit명의 prefix는 "feat", "docs", "refactor", "deploy"중 하나를 선택
 
-# git 사용 법
-## branch 추가하는 법
-```
-git checkout -b {branch name}
-```
-
-## branch 이동하는 법
-```
-git checkout {branch name}
-```
-
-## branch 리스트 보는 법
-```
-git branch
-```
-
-## branch 변경 전 commit이후 내용 임시 저장
-```
-git stash
-```
-
-## commit하는 법
-```
-git commit -m "커밋 메세지"
-```
+# docker
+ - 기본적으로 빌드는 build_XXXserver_docker.sh에 빌드 관련 스크립트를 작성
+ - dockerfile들은 docker/Dockerfile.XXXXX, docker/Dockerfile.XXXXX.dockerignore 형식으로 작성
+ - build시 export DOCKER_BUILDKIT=1로 설정해서 dockerignore이 인식되도록 처리
+ - python server의 경우 requirements.txt를 뽑아내서 처리 (이후 multistage build로 변경 예정)
+ 

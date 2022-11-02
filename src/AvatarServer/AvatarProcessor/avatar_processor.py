@@ -39,11 +39,13 @@ class AvatarProcessor:
         )
         self.item_code_list = []
         self.item_manager = ItemManager()
+        self.logger.info("start loading base_wz")
         loop = asyncio.get_event_loop()
         base_wz = loop.run_until_complete(
             self._load_base_wz()
         )
         self.item_manager.read(base_wz)
+        self.logger.info("complete loading base_wz")
 
     async def _load_base_wz(self) -> dict:
         # TODO: 위치 논의 필요
