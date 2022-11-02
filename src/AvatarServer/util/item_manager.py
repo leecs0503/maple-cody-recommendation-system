@@ -18,7 +18,7 @@ class ItemManager:
             "hair",
             "pants",
             "shield",
-            "Shoes",
+            "shoes",
             "faceAccessory",
             "eyeAccessory",
             "earrings",
