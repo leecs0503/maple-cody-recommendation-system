@@ -2,6 +2,7 @@ import asyncio
 import pytest
 from aiohttp.test_utils import make_mocked_request
 import urllib
+import json
 
 from typing import Dict
 from aiohttp import streams
@@ -30,7 +31,7 @@ class TempProtocol(asyncio.BaseProtocol):
         self._reading_paused = False
 
 
-def _make_mocked_request(obj: Dict[str, str], request_path: str) -> web.Request:
+def _make_mocked_request_x_www_form_urlencoded(obj: Dict[str, str], request_path: str) -> web.Request:
     reader = streams.StreamReader(protocol=TempProtocol(), limit=10000)
     bdata = bytes(
         urllib.parse.urlencode(obj),
@@ -46,9 +47,25 @@ def _make_mocked_request(obj: Dict[str, str], request_path: str) -> web.Request:
     )
 
 
+def _make_mocked_request_json(obj: Dict[str, str], request_path: str) -> web.Request:
+    reader = streams.StreamReader(protocol=TempProtocol(), limit=10000)
+    bdata = bytes(
+        json.dumps(obj),
+        encoding="utf-8",
+    )
+    reader.feed_data(bdata)
+    reader.feed_eof()
+    return test_utils.make_mocked_request(
+        method="POST",
+        headers={"Content-Type": "application/json"},
+        path=request_path,
+        payload=reader,
+    )
+
+
 @pytest.mark.asyncio
 async def test_packed_character_look_handler(test_http_handler: HTTPHandler):
-    request = _make_mocked_request(
+    request = _make_mocked_request_json(
         obj={
             "packed_character_look": "abc"
         },

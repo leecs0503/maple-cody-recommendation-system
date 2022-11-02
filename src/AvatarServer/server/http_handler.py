@@ -37,7 +37,7 @@ class HTTPHandler:
         return web.Response(body="200 OK", status=HTTPStatus.OK)
 
     async def packed_character_look_handler(self, request: web.Request):
-        post = await request.post()
+        post = await request.json()
         packed_character_look = post.get("packed_character_look")
         try:
             packed_character_info = self.processor.infer(packed_character_look)
