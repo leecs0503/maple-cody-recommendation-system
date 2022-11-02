@@ -68,7 +68,7 @@ class PackedCharacterInfo:
     eye_accessory_gender: int = -1
     ear_accessory_id: int = -1
     ear_accessory_gender: int = -1
-    is_long_coat: int = -1
+    is_long_coat: int = 0
     coat_id: int = -1
     coat_gender: int = -1
     pants_id: int = -1
