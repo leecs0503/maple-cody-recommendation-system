@@ -1,5 +1,3 @@
-# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP .NET Core service.
-
 version: '3.4'
 
 services:
@@ -14,21 +12,3 @@ services:
              --wcr-caller-backoff 1
     ports:
       - "8080:8080"
-    
-  # wzcomparerr2server:
-  #   image: wzcomparerr2server
-  #   build:
-  #     context: .
-  #     dockerfile: ./Dockerfile
-  #   ports:
-  #     - "7209:443"
-  #     - "5285:80"
-  #   environment:
-  #     - ASPNETCORE_ENVIRONMENT=Development
-  #     - ASPNETCORE_URLS=https://+:443;http://+:80
-  #     - ASPNETCORE_HTTPS_PORT=7209
-  #     - ASPNETCORE_Kestrel__Certificates__Default__Password=270e9908-480d-4647-a482-4503e3492e57
-  #     - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
-  #   volumes:
-  #     - ~/.aspnet/https:/https:ro
-  #     - ./Data:/app/Data:ro
