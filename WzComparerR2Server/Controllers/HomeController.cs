@@ -246,7 +246,7 @@ public class HomeController : Controller
 		{
 			avatar.EarType = 0;
 		}
-		if (head != null)
+		if (head != null && head != "0")
 		{
 			gearType = get_geartype(head);
 			if (gearType == null || gearType != GearType.head)
@@ -255,7 +255,7 @@ public class HomeController : Controller
 			}
 			code += ","; code += head;
 		}
-		if (face != null)
+		if (face != null && face != "0")
 		{
 			gearType = get_geartype(face); 
 			if (gearType == null || !Gear.IsFace((GearType)gearType))
@@ -264,7 +264,7 @@ public class HomeController : Controller
 			}
 			code += ","; code += face;
 		}
-		if (hair != null)
+		if (hair != null && hair != "0")
 		{
 			gearType = get_geartype(hair); 
 			if (gearType == null || !Gear.IsHair((GearType)gearType))
@@ -273,7 +273,7 @@ public class HomeController : Controller
 			}
 			code += ","; code += hair;
 		}
-		if (cap != null)
+		if (cap != null && cap != "0")
 		{
 			gearType = get_geartype(cap); 
 			if (gearType == null || gearType != GearType.cap)
@@ -282,7 +282,7 @@ public class HomeController : Controller
 			}
 			code += ","; code += cap;
 		}
-		if (coat != null)
+		if (coat != null && coat != "0")
 		{
 			gearType = get_geartype(coat); 
 			if (gearType == null || gearType != GearType.coat)
@@ -291,7 +291,7 @@ public class HomeController : Controller
 			}
 			code += ","; code += coat;
 		}
-		if (longcoat != null)
+		if (longcoat != null && longcoat != "0")
 		{
 			gearType = get_geartype(longcoat); 
 			if (gearType == null || gearType != GearType.longcoat)
@@ -300,7 +300,7 @@ public class HomeController : Controller
 			}
 			code += ","; code += longcoat;
 		}
-		if (pants != null)
+		if (pants != null && pants != "0")
 		{
 			gearType = get_geartype(pants); 
 			if (gearType == null || gearType != GearType.pants)
@@ -309,7 +309,7 @@ public class HomeController : Controller
 			}
 			code += ","; code += pants;
 		}
-		if (shoes != null)
+		if (shoes != null && shoes != "0")
 		{
 			gearType = get_geartype(shoes); 
 			if (gearType == null || gearType != GearType.shoes)
@@ -318,7 +318,7 @@ public class HomeController : Controller
 			}
 			code += ","; code += shoes;
 		}
-		if (glove != null)
+		if (glove != null && glove != "0")
 		{
 			gearType = get_geartype(glove); 
 			if (gearType == null || gearType != GearType.glove)
@@ -327,7 +327,7 @@ public class HomeController : Controller
 			}
 			code += ","; code += glove;
 		}
-		if (shield != null)
+		if (shield != null && shield != "0")
 		{
 			gearType = get_geartype(shield);
 			if (gearType == null || gearType != GearType.shield)
@@ -336,7 +336,7 @@ public class HomeController : Controller
 			}
 			code += ","; code += shield;
 		}
-		if (cape != null)
+		if (cape != null && cape != "0")
 		{
 			gearType = get_geartype(cape); 
 			if (gearType == null || gearType != GearType.cape)
@@ -345,7 +345,7 @@ public class HomeController : Controller
 			}
 			code += ","; code += cape;
 		}
-		if (weapon != null)
+		if (weapon != null && weapon != "0")
 		{
 			gearType = get_geartype(weapon);
 			if (gearType == null || !Gear.IsWeapon((GearType)gearType) && gearType!=GearType.cashWeapon)
@@ -354,7 +354,7 @@ public class HomeController : Controller
 			}
 			code += ","; code += weapon;
 		}
-		if (earrings != null)
+		if (earrings != null && earrings != "0")
 		{
 			gearType = get_geartype(earrings); 
 			if (gearType == null || gearType != GearType.earrings)
@@ -363,7 +363,7 @@ public class HomeController : Controller
 			}
 			code += ","; code += earrings;
 		}
-		if (faceAccessory != null)
+		if (faceAccessory != null && faceAccessory != "0")
 		{
 			gearType = get_geartype(faceAccessory);
 			if (gearType == null || gearType != GearType.faceAccessory)
@@ -372,7 +372,7 @@ public class HomeController : Controller
 			}
 			code += ","; code += faceAccessory;
 		}
-		if (eyeAccessory != null)
+		if (eyeAccessory != null && eyeAccessory != "0")
 		{
 			gearType = get_geartype(eyeAccessory); 
 			if (gearType == null || gearType != GearType.eyeAccessory)
@@ -381,7 +381,7 @@ public class HomeController : Controller
 			}
 			code += ","; code += eyeAccessory;
 		}
-		if (longcoat != null && (coat != null || pants != null))
+		if (longcoat != null && longcoat != "0" && (coat != null && coat != "0" || pants != null && pants != "0"))
 		{
 			return BadRequest("longcoat and coat + pants can't be load simultaneously");
 		}
