@@ -51,7 +51,7 @@ class WCRCaller:
         if ActionQuery is not None:
             params.append(("actionQuery", ActionQuery))
 
-        params.append(("bs", "True"))
+        params.append(("bs", "true"))
 
         for step in range(retry_num):
             async with aiohttp.ClientSession() as session:
