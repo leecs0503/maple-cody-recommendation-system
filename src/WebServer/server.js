@@ -32,35 +32,35 @@ app.get('/', (req, res) => {
   })
 });
 
-var result
-var infer_result
+var character_code_result
+var infer_code_bs64encoding_result
 app.post("/result", async (req, res) => {
 
-  await axios.post('http://localhost:7000/web_handler', {
+  await axios.post('http://localhost:7000/character_code_web_handler', {
     name: req.body.name
   })
     .then(function (response) {
-      result = response.data;
+      character_code_result = response.data;
     })
     .catch(function (error) {
       console.log(error);
     });
-  result = JSON.stringify(result)
-  json = JSON.parse(result)
 
-  await axios.post('http://localhost:7000/infer_handler', {
-    result
+
+  await axios.post('http://localhost:7000/infer_code_web_handler', {
+    character_code_result
   })
     .then(function (response) {
-      infer_result = response.data;
+      infer_code_bs64encoding_result = response.data;
     })
     .catch(function (error) {
       console.log(error);
     });
+
 
   await res.render('result.html', {
     name: req.body.name,
-    decoded_image: infer_result
+    decoded_image: infer_code_bs64encoding_result
   })
 
 });

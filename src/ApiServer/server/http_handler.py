@@ -27,8 +27,8 @@ class HTTPHandler:
         return [
             web.get("/", self.index_handler),
             web.get("/healthcheck", self.healthcheck_handler),
-            web.post('/web_handler', self.web_handler),
-            web.post('/infer_handler', self.infer_handler),
+            web.post('/character_code_web_handler', self.character_code_web_handler),
+            web.post('/infer_code_web_handler', self.infer_code_web_handler),
         ]
 
     async def index_handler(self, request: web.Request):
@@ -39,27 +39,21 @@ class HTTPHandler:
         """ """
         return web.Response(body="200 OK", status=HTTPStatus.OK)
 
-    async def web_handler(self, request: web.Request):
+    async def character_code_web_handler(self, request: web.Request) -> web.Response:
 
         post = await request.text()
-        res = dict()
-        post = post.replace('{' , '').replace('}' , '').replace('"' , '')
-        post = post.split(':')
-        res = post[1]
+        post = json.loads(post)
+        res = post['name']
 
         url = f'https://maple.gg/u/{res}'
         soup = get_html_text(url)
-        img_tag = soup.find_all(class_="character-image")[1:-1]
-        tag_list = [tag["src"] for tag in img_tag]
-        tag = tag_list[0]
+        img_tag = soup.find_all(class_="character-image")[1]["src"]
 
-        encrypted_code = tag.replace('https://avatar.maplestory.nexon.com/Character/', '').replace('.png', '')
+        encrypted_code = img_tag.replace('https://avatar.maplestory.nexon.com/Character/', '').replace('.png', '')
         response = requests.post("http://localhost:8080/packed_character_look", json={"packed_character_look": encrypted_code})
-        print(response.text)
-
         return web.Response(body=response.text, status=HTTPStatus.OK)
 
-    async def infer_handler(self, request: web.Request):
+    async def infer_code_web_handler(self, request: web.Request) -> web.Response:
 
         post = await request.text()
         # response = requests.post("http://localhost:8080/inference", post)  -> infer 서버에 사용자의 코드 요청
