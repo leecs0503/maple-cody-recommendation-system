@@ -1,5 +1,9 @@
+from .server.app_runner import AppRunner
+
+
 def main():
-    pass
+    AppRunner(
+    ).run()
 
 
 if __name__ == "__main__":
