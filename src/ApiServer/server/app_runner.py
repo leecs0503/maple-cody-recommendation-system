@@ -26,6 +26,7 @@ class AppRunner:
         if not os.path.exists('logs'):
             os.makedirs("logs")
         file_handler = logging.FileHandler("logs/app_runner_log.log")
+
         file_handler.setFormatter(formatter)
         file_handler.setLevel(logging.INFO)
 
