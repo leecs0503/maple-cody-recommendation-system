@@ -14,6 +14,35 @@ def get_html_text(url: str):
     soup = BeautifulSoup(html, "html.parser")
     return soup
 
+def get_avatar_item_encoding_string(response_infer_code: dict) -> dict:
+    wz_server_url = 'https://0.0.0.0:7209/avatar'
+    obj = {}
+    encoding_images = {}
+
+    for k, v in response_infer_code.items():
+        if k == 'skin':
+            k = 'head'
+        if k == 'shield':
+            continue
+        if v == '0':
+            continue
+        if k == 'name':
+            continue
+        obj[k] = v
+    obj['bs'] = 'true'
+
+    for k, v in obj.items():
+        if k == 'bs':
+            continue
+        item_image_url = f'https://0.0.0.0:7209/{k}/?code={v}&bs=true'
+        res = requests.get(item_image_url, verify=False)
+        encoding_images[k] = res.text
+    res = requests.get(wz_server_url, params=obj, verify=False)
+    encoding_images['avatar'] = res.text
+
+    return encoding_images
+
+
 
 class HTTPHandler:
     def __init__(
@@ -40,7 +69,7 @@ class HTTPHandler:
         """ """
         return web.Response(body="200 OK", status=HTTPStatus.OK)
 
-    async def get_wz_code(self, request: web.Request):
+    async def get_wz_code(self, request: web.Request) -> web.json_response:
         url = 'https://0.0.0.0:7209/code'
         res = requests.get(url, verify=False)
         json_wz_code = json.loads(res.text)
@@ -48,26 +77,28 @@ class HTTPHandler:
         return web.json_response(json_wz_code)
 
     async def character_code_web_handler(self, request: web.Request) -> web.Response:
+        avatar_server_url ="http://localhost:8080/packed_character_look"
+        maple_gg_url = f'https://maple.gg/u/{res}'
 
         post = await request.text()
         post = json.loads(post)
         self.logger.info(f"web server character request information: {post}")
-
         res = post['name']
 
-        url = f'https://maple.gg/u/{res}'
-        soup = get_html_text(url)
+        soup = get_html_text(maple_gg_url)
 
         img_tag = soup.find_all(class_="character-image")[1]["src"]
         self.logger.info(f"crawling character url : {img_tag}")
 
         encrypted_code = img_tag.replace('https://avatar.maplestory.nexon.com/Character/', '').replace('.png', '')
-        response = requests.post("http://localhost:8080/packed_character_look", json={"packed_character_look": encrypted_code})
+        response = requests.post(avatar_server_url, json={"packed_character_look": encrypted_code})
         self.logger.info(f"web server character code response: {response.text}")
 
         return web.Response(body=response.text, status=HTTPStatus.OK)
 
-    async def infer_code_web_handler(self, request: web.Request) -> web.Response:
+    async def infer_code_web_handler(self, request: web.Request) -> web.json_response:
+        result_inference = {}
+        encoding_images = {}
 
         post = await request.text()
         post = json.loads(post)
@@ -81,38 +112,10 @@ class HTTPHandler:
         response_infer_code = json.loads(response_infer_code)
         self.logger.info(f"inference character code : {response_infer_code}")
 
-        obj = {}
-        for k, v in response_infer_code.items():
-            if k == 'skin':
-                k = 'head'
-            if k == 'shield':
-                continue
-            if v == '0':
-                continue
-            if k == 'name':
-                continue
-            obj[k] = v
+        encoding_images = get_avatar_item_encoding_string(response_infer_code)
+        self.logger.info(f"avatar and item base64 encoding string : {encoding_images}")
 
-        obj['bs'] = 'true'
-
-        encoding_images = {}
-
-        for k, v in obj.items():
-            if k == 'bs':
-                continue
-            url = f'https://0.0.0.0:7209/{k}/?code={v}&bs=true'
-            print('url' , url)
-            res = requests.get(url, verify=False)
-            encoding_images[k] = res.text
-            self.logger.info(f"add encoding image element : {k} : {res.text}")
-
-        res = requests.get('https://0.0.0.0:7209/avatar', params=obj, verify=False)
-
-        self.logger.info(f"bs64 encoded inference image string : {res.text}")
-        encoding_images['avatar'] = res.text
-
-        result_inference = {}
         result_inference['encoding_image_string'] = encoding_images
         result_inference['inference_code'] = response_infer_code
-        print(result_inference)
+
         return web.json_response(result_inference)
