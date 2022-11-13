@@ -57,10 +57,8 @@ app.post("/result", async (req, res) => {
       console.log(error);
     });
 
-
   await res.render('result.html', {
     name: req.body.name,
-    decoded_image: infer_code_bs64encoding_result
+    infer_code: infer_code_bs64encoding_result,
   })
-
 });

@@ -84,8 +84,22 @@ class HTTPHandler:
             if k == 'name':
                 continue
             obj[k] = v
-        obj['bs'] = 'true'
-        res = requests.get('https://0.0.0.0:7209/avatar', params=obj, verify=False)
-        self.logger.info(f"bs64 encoded inference image string : {res.text}")
 
-        return web.Response(body=res.text, status=HTTPStatus.OK)
+        obj['bs'] = 'true'
+
+        encoding_images = {}
+
+        for k, v in obj.items():
+            if k == 'bs':
+                continue
+            url = f'https://0.0.0.0:7209/{k}/?code={v}&bs=true'
+            res = requests.get(url, verify=False)
+            encoding_images[k] = res.text
+            self.logger.info(f"add encoding image element : {k} : {res.text}")
+
+        res = requests.get('https://0.0.0.0:7209/avatar', params=obj, verify=False)
+
+        self.logger.info(f"bs64 encoded inference image string : {res.text}")
+        encoding_images['avatar'] = res.text
+
+        return web.json_response(encoding_images)
