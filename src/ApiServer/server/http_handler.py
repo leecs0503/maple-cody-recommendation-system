@@ -27,6 +27,7 @@ class HTTPHandler:
         return [
             web.get("/", self.index_handler),
             web.get("/healthcheck", self.healthcheck_handler),
+            web.get("/get_wz_code", self.get_wz_code),
             web.post('/character_code_web_handler', self.character_code_web_handler),
             web.post('/infer_code_web_handler', self.infer_code_web_handler),
         ]
@@ -38,6 +39,13 @@ class HTTPHandler:
     async def healthcheck_handler(self, request: web.Request):
         """ """
         return web.Response(body="200 OK", status=HTTPStatus.OK)
+
+    async def get_wz_code(self, request: web.Request):
+        url = 'https://0.0.0.0:7209/code'
+        res = requests.get(url, verify=False)
+        json_wz_code = json.loads(res.text)
+
+        return web.json_response(json_wz_code)
 
     async def character_code_web_handler(self, request: web.Request) -> web.Response:
 
@@ -69,12 +77,12 @@ class HTTPHandler:
         # response = requests.post("http://localhost:8080/inference", post)  -> infer 서버에 사용자의 코드 요청
         # 추천된 코드를 json으로 저장하여 response로 받는다고 가정
 
-        response = '{"face": "54002", "cap": "1005041", "longcoat": "1053240", "weapon": "1703048", "cape": "1103332", "coat": "0", "glove": "1082703", "hair": "61481+3*50", "pants": "0", "shield": "1092067", "shoes": "1073534", "faceAccessory": "1012050", "eyeAccessory": "1022079", "earrings": "1032022", "skin": "12024"}'
-        response = json.loads(response)
-        self.logger.info(f"inference character code : {response}")
+        response_infer_code = '{"face": "54002", "cap": "1005041", "longcoat": "1053240", "weapon": "1703048", "cape": "1103332", "coat": "0", "glove": "1082703", "hair": "61481+3*50", "pants": "0", "shield": "1092067", "shoes": "1073534", "faceAccessory": "1012050", "eyeAccessory": "1022079", "earrings": "1032022", "skin": "12024"}'
+        response_infer_code = json.loads(response_infer_code)
+        self.logger.info(f"inference character code : {response_infer_code}")
 
         obj = {}
-        for k, v in response.items():
+        for k, v in response_infer_code.items():
             if k == 'skin':
                 k = 'head'
             if k == 'shield':
@@ -93,6 +101,7 @@ class HTTPHandler:
             if k == 'bs':
                 continue
             url = f'https://0.0.0.0:7209/{k}/?code={v}&bs=true'
+            print('url' , url)
             res = requests.get(url, verify=False)
             encoding_images[k] = res.text
             self.logger.info(f"add encoding image element : {k} : {res.text}")
@@ -102,4 +111,8 @@ class HTTPHandler:
         self.logger.info(f"bs64 encoded inference image string : {res.text}")
         encoding_images['avatar'] = res.text
 
-        return web.json_response(encoding_images)
+        result_inference = {}
+        result_inference['encoding_image_string'] = encoding_images
+        result_inference['inference_code'] = response_infer_code
+        print(result_inference)
+        return web.json_response(result_inference)
