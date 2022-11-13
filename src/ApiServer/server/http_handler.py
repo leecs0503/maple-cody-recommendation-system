@@ -7,12 +7,14 @@ from ..server.config import Config
 import requests
 from bs4 import BeautifulSoup
 import json
+import os
 
 
 def get_html_text(url: str):
     html = requests.get(url).text
     soup = BeautifulSoup(html, "html.parser")
     return soup
+
 
 def get_avatar_item_encoding_string(response_infer_code: dict) -> dict:
     wz_server_url = 'https://0.0.0.0:7209/avatar'
@@ -43,7 +45,6 @@ def get_avatar_item_encoding_string(response_infer_code: dict) -> dict:
     return encoding_images
 
 
-
 class HTTPHandler:
     def __init__(
         self,
@@ -70,20 +71,34 @@ class HTTPHandler:
         return web.Response(body="200 OK", status=HTTPStatus.OK)
 
     async def get_wz_code(self, request: web.Request) -> web.json_response:
+        cwd = os.path.dirname(os.path.realpath(__file__))
+        base_wz_code_path = os.path.join(cwd, 'data', 'test_base_wz.json')
+
+        if base_wz_code_path:
+            if os.path.isfile(base_wz_code_path):
+                with open(base_wz_code_path) as f:
+                    base_wz = json.load(f)
+                    return web.json_response(base_wz)
+
         url = 'https://0.0.0.0:7209/code'
         res = requests.get(url, verify=False)
-        json_wz_code = json.loads(res.text)
+        base_wz = json.loads(res.text)
 
-        return web.json_response(json_wz_code)
+        if base_wz_code_path:
+            with open(base_wz_code_path, "w") as f:
+                json.dump(base_wz, f, ensure_ascii=False, indent="\t")
+
+        return web.json_response(base_wz)
 
     async def character_code_web_handler(self, request: web.Request) -> web.Response:
-        avatar_server_url ="http://localhost:8080/packed_character_look"
-        maple_gg_url = f'https://maple.gg/u/{res}'
+        avatar_server_url = "http://localhost:8080/packed_character_look"
 
         post = await request.text()
         post = json.loads(post)
         self.logger.info(f"web server character request information: {post}")
         res = post['name']
+
+        maple_gg_url = f'https://maple.gg/u/{res}'
 
         soup = get_html_text(maple_gg_url)
 
