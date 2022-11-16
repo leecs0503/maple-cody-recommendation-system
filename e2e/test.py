@@ -1,8 +1,7 @@
-from src.AvatarServer.Avatar.avatar import Avatar
 from src.AvatarServer.server.config import Config
 from src.AvatarServer.AvatarProcessor.avatar_processor import AvatarProcessor
-from src.AvatarServer.AvatarProcessor.packed_character_info import PackedCharacterInfo
-import logging, os
+import logging
+import os
 import asyncio
 from aiohttp import web
 from PIL import Image, ImageChops
@@ -22,7 +21,7 @@ def main():
         logger=logging.getLogger(__file__),
         config=config,
     )
-    packed_character_info = avatar_processor.infer("LBDGMFNKHKPCFEIKMLCAECJDBELMLLADNFHDAJPIHJAJBKFCLMKKLDLDFNPBOGEAODPEMPCBIPCCGBIOFPCCKGIKKDLILAOACAHHIKACLAKLKKNPFILHBLIPKKMHGAFEADKBHCIPDBJHOKFGCGFHFAKMOHCDBPJKPHNGBGCLMOLDJHHFFEBKEJFNKBJMEJNFPLDEOLKCALAGNADDIDPACEPGMLMCBHHAGKOFFPKKNHKJOJPELKPFKODNDFPBHCBF")
+    packed_character_info = avatar_processor.infer("LBDGMFNKHKPCFEIKMLCAECJDBELMLLADNFHDAJPIHJAJBKFCLMKKLDLDFNPBOGEAODPEMPCBIPCCGBIOFPCCKGIKKDLILAOACAHHIKACLAKLKKNPFILHBLIPKKMHGAFEADKBHCIPDBJHOKFGCGFHFAKMOHCDBPJKPHNGBGCLMOLDJHHFFEBKEJFNKBJMEJNFPLDEOLKCALAGNADDIDPACEPGMLMCBHHAGKOFFPKKNHKJOJPELKPFKODNDFPBHCBF")  # noqa: E501
     avatar = packed_character_info.get_avatar()
 
     avatar.shield = "0"
@@ -33,9 +32,10 @@ def main():
             avatar_processor.process_image(avatar)
         )
         image.save(os.path.join("e2e", "test.png"))
-        assert ImageChops.difference(image, Image.open(os.path.join("e2e", "test.png"))).getbbox() == None
+        assert ImageChops.difference(image, Image.open(os.path.join("e2e", "test.png"))).getbbox() is None
     except web.HTTPBadRequest as e:
         print(e.text)
-    
+
+
 if __name__ == "__main__":
     main()

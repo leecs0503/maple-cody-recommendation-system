@@ -72,4 +72,3 @@ class HTTPHandler:
             raise web.HTTPInternalServerError(
                 body=f"Internal Server Error 500: {str(err)}"
             )
-

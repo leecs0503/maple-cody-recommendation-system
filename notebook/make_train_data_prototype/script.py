@@ -1,6 +1,7 @@
-#%%
+# %%
 import json
 import os
+import requests
 
 cwd = os.getcwd()
 file_path = os.path.abspath(os.path.join(cwd, os.pardir))
@@ -21,9 +22,6 @@ with open(path3) as file:
     json_data3 = json.load(file)
 
 # %%
-
-import requests
-
 result = {}
 
 for json_data in [json_data1, json_data2, json_data3]:
@@ -31,7 +29,7 @@ for json_data in [json_data1, json_data2, json_data3]:
         result[data["nickname"]] = []
         for code_list in data["recent_cody_list"]:
             encrypted_code = code_list.replace('https://avatar.maplestory.nexon.com/Character/', '').replace('.png', '')
-            response = requests.post("http://localhost:8080/packed_character_look", json={"packed_character_look": encrypted_code})
+            response = requests.post("http://localhost:8080/packed_character_look", json={"packed_character_look": encrypted_code})  # noqa: E501
             if response.status_code == 200:
                 result[data["nickname"]].append(json.loads(response.text))
 
