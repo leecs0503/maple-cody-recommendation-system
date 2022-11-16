@@ -1,12 +1,12 @@
 const express = require('express');
 const app = express();
-
 const nunjucks = require("nunjucks");
-
 const axios = require('axios');
 const { create } = require('domain');
 
 
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 
 app.set("view engine", "html")
@@ -15,27 +15,21 @@ nunjucks.configure("./views", {
 });
 
 
-const server = app.listen(3000, () => {
+app.listen(3000, () => {
   console.log("Start Server : localhost: 3000");
 }
 );
 
 
-
-app.use(express.urlencoded({ extended: true }));
-
+module.exports = app;
 
 app.get('/', (req, res) => {
-  let name = req.query.data
-  res.render('index.html', {
-    user: name
-  })
+  res.render('index.html')
 });
 
 var character_code_result
 var infer_result
 app.post("/result", async (req, res) => {
-
   await axios.post('http://localhost:7000/character_code_web_handler', {
     name: req.body.name
   })
@@ -56,7 +50,6 @@ app.post("/result", async (req, res) => {
     .catch(function (error) {
       console.log(error);
     });
-
 
   await res.render('result.html', {
     name: req.body.name,

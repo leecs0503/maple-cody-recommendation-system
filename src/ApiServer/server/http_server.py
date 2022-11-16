@@ -3,10 +3,10 @@ import logging
 from aiohttp import web
 
 from .config import Config
-from .http_handler import HTTPHandler
+from .http_handler import HttpHandler
 
 
-class HTTPServer:
+class HttpServer:
     def __init__(
         self,
         logger: logging.Logger,
@@ -15,11 +15,11 @@ class HTTPServer:
         self.logger = logger
         self.app = web.Application()
         self.config = config
-        self.HTTPHandler = HTTPHandler(
+        self.HttpHandler = HttpHandler(
             logger=self.logger,
             config=config,
         )
-        self.routes = self.HTTPHandler.get_routes()
+        self.routes = self.HttpHandler.get_routes()
         self.app.add_routes(self.routes)
 
     def run(

@@ -16,46 +16,21 @@ def get_html_text(url: str):
     return soup
 
 
-def get_avatar_item_encoding_string(item_code: dict) -> dict:
-    wz_server_url = 'https://0.0.0.0:7209/avatar'
-    obj = {}
-    encoding_images = {}
-
-    for k, v in item_code.items():
-        if k == 'skin':
-            k = 'head'
-        if k == 'shield':
-            continue
-        if v == '0':
-            continue
-        if k == 'name':
-            continue
-        obj[k] = v
-    obj['bs'] = 'true'
-
-    for k, v in obj.items():
-        if k == 'bs':
-            continue
-        item_image_url = f'https://0.0.0.0:7209/{k}/?code={v}&bs=true'
-        res = requests.get(item_image_url, verify=False)
-        encoding_images[k] = res.text
-    res = requests.get(wz_server_url, params=obj, verify=False)
-    encoding_images['avatar'] = res.text
-
-    return encoding_images
-
-
-def get_base_wz() -> dict:
+def get_base_wz(config) -> dict:
     cwd = os.path.dirname(os.path.realpath(__file__))
     base_wz_code_path = os.path.join(cwd, 'data', 'test_base_wz.json')
-
     if base_wz_code_path:
         if os.path.isfile(base_wz_code_path):
             with open(base_wz_code_path) as f:
                 base_wz = json.load(f)
                 return base_wz
 
-    url = 'https://0.0.0.0:7209/code'
+    wcr_server_host = config.wcr_server_host
+    wcr_server_port = config.wcr_server_port
+    wcr_server_protocol = config.wcr_server_protocol
+
+    url = f"{wcr_server_protocol}://{wcr_server_host}:{wcr_server_port}/code"
+
     res = requests.get(url, verify=False)
     base_wz = json.loads(res.text)
 
@@ -64,6 +39,35 @@ def get_base_wz() -> dict:
             json.dump(base_wz, f, ensure_ascii=False, indent="\t")
 
     return base_wz
+
+
+def get_avatar_item_encoding_string(item_code: dict) -> dict:
+    wz_server_url = 'https://0.0.0.0:7209/avatar'
+    obj = {}
+    encoding_images = {}
+
+    for key, value in item_code.items():
+        if key == 'skin':
+            key = 'head'
+        if key == 'shield':
+            continue
+        if value == '0':
+            continue
+        if key == 'name':
+            continue
+        obj[key] = value
+    obj['bs'] = 'true'
+
+    for key, value in obj.items():
+        if key == 'bs':
+            continue
+        item_image_url = f'https://0.0.0.0:7209/{key}/?code={value}&bs=true'
+        res = requests.get(item_image_url, verify=False)
+        encoding_images[key] = res.text
+    res = requests.get(wz_server_url, params=obj, verify=False)
+    encoding_images['avatar'] = res.text
+
+    return encoding_images
 
 
 def get_item_code_name(base_wz: dict , item_code: dict) -> dict:
@@ -85,13 +89,14 @@ def get_item_code_name(base_wz: dict , item_code: dict) -> dict:
     return item_code_name
 
 
-class HTTPHandler:
+class HttpHandler:
     def __init__(
         self,
         logger: logging.Logger,
         config: Config,
     ):
         self.logger = logger
+        self.config = config
 
     def get_routes(self):
         return [
@@ -132,7 +137,6 @@ class HTTPHandler:
 
     async def infer_code_web_handler(self, request: web.Request) -> web.json_response:
         result_inference = {}
-        encoding_images = {}
 
         post = await request.text()
         post = json.loads(post)
@@ -144,13 +148,12 @@ class HTTPHandler:
 
         response_infer_code = '{"face": "54002", "cap": "1005041", "longcoat": "1053240", "weapon": "1703048", "cape": "1103332", "coat": "0", "glove": "1082703", "hair": "61481+3*50", "pants": "0", "shield": "1092067", "shoes": "1073534", "faceAccessory": "1012050", "eyeAccessory": "1022079", "earrings": "1032022", "skin": "12024"}'
         response_infer_code = json.loads(response_infer_code)
-        self.logger.info(f"inference character code : {response_infer_code}")
+        self.logger.debug(f"inference character code : {response_infer_code}")
 
         encoding_images_string = get_avatar_item_encoding_string(item_code=response_infer_code)
-        self.logger.info(f"avatar and item base64 encoding string : {encoding_images}")
-
-        base_wz = get_base_wz()
-        self.logger.info(f"base_wz_code : {base_wz}")
+        self.logger.info(f"avatar and item base64 encoding string : {encoding_images_string}")
+        base_wz = get_base_wz(self.config)
+        self.logger.info(f"base_wz_code keys: {base_wz.keys()}")
 
         item_code_name = get_item_code_name(base_wz=base_wz, item_code=response_infer_code)
         self.logger.info(f"inference item_code_name : {item_code_name}")
