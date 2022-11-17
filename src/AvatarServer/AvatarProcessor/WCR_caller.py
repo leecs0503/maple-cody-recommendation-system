@@ -41,7 +41,7 @@ class WCRCaller:
                     return json.loads(await resp.text())
         raise Exception("err: get_base_wz")
 
-    async def get_image(self, avatar: Avatar, ActionQuery: Optional[str] = None):
+    async def get_avatar_image(self, avatar: Avatar, ActionQuery: Optional[str] = None):
         """ caller의 get image """
         url = f"{self.wcr_server_protocol}://{self.wcr_server_host}:{self.wcr_server_port}/avatar/"
         retry_num = self.retry_num if self.retry_num >= 0 else 1000000000

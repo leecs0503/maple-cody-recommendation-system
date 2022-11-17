@@ -27,7 +27,7 @@ class HTTPHandler:
             web.get("/", self.index_handler),
             web.get("/healthcheck", self.healthcheck_handler),
             web.post('/packed_character_look', self.packed_character_look_handler),
-            web.post('/avatar_image', self.avatar_image_handler)
+            web.post('/avatar_image', self.avatar_image_handler),
         ]
 
     async def index_handler(self, request: web.Request):
@@ -64,7 +64,7 @@ class HTTPHandler:
                 raise Exception("attribute not in avatar")
             setattr(avatar, k, v)
         try:
-            image_str = await self.processor.caller.get_image(avatar=avatar)
+            image_str = await self.processor.caller.get_avatar_image(avatar=avatar)
             return web.Response(text=image_str)
         except web.HTTPBadRequest as e:
             raise web.HTTPBadRequest(text=e.text)
