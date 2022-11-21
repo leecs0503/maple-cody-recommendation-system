@@ -461,12 +461,18 @@ public class HomeController : Controller
 				part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
 			}
 			var byteArray = BitmapToByteArray(this.avatar.MixBitmaps(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap,BitmapOrigin.CreateFromNode(mix_node, PluginManager.FindWz).Bitmap,mixOpacity));
+			if(byteArray == null) {
+				return BadRequest("Invalid Request");
+			}
 			if (bs == true) return Content(Convert.ToBase64String(byteArray));
 			else return base.File(byteArray,"image/png");
 		}
 		else
 		{
 			var byteArray = BitmapToByteArray(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap);
+			if(byteArray == null) {
+				return BadRequest("Invalid Request");
+			}
 			if (bs == true) return Content(Convert.ToBase64String(byteArray));
 			return base.File(byteArray,"image/png");
 		}
@@ -514,6 +520,9 @@ public class HomeController : Controller
 				part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
 			}
 			var byteArray = BitmapToByteArray(this.avatar.MixBitmaps(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap,BitmapOrigin.CreateFromNode(mix_node, PluginManager.FindWz).Bitmap,mixOpacity));
+			if(byteArray == null) {
+				return BadRequest("Invalid Request");
+			}
 			if (bs == true) return Content(Convert.ToBase64String(byteArray));
 			else return base.File(byteArray,"image/png");
 		}
@@ -531,6 +540,9 @@ public class HomeController : Controller
 				part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
 			}
 			var byteArray = BitmapToByteArray(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap);
+			if(byteArray == null) {
+				return BadRequest("Invalid Request");
+			}
 			if (bs == true) return Content(Convert.ToBase64String(byteArray));
 			return base.File(byteArray,"image/png");
 		}
@@ -578,6 +590,9 @@ public class HomeController : Controller
 				part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
 			}
 			var byteArray = BitmapToByteArray(this.avatar.MixBitmaps(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap,BitmapOrigin.CreateFromNode(mix_node, PluginManager.FindWz).Bitmap,mixOpacity));
+			if(byteArray == null) {
+				return BadRequest("Invalid Request");
+			}
 			if (bs == true) return Content(Convert.ToBase64String(byteArray));
 			else return base.File(byteArray,"image/png");
 		}
@@ -596,6 +611,9 @@ public class HomeController : Controller
 			}
 
 			var byteArray = BitmapToByteArray(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap);
+			if(byteArray == null) {
+				return BadRequest("Invalid Request");
+			}
 			if (bs == true) return Content(Convert.ToBase64String(byteArray));
 			return base.File(byteArray,"image/png");
 		}
@@ -856,8 +874,12 @@ public class HomeController : Controller
 			g.DrawImage(layer.Bitmap, layer.OpOrigin.X - rect.X, layer.OpOrigin.Y - rect.Y);
 		}
 		g.Dispose();
-		if (bs == true) return Content(Convert.ToBase64String(BitmapToByteArray(bmp)));
-		return base.File(BitmapToByteArray(bmp),"image/png");
+		var byteArray = BitmapToByteArray(bmp);
+		if(byteArray == null) {
+			return BadRequest("Invalid Request");
+		}
+		if (bs == true) return Content(Convert.ToBase64String(byteArray));
+		return base.File(byteArray,"image/png");
 	}
 
 	private ActionResult ItemWithEmotion(string code, GearType type, string typename, bool? bs)
@@ -888,6 +910,9 @@ public class HomeController : Controller
 		}
 
 		var byteArray = BitmapToByteArray(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap);
+		if(byteArray == null) {
+			return BadRequest("Invalid Request");
+		}
 		if (bs == true) return Content(Convert.ToBase64String(byteArray));
 		return base.File(byteArray,"image/png");
 	}
@@ -981,33 +1006,37 @@ public class HomeController : Controller
 					cap_node = cap_node.GetValue<Wz_Uol>().HandleUol(cap_node);
 				}
 				cap_node = FindActionFrameNode(cap_node, new ActionFrame(avatar.ActionName, 0));
-				while(cap_node.Value is Wz_Uol)
-				{
-					cap_node = cap_node.GetValue<Wz_Uol>().HandleUol(cap_node);
-				}
-				foreach(var childNode in cap_node.Nodes)
-				{
-					var cap_z = childNode.FindNodeByPath("z");
-					if(cap_z != null)
+				if(cap_node != null) {
+					while(cap_node.Value is Wz_Uol)
 					{
-						var cap_string = cap_z.GetValue<string>();
-						if (cap_string == "cap")
+						cap_node = cap_node.GetValue<Wz_Uol>().HandleUol(cap_node);
+					}
+					foreach(var childNode in cap_node.Nodes)
+					{
+						var cap_z = childNode.FindNodeByPath("z");
+						if(cap_z != null)
 						{
-							avatar.HairCover = true;
+							var cap_string = cap_z.GetValue<string>();
+							if (cap_string == "cap")
+							{
+								avatar.HairCover = true;
+							}
+							else
+							{
+								avatar.HairCover = false;
+							}
+							break;
 						}
-						else
-						{
-							avatar.HairCover = false;
-						}
-						break;
 					}
 				}
-				
 			}
 			Console.WriteLine("성공");
 			var bone = this.avatar.CreateFrame(0, 0, 0);
 			var frame = this.avatar.DrawFrame(bone);
 			var byteArray = BitmapToByteArray(frame.Bitmap);
+			if(byteArray == null) {
+				return BadRequest("Invalid Request");
+			}
 			if (bs == true) return Content(Convert.ToBase64String(byteArray));
 			return base.File(byteArray,"image/png");
 		}
