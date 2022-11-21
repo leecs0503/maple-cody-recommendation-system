@@ -1,7 +1,7 @@
 import pytest
 from aiohttp.test_utils import make_mocked_request
 from src.ApiServer.server.http_handler import HttpHandler
-from src.ApiServer.util.make_mocked_request import _make_mocked_request_json
+from tests.test_api_server.util.make_mocked_request import _make_mocked_request_json
 import requests_mock
 import os
 
