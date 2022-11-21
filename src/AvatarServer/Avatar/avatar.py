@@ -22,6 +22,7 @@ class AvatarType(IntEnum):
 
 @dataclass
 class Avatar:
+    gender: str = "male"
     face: str = "0"
     cap: str = "0"
     longcoat: str = "0"
@@ -77,7 +78,9 @@ class Avatar:
         else:
             raise Exception('Avatar.add_parts : Wrong Type')
 
-    def reset(self):
+    def reset(self, keep_gender: bool = False):
+        if not keep_gender:
+            self.gender = "male"
         self.face = "0"
         self.cap = "0"
         self.longcoat = "0"
