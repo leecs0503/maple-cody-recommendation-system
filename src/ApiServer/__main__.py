@@ -3,9 +3,9 @@ import argparse
 
 
 def main():
-    parser = argparse.ArgumentParser(description="avatar server")
+    parser = argparse.ArgumentParser(description="api server server")
 
-    parser.add_argument("--wcr-server-host", type=str, help="wcr server host", default="localhost")
+    parser.add_argument("--wcr-server-host", type=str, help="wcr server host", default="0.0.0.0")
     parser.add_argument("--wcr-server-port", type=int, help="wcr server port", default=7209)
     parser.add_argument("--wcr-server-protocol", type=str, help="wcr server protocol", default="https")
     parser.add_argument("--base-wz-code-path", type=str, help="base", default="./data/base_wz.json")

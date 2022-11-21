@@ -40,8 +40,10 @@ def get_base_wz(config) -> dict:
 
     return base_wz
 
+# TODO : url argparser로 받기
 
-def get_avatar_item_encoding_string(item_code: dict) -> dict:
+
+def get_avatar_item_encoding_string(item_code: dict, ) -> dict:
     get_avatar_server_url = "http://localhost:8080/avatar_image"
     encoding_images = {}
 
@@ -72,7 +74,6 @@ def get_avatar_item_encoding_string(item_code: dict) -> dict:
 
     res = requests.post(get_avatar_server_url, json={"avatar": item_code})
     encoding_images['avatar'] = res.text
-
     return encoding_images
 
 
@@ -131,14 +132,14 @@ class HttpHandler:
         maple_gg_url = f'https://maple.gg/u/{res}'
 
         soup = get_html_text(maple_gg_url)
-
         img_tag = soup.find_all(class_="character-image")[1]["src"]
         self.logger.info(f"crawling character url : {img_tag}")
 
         encrypted_code = img_tag.replace('https://avatar.maplestory.nexon.com/Character/', '').replace('.png', '')
         response = requests.post(avatar_server_url, json={"packed_character_look": encrypted_code})
         self.logger.info(f"web server character code response: {response.text}")
-        return web.Response(body=response.text, status=HTTPStatus.OK)
+        return web.json_response({"character_code" : response.text})
+#       return web.Response(body=response.text, status=HTTPStatus.OK)
 
     async def infer_code_web_handler(self, request: web.Request) -> web.json_response:
         result_inference = {}

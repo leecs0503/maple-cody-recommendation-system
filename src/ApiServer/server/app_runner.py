@@ -41,7 +41,7 @@ class AppRunner:
 
         formatter = logging.Formatter("%(asctime)s %(levelname)s [%(name)s] [%(filename)s:%(lineno)d] - %(message)s")
 
-        os.makedirs("logs") if not os.path.exists('logs') else 'pass'
+        os.makedirs("logs", exist_ok=True)
 
         file_handler = logging.FileHandler(self.logging_path)
         file_handler.setFormatter(formatter)
