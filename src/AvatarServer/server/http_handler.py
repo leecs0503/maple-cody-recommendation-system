@@ -44,10 +44,21 @@ class HTTPHandler:
         try:
             packed_character_info = self.processor.infer(packed_character_look)
             avatar = packed_character_info.get_avatar()
-            result = asdict(avatar)
+            avatar_dict = asdict(avatar)
+            result = {}
+            for item_type, item_code in avatar_dict.items():
+                result[item_type] = item_code
+                if item_type == "gender":
+                    continue
+                avatar.reset(True)
+                setattr(avatar, item_type, item_code)
+                try:
+                    result[f"{item_type}_image"] = await self.processor.process_image(avatar, False)
+                except:
+                    result[f"{item_type}_image"] = ""
             return web.json_response(result)
         except LookStringVersionException as err:
-            raise web.HTTPBaddRequest(
+            raise web.HTTPBadRequest(
                 body=f"Bad Request Error 400: {str(err)}"
             )
         except Exception as err:
