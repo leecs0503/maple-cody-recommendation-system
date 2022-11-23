@@ -43,6 +43,8 @@ for json_data in [json_data1, json_data2, json_data3]:
             with open(save_path, "w") as f:
                 json.dump(result, f, ensure_ascii=False, indent="\t")
 
+            result = {}
+
 if len(result) > 0:
     save_path = os.path.join(file_path, f'json_data_result{cnt}.json')
 

@@ -332,9 +332,13 @@ public class HomeController : Controller
 			gearType = get_geartype(shield);
 			if (gearType == null || gearType != GearType.shield)
 			{
-				return BadRequest("Fail to load item(shield)");
+				// FIXME: 예외처리 추가
+				//return BadRequest("Fail to load item(shield)");
 			}
-			code += ","; code += shield;
+			else
+			{
+				code += ","; code += shield;
+			}
 		}
 		if (cape != null && cape != "0")
 		{
