@@ -26,30 +26,16 @@ class Dataset(torch.utils.data.Dataset):
 
     def __getitem__(self, index: int):
         input = self.dataset.input_list[index]
-        output = self.dataset.output_list[index]
-        return input, output
+        answer = self.dataset.answer_list[index]
+        return {"input": input, "answer": answer}
 
 def _get_data_loader(
-    raw_data: Dict,
+    dataset: Dataset,
     batch_size: int,
     num_workers: int,
 ) -> torch.utils.data.DataLoader:
 
-    transform = transforms.Compose([
-        transforms.ToTensor(),
-        # normalize
-    ])
-
-    data = RawData(
-        raw_data=raw_data,
-        transform=transform,
-    )
-
     
-    dataset = Dataset(
-        dataset=data,
-        transform=transform,
-    )
     return torch.utils.data.DataLoader(
         dataset=dataset,
         batch_size=batch_size,
@@ -63,12 +49,32 @@ def load_DataLoader(
     batch_size: int,
     num_workers: int,
 ):
-    total_datalodaer = _get_data_loader(
+    transform = transforms.Compose([
+        transforms.ToTensor(),
+        # normalize
+    ])
+    data = RawData(
         raw_data=raw_data,
+        transform=transform,
+    )
+    total_dataset = Dataset(
+        dataset=data,
+        transform=transform,
+    )
+
+    train_dataset, valid_dataset = torch.utils.data.random_split(total_dataset, [0.8, 0.2], generator=torch.Generator().manual_seed(42))
+
+    train_dataloader = _get_data_loader(
+        dataset=train_dataset,
         batch_size=batch_size,
         num_workers=num_workers,
     )
-    train_dataloader, valid_dataloader = torch.utils.data.random_split(total_datalodaer, [0.8, 0.2], generator=torch.Generator().manual_seed(42))
+    valid_dataloader = _get_data_loader(
+        dataset=valid_dataset,
+        batch_size=batch_size,
+        num_workers=num_workers,
+    )
+    
     return {
         "train": train_dataloader,
         "valid": valid_dataloader,

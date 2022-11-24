@@ -38,4 +38,4 @@ class RawData:
         ]
 
         self.input_list = input_list
-        self.output_list = output_list
+        self.answer_list = output_list
