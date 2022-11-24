@@ -22,6 +22,7 @@ requests-mock = "^1.10.0"
 xgboost = "^1.7.1"
 torchvision = "^0.14.0"
 torch = "^1.13.0"
+tensorboard = "^2.11.0"
 
 
 [tool.poetry.group.dev.dependencies]
