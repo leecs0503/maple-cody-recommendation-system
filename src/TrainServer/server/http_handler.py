@@ -1,5 +1,7 @@
 import logging
 from http import HTTPStatus
+from ..Trainer.trainer import Trainer
+from .config import Config
 
 from aiohttp import web
 
@@ -7,9 +9,15 @@ from aiohttp import web
 class HTTPHandler:
     def __init__(
         self,
+        config: Config,
         logger: logging.Logger,
     ):
+        self.config = config
         self.logger = logger
+        self.trainer = Trainer(
+            config=config,
+            logger=self.logger,
+        )
 
     def get_routes(self):
         return [

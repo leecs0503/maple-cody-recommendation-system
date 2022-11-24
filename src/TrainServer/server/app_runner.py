@@ -4,6 +4,7 @@ from functools import cached_property
 
 import os
 from .http_server import HTTPServer
+from .config import Config
 
 
 class AppRunner:
@@ -11,10 +12,17 @@ class AppRunner:
         self,
         server_host: str,
         server_port: int,
+        train_data_path: str,
+        model_save_path: str
     ) -> None:
-        self.HTTPServer = HTTPServer(
+        self.config = Config(
             server_host=server_host,
             server_port=server_port,
+            train_data_path=train_data_path,
+            model_save_path=model_save_path,
+        )
+        self.HTTPServer = HTTPServer(
+            config=self.config,
             logger=self.logger,
         )
 
