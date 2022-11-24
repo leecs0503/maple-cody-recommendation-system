@@ -3,7 +3,7 @@ import logging
 from aiohttp import web
 
 from .http_handler import HTTPHandler
-from .config import Config
+from ..Config.config import Config
 
 
 class HTTPServer:

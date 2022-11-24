@@ -1,7 +1,7 @@
 import logging
 from http import HTTPStatus
 from ..Trainer.trainer import Trainer
-from .config import Config
+from ..Config.config import Config
 
 from aiohttp import web
 
