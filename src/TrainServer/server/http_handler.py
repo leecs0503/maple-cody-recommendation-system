@@ -22,7 +22,8 @@ class HTTPHandler:
     def get_routes(self):
         return [
             web.get("/", self.index_handler),
-            web.get("/healthcheck", self.healthcheck_handler)
+            web.get("/healthcheck", self.healthcheck_handler),
+            web.post("/train", self.train_handler)
         ]
 
     async def index_handler(self, request: web.Request):
@@ -33,4 +34,8 @@ class HTTPHandler:
         """ """
         return web.Response(body="200 OK", status=HTTPStatus.OK)
 
-
+    async def train_handler(self, request: web.Request):
+        post = await request.json()
+        train_data = post.get("train_data")
+        self.trainer.load_data(train_data)
+        return web.Response(body="-", status=HTTPStatus.OK)
