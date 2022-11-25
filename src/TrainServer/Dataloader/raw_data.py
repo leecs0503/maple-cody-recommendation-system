@@ -6,6 +6,7 @@ import base64
 import torch
 import torchvision.transforms as transforms
 
+
 class RawData:
     def __init__(
         self,

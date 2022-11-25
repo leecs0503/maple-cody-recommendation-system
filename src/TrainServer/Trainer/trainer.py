@@ -10,13 +10,10 @@ import torch
 import torch.nn as nn
 from torch.utils.tensorboard import SummaryWriter
 
-from PIL import Image
-import base64
-
-import torchvision.transforms as transforms
-from typing import List, Literal
+from typing import Literal
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 
 class Trainer:
     def __init__(
@@ -44,12 +41,12 @@ class Trainer:
         self.load_model(
             config.model_path,
         )
-            
+
     def load_data(
         self,
         raw_data: dict,
     ) -> None:
-        
+
         if self.data_loader is not None:
             # TODO: online으로 데이터가 추가되는 것 처리
             pass
@@ -84,7 +81,7 @@ class Trainer:
         batch_idx: int,
     ):
         self.writer.add_scalar(f"Step{epoch:02}/Loss/{phase.upper()}-{epoch:02}", loss, batch_idx)
-        self.writer.add_scalar(f"Step{epoch:02}/ACC/{phase.upper()}-{epoch:02}", corr_exp/batch_size, batch_idx)
+        self.writer.add_scalar(f"Step{epoch:02}/ACC/{phase.upper()}-{epoch:02}", corr_exp / batch_size, batch_idx)
         self.writer.flush()
         msg = "| {} SET | Epoch [{:02d}/{:02d}], Step [{:04d}/{:04d}], Loss: {:.4f}, coor_exp: {:.4f}".format(
             phase.upper(),
@@ -109,7 +106,7 @@ class Trainer:
         self.writer.add_scalar(f"Epoch/Loss/{phase.upper()}", epoch_loss, epoch)
         self.writer.add_scalar(f"Epoch/ACC/{phase.upper()}", epoch_acc_exp, epoch)
         self.writer.flush()
-        msg = f"| {phase.upper()} SET | Epoch [{epoch + 1:02}/{num_epochs:02}], Loss: {epoch_loss:.4}, Acc(Exp): {epoch_acc_exp:.4}"
+        msg = f"| {phase.upper()} SET | Epoch [{epoch + 1:02}/{num_epochs:02}], Loss: {epoch_loss:.4}, Acc(Exp): {epoch_acc_exp:.4}"  # noqa: E501
         print(msg)
         self.logger.info(msg)
         pass
@@ -131,7 +128,7 @@ class Trainer:
             running_loss = 0.0
             all_cnt = 0
             accept_cnt = 0
-                
+
             for batch_idx, batch_sample in enumerate(self.data_loader[phase]):
                 inputs = batch_sample["input"].to(device)
                 answers = batch_sample["answer"].to(device)
@@ -167,7 +164,6 @@ class Trainer:
                 num_epochs=num_epochs,
             )
             scheduler.step()
-            
             print(f"EPOCH [{epoch:3d}]: loss: {running_loss :.5f} // acc: {accept_cnt / all_cnt:.5f}")
 
     def train(

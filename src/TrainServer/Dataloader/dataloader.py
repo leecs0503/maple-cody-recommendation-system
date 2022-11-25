@@ -1,14 +1,13 @@
-from typing import TypedDict, List, Dict, Tuple
+from typing import TypedDict, Dict
 import torch.utils.data
-import numpy as np
 import torchvision.transforms as transforms
-from PIL import Image
-import os
 from .raw_data import RawData
+
 
 class DataLoader(TypedDict):
     train: torch.utils.data.DataLoader
     valid: torch.utils.data.DataLoader
+
 
 class Dataset(torch.utils.data.Dataset):
     def __init__(
@@ -29,13 +28,13 @@ class Dataset(torch.utils.data.Dataset):
         answer = self.dataset.answer_list[index]
         return {"input": input, "answer": answer}
 
+
 def _get_data_loader(
     dataset: Dataset,
     batch_size: int,
     num_workers: int,
 ) -> torch.utils.data.DataLoader:
 
-    
     return torch.utils.data.DataLoader(
         dataset=dataset,
         batch_size=batch_size,
@@ -62,7 +61,11 @@ def load_DataLoader(
         transform=transform,
     )
 
-    train_dataset, valid_dataset = torch.utils.data.random_split(total_dataset, [0.8, 0.2], generator=torch.Generator().manual_seed(42))
+    train_dataset, valid_dataset = torch.utils.data.random_split(
+        total_dataset,
+        [0.8, 0.2],
+        generator=torch.Generator().manual_seed(42)
+    )
 
     train_dataloader = _get_data_loader(
         dataset=train_dataset,
@@ -74,7 +77,7 @@ def load_DataLoader(
         batch_size=batch_size,
         num_workers=num_workers,
     )
-    
+
     return {
         "train": train_dataloader,
         "valid": valid_dataloader,

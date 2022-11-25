@@ -14,4 +14,3 @@ class Config:
         self.batch_size = batch_size
         self.num_workers = num_workers
         self.tensorboard_path = tensorboard_path
-
