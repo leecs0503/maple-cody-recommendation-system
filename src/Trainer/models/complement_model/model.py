@@ -3,7 +3,7 @@ from torch import nn
 import torch
 
 
-class Model(nn.Module):
+class ComplementModel(nn.Module):
     def __init__(
         self,
         num_result_classes,
