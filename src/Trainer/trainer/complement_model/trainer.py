@@ -3,6 +3,7 @@ from ...models.complement_model.model import ComplementModel
 from ...models.complement_model.data_loader import ComplementDataLoader, load_DataLoader, preprocess_raw_data
 import logging
 import json
+import os
 from typing import Optional
 from dataclasses import dataclass
 
@@ -11,13 +12,14 @@ import torch.optim as optim
 from torch.optim import lr_scheduler
 import torch
 import torch.nn as nn
+import time
 
 @dataclass
 class TrainerArguments:
     data_path: str = './data/json_data_result.json'
     batch_size: int = 32
     num_workers: int = 8
-    tensorboard_path: str = "./runs/"
+    tensorboard_path: str = f"./runs/{time.strftime('%Y.%m.%d - %H:%M:%S')}"
     model_save_path: str = './runs/models'
     parts: str = "weapon"
     saved_model_path: Optional[str] = None
@@ -144,6 +146,19 @@ class Trainer(BaseTrainer):
             scheduler.step()
             print(f"EPOCH [{epoch:3d}]: loss: {running_loss :.5f} // acc: {accept_cnt / all_cnt:.5f}")
 
+    def save_model(
+        self,
+        epoch: int
+    ):
+        model_save_path = os.path.join(
+            self.model_save_path,
+            f"complement_model_EPOCH_{epoch}"
+        )
+        torch.save(
+            self.model.state_dict(),
+            model_save_path
+        )
+
     def train(
         self,
     ):
@@ -162,3 +177,6 @@ class Trainer(BaseTrainer):
             )
             if early_stop:
                 break
+            self.save_model(
+                epoch=epoch
+            )
