@@ -24,28 +24,39 @@ for path in paths:
 
 # %%
 
-import requests
+import requests, gc
 
 cnt = 1
 result = {}
+run_from = 53
 
 for json_data in json_datas:
     for data in json_data['data']:
         result[data["nickname"]] = []
-        for code_list in data["recent_cody_list"]:
-            encrypted_code = code_list.replace('https://avatar.maplestory.nexon.com/Character/', '').replace('.png', '')
-            response = requests.post("http://localhost:8080/character_look_data", json={"packed_character_look": encrypted_code})
-            if response.status_code == 200:
-                result[data["nickname"]].append(json.loads(response.text))
-            else:
-                print(response.status_code)
+        if cnt >= run_from:
+            print(data["nickname"])
+            for code_list in data["recent_cody_list"]:
+                while True:
+                    encrypted_code = code_list.replace('https://avatar.maplestory.nexon.com/Character/', '').replace('.png', '')
+                    response = requests.post("http://localhost:8080/character_look_data", json={"packed_character_look": encrypted_code})
+                    if response.status_code == 200:
+                        result[data["nickname"]].append(json.loads(response.text))
+                        break
+                    elif response.status_code == 400:
+                        break
+                    else:
+                        print(response.status_code, response.text)
+
         if len(result) == 100:
             save_path = os.path.join(file_path, f'json_data_result{cnt}.json')
+
+            if cnt >= run_from:
+                with open(save_path, "w") as f:
+                    json.dump(result, f, ensure_ascii=False, indent="\t")
+
             cnt += 1
-
-            with open(save_path, "w") as f:
-                json.dump(result, f, ensure_ascii=False, indent="\t")
-
+            del(result)
+            gc.collect()
             result = {}
 
 if len(result) > 0:
@@ -55,6 +66,11 @@ if len(result) > 0:
 
     with open(save_path, "w") as f:
         json.dump(result, f, ensure_ascii=False, indent="\t")
+
+
+# %%
+
+cnt = 251
 
 result = {}
 save_path = os.path.join(file_path, 'json_data_result_1_25000.json')
@@ -69,6 +85,3 @@ for i in range(1, cnt):
 
 with open(save_path, "w") as f:
     json.dump(result, f, ensure_ascii=False, indent="\t")
-
-
-# %%
