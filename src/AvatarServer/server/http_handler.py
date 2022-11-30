@@ -3,6 +3,7 @@ from dataclasses import asdict
 from http import HTTPStatus
 
 from aiohttp import web
+import aiohttp
 
 from ..Avatar.avatar import Avatar
 from ..AvatarProcessor.avatar_processor import AvatarProcessor, LookStringVersionException
@@ -69,6 +70,10 @@ class HTTPHandler:
                 setattr(avatar, item_type, "0")
                 try:
                     result[f"{item_type}_image"] = await self.processor.process_image(avatar, False)
+                except aiohttp.ClientConnectionError as err:
+                    raise web.HTTPGatewayTimeout(
+                        body=f"Gateway Timeout Eror 504: {str(err)}"
+                    )
                 except:
                     result[f"{item_type}_image"] = ""
                 setattr(avatar, item_type, item_code)
