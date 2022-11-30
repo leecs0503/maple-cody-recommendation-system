@@ -1,9 +1,5 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
-using WzComparerR2Server.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using WzComparerR2;
-using WzComparerR2.Common;
 using WzComparerR2.Avatar;
 using WzComparerR2.WzLib;
 using WzComparerR2.PluginBase;
@@ -12,14 +8,10 @@ using MainProgram;
 using System;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Text.Unicode;
 using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
-
 namespace WzComparerR2Server.Controllers;
 
 public class HomeController : Controller
@@ -28,7 +20,6 @@ public class HomeController : Controller
 	AvatarCanvas avatar;
 	string ?query_result;
 	bool inited;
-	public StringLinker DefaultStringLinker;
 
 	public class Json_data
 	{
@@ -71,7 +62,6 @@ public class HomeController : Controller
 	public HomeController()
 	{
 		this.avatar = new AvatarCanvas();
-		this.DefaultStringLinker = new StringLinker();
 		this.query_result = null;
 	}
 
@@ -485,7 +475,8 @@ public class HomeController : Controller
 	[Route("hair")]
 	public ActionResult Hair(string code, string actionName, bool? bs)
 	{
-		var m = GetFromCode(code); Add_X_request_ID();
+		Add_X_request_ID();
+		var m = GetFromCode(code);
 		if (m == null)
 		{
 			return BadRequest("Wrong Code");
@@ -555,7 +546,8 @@ public class HomeController : Controller
 	[Route("hairoverhead")]
 	public ActionResult HairOverHead(string code, string actionName, bool? bs)
 	{
-		var m = GetFromCode(code); Add_X_request_ID();
+		Add_X_request_ID();
+		var m = GetFromCode(code);
 		if (m == null)
 		{
 			return BadRequest("Wrong Code");
@@ -1009,7 +1001,37 @@ public class HomeController : Controller
 				{
 					cap_node = cap_node.GetValue<Wz_Uol>().HandleUol(cap_node);
 				}
-				cap_node = FindActionFrameNode(cap_node, new ActionFrame(avatar.ActionName, 0));
+				// cap_node = FindActionFrameNode(cap_node, new ActionFrame(avatar.ActionName, 0));
+				cap_node = cap_node.FindNodeByPath("default");
+				if(cap_node == null) {
+					cap_node = cap.Node;
+					while(cap_node.Value is Wz_Uol)
+					{
+						cap_node = cap_node.GetValue<Wz_Uol>().HandleUol(cap_node);
+					}
+					cap_node = FindActionFrameNode(cap.Node, new ActionFrame(avatar.ActionName, 0));
+				}
+				else {
+					var tempNode = cap_node;
+					foreach(var childNode in cap_node.Nodes) {
+						tempNode = childNode;
+					}
+					if (tempNode == cap_node) {
+						cap_node = cap.Node;
+						while(cap_node.Value is Wz_Uol)
+						{
+							cap_node = cap_node.GetValue<Wz_Uol>().HandleUol(cap_node);
+						}
+						cap_node = FindActionFrameNode(cap.Node, new ActionFrame(avatar.ActionName, 0));
+						if(cap_node == null) {
+							Console.WriteLine("Unknown Exception");
+							Environment.Exit(-1);
+						}
+					}
+					else {
+						cap_node = tempNode;
+					}
+				}
 				if(cap_node != null) {
 					while(cap_node.Value is Wz_Uol)
 					{
@@ -1021,13 +1043,18 @@ public class HomeController : Controller
 						if(cap_z != null)
 						{
 							var cap_string = cap_z.GetValue<string>();
-							if (cap_string == "cap")
+							if (cap_string == "cap" || cap_string == "capBelowAccessory")
 							{
 								avatar.HairCover = true;
 							}
-							else
+							else if(cap_string == "capOverHair" || cap_string == "backCapAccessory" || cap_string == "capeOverHead")
 							{
 								avatar.HairCover = false;
+							}
+							else
+							{
+								Console.WriteLine(cap_string);
+								Environment.Exit(-1);
 							}
 							break;
 						}
@@ -1099,11 +1126,6 @@ public class HomeController : Controller
 		{
 			Console.WriteLine("아바타 플러그인을 초기화할 수 없습니다.");
 			return false;
-		}
-		var sl = this.DefaultStringLinker;
-		if (!sl.HasValues) //生成默认stringLinker
-		{
-			sl.Load(PluginManager.FindWz(Wz_Type.String).GetValueEx<Wz_File>(null), PluginManager.FindWz(Wz_Type.Item).GetValueEx<Wz_File>(null), PluginManager.FindWz(Wz_Type.Etc).GetValueEx<Wz_File>(null));
 		}
 
 		if (loadType == 0) //先清空。。

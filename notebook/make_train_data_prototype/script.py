@@ -28,7 +28,7 @@ import requests, gc
 
 cnt = 1
 result = {}
-run_from = 53
+run_from = 59
 
 for json_data in json_datas:
     for data in json_data['data']:
