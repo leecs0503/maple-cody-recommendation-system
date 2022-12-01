@@ -1,6 +1,7 @@
 
 resource "kind_cluster" "default" {
   name           = "mcrs-cluster"
+  node_image     = "kindest/node:v1.23.4"
   wait_for_ready = true
   kind_config {
     kind        = "Cluster"

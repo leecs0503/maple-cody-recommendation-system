@@ -141,3 +141,4 @@ data
 **/terraform.tfstate.backup
 **/terraform.tfstate
 runs/
+**/mcrs-cluster-config
