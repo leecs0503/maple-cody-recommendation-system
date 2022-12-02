@@ -8,6 +8,7 @@ from src.ApiServer.server.config import Config
 from src.ApiServer.server.http_handler import HttpHandler
 from typing import Dict
 
+
 class AvatarCallerForTest:
     def __init__(self):
         cwd = os.path.dirname(__file__)
@@ -36,6 +37,7 @@ class InferenceCallerForTest:
         b64_character_look: str,
     ):
         return item_parts
+
 
 @pytest.fixture
 def test_http_handler(config_for_test: Config):

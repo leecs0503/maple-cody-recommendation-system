@@ -112,6 +112,7 @@ async def test_infer_code_web_handler(test_http_handler: HttpHandler):
 
         assert result.text == result_code_text
 
+
 @pytest.mark.asyncio
 async def test_recommend_handler(test_http_handler: HttpHandler):
     cwd = os.path.dirname(__file__)

@@ -1,7 +1,6 @@
 import pytest
 import os
 
-from src.AvatarServer.server.config import Config
 
 class ConfigForTest:
     def __init__(

@@ -212,5 +212,4 @@ class HttpHandler:
                 b64_character_look=character_data[f"{part}_image"],
             )
 
-
         return web.Response(text=await self.avatar_caller.get_avatar_image(result))
