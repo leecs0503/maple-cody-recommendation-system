@@ -20,7 +20,7 @@ class AvatarCallerForTest:
         return self.data["get_character_look_data"]
 
     async def get_avatar_image(self, avatar_dict: Dict[str, str]):
-        return "avatar image"
+        return json.dumps(avatar_dict)
 
 
 class InferenceCallerForTest:
