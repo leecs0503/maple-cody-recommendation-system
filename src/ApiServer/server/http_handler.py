@@ -204,11 +204,11 @@ class HttpHandler:
                 result[part] = character_data[part]
 
         for part in parts_to_change:
-            result[part] = await self.inference_caller.infer(part, character_data[f"{part}_image"])
-
-        
-
+            result[part] = await self.inference_caller.infer(
+                gender=gender,
+                item_parts=part,
+                b64_character_look=character_data[f"{part}_image"],
+            )
 
 
         return web.Response(text=await self.avatar_caller.get_avatar_image(result))
-

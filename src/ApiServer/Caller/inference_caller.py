@@ -31,12 +31,17 @@ class InferenceCaller:
 
     async def infer(
         self,
+        gender: str,
         item_parts: str,
         b64_character_look: str,
     ):
         url = f"{self.server_protocol}://{self.server_host}:{self.server_port}/{item_parts}"
         retry_num = self.retry_num if self.retry_num >= 0 else 1000000000
-        json_data = {"input_data": b64_character_look}
+        json_data = {
+            "gender": gender,
+            "parts": item_parts,
+            "input_data": b64_character_look
+        }
 
         for step in range(retry_num):
             async with aiohttp.ClientSession() as session:

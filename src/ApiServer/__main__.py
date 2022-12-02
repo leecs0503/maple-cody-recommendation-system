@@ -6,7 +6,7 @@ import argparse
 def main():
     parser = argparse.ArgumentParser(description="api server server")
 
-    parser.add_argument("--logging-path", type=str, help="api server loggin path", default='logs/api_server_app_runner_log.log')
+    parser.add_argument("--logging-path", type=str, help="api server loggin path", default='logs/api_server_log.log')
 
     parser.add_argument("--avatar-server-host", type=str, help="avatar server host", default="0.0.0.0")
     parser.add_argument("--avatar-server-protocol", type=str, help="avatar server protocol", default="http")
