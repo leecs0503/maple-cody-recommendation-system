@@ -10,24 +10,10 @@ from .http_server import HttpServer
 class AppRunner:
     def __init__(
         self,
-        wcr_server_host: str,
-        wcr_server_port: int,
-        wcr_server_protocol: str,
-        base_wz_code_path: str,
-        wcr_caller_retry_num: int,
-        wcr_caller_timeout: float,
-        wcr_caller_backoff: float,
+        config: Config,
         logging_path: str
     ) -> None:
-        self.config = Config(
-            wcr_server_host=wcr_server_host,
-            wcr_server_port=wcr_server_port,
-            wcr_server_protocol=wcr_server_protocol,
-            base_wz_code_path=base_wz_code_path,
-            wcr_caller_retry_num=wcr_caller_retry_num,
-            wcr_caller_timeout=wcr_caller_timeout,
-            wcr_caller_backoff=wcr_caller_backoff,
-        )
+        self.config = config
         self.logging_path = logging_path
 
         self.HttpServer = HttpServer(
