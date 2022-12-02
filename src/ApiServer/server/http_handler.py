@@ -103,10 +103,12 @@ class HttpHandler:
         self,
         logger: logging.Logger,
         config: Config,
+        avatar_caller: AvatarCaller = None,
+        inference_caller: InferenceCaller = None,
     ):
         self.logger = logger
         self.config = config
-        self.avatar_caller = AvatarCaller(
+        self.avatar_caller = avatar_caller if avatar_caller is not None else AvatarCaller(
             logger=logger,
             server_host=config.avatar_server_host,
             server_protocol=config.avatar_server_protocol,
@@ -115,7 +117,7 @@ class HttpHandler:
             timeout=config.avatar_caller_timeout,
             backoff=config.avatar_caller_backoff,
         )
-        self.inference_caller = InferenceCaller(
+        self.inference_caller = inference_caller if inference_caller is not None else InferenceCaller(
             logger=logger,
             server_host=config.inference_server_host,
             server_protocol=config.inference_server_protocol,
