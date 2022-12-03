@@ -2,27 +2,23 @@ import kserve
 from typing import Dict
 from PIL import Image
 from io import BytesIO
+from src.Trainer.models.complement_model.model import ComplementModel
 import torch
-import importlib
 import base64
 import torchvision.transforms as transforms
 import json
 
 
-class Model(kserve.Model):
+class KserveComplementModel(kserve.Model):
     def __init__(
         self,
         name: str,
         model_dir: str,
-        model_class_dir: str,
-        model_class_name: str,
         model_answer_dict_dir: str,
     ):
         super().__init__(name)
         self.name = name
         self.model_dir = model_dir
-        self.model_class_dir = model_class_dir
-        self.model_class_name = model_class_name
         self.ready = False
         self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         self.transform = transforms.Compose([
@@ -33,15 +29,14 @@ class Model(kserve.Model):
             with open(model_answer_dict_dir, "r") as f:
                 self.answer_dict = json.load(f)
         except Exception as err:
-            self.answer_dict = {}
+            raise Exception(f"model answer not found({str(err)})")
 
         self.num_classes = len(self.answer_dict)
 
-        model_class = getattr(importlib.import_module(self.model_class_dir), self.model_class_name)
-        self.model = model_class(self.num_classes).to(self.device)
+        self.model = ComplementModel(self.num_classes).to(self.device)
 
     def load(self) -> bool:
-        # self.model.load_state_dict(torch.load(self.model_dir, map_location=self.device))
+        self.model.load_state_dict(torch.load(self.model_dir, map_location=self.device))
         self.model.eval()
         self.ready = True
         return self.ready

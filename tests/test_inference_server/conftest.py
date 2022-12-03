@@ -1,9 +1,9 @@
-from src.InferenceServer.Model.model import Model
+from src.InferenceServer.Model.complement_model import KserveComplementModel
 import pytest
 import torch
 
 
-class ModelForTest:
+class ComplementModelForTest:
     def __init__(self, num_classes: int):
         self.num_classes = num_classes
 
@@ -20,12 +20,11 @@ class ModelForTest:
 
 
 @pytest.fixture
-def model_for_test() -> Model:
-    model = Model(
+def model_for_test() -> KserveComplementModel:
+    model = KserveComplementModel(
         name="test",
-        model_dir=None,
-        model_class_dir="tests.test_inference_server.conftest",
-        model_class_name="ModelForTest",
+        model_dir="",
         model_answer_dict_dir="tests/test_inference_server/testdata/model_answer_dict_testdata.json",
     )
+    model.model = ComplementModelForTest(model.num_classes)
     return model
