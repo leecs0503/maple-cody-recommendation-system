@@ -1,0 +1,14 @@
+version: '3.4'
+
+services:
+  avatar-server:
+    image: "xxx/avatar-server:v0.1.0"
+    command: --wcr-server-host localhost
+             --wcr-server-port 7209
+             --wcr-server-protocol https
+             --base-wz-code-path ./data/base_wz.json
+             --wcr-caller-retry-num 3
+             --wcr-caller-timeout 1
+             --wcr-caller-backoff 1
+    ports:
+      - "8080:8080"
