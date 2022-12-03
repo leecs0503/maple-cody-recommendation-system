@@ -18,13 +18,20 @@ class ComplementModelForTest:
             ))
         return torch.stack(result)
 
+    def load_state_dict(self, _):
+        pass
+
+    def eval():
+        pass
+
 
 @pytest.fixture
 def model_for_test() -> KserveComplementModel:
     model = KserveComplementModel(
         name="test",
-        model_dir="",
-        model_answer_dict_dir="tests/test_inference_server/testdata/model_answer_dict_testdata.json",
+        model_dir="tests/test_inference_server/testdata/",
+        gender="female",
+        part="face",
     )
     model.model = ComplementModelForTest(model.num_classes)
     return model

@@ -11,18 +11,14 @@ def main():
 
     args = parser.parse_args()
 
-    for gender in gender_list:
-        for part in item_parts:
-            parser.add_argument(f"--{gender}_{part}_model_dir", type=str, help=f"{gender}-{part} model dir", default=f"model/{gender}_{part}/{gender}_{part}_model.pt")
-            parser.add_argument(f"--{gender}_{part}_answer_dict_dir", type=str, help=f"{gender}-{part} answer dict dir", default=f"model/{gender}_{part}/{gender}_{part}_answer_dict.json")
-
     model_list_to_make = json.loads(args.model_json)
 
     model_list = [
         KserveComplementModel(
             name=f"complement-model-{gender}-{part}",
-            model_dir=f"/mnt/models/complement_model/{gender}_{part}_model.pt",
-            model_answer_dict_dir=f"/mnt/models/complement_model/{gender}_{part}_answer_dict.json",
+            model_dir=f"/mnt/models",
+            gender=gender,
+            part=part,
         ) for gender, part in model_list_to_make
     ]
 

@@ -8,7 +8,7 @@ def test_request(model_for_test: KserveComplementModel):
     json_path = os.path.join(cwd, "testdata", "predict_input.json")
     with open(json_path) as f:
         data = json.load(f)
-    json_path = os.path.join(cwd, "testdata", "model_answer_dict_testdata.json")
+    json_path = os.path.join(cwd, "testdata", "female_face_answer_dict.json")
     with open(json_path) as f:
         expected_result = json.load(f)
     result = model_for_test.predict(request={"instances": data})

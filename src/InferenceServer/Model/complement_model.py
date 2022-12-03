@@ -7,6 +7,7 @@ import torch
 import base64
 import torchvision.transforms as transforms
 import json
+import os
 
 
 class KserveComplementModel(kserve.Model):
@@ -14,29 +15,34 @@ class KserveComplementModel(kserve.Model):
         self,
         name: str,
         model_dir: str,
-        model_answer_dict_dir: str,
+        gender: str,
+        part: str,
     ):
         super().__init__(name)
         self.name = name
         self.model_dir = model_dir
+        self.gender = gender
+        self.part = part
         self.ready = False
         self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         self.transform = transforms.Compose([
             transforms.ToTensor(),
             # normalize
         ])
-        try:
-            with open(model_answer_dict_dir, "r") as f:
-                self.answer_dict = json.load(f)
-        except Exception as err:
-            raise Exception(f"model answer not found({str(err)})")
+        with open(os.path.join(model_dir, f"{gender}_{part}_answer_dict.json"), "r") as f:
+            self.answer_dict = json.load(f)
 
         self.num_classes = len(self.answer_dict)
 
         self.model = ComplementModel(self.num_classes).to(self.device)
 
     def load(self) -> bool:
-        self.model.load_state_dict(torch.load(self.model_dir, map_location=self.device))
+        self.model.load_state_dict(
+            torch.load(os.path.join(
+                self.model_dir,
+                f"{self.gender}_{self.part}_model.pt"
+            ), map_location=self.device)
+        )
         self.model.eval()
         self.ready = True
         return self.ready
