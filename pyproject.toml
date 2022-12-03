@@ -6,7 +6,7 @@ authors = ["leecs0503"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "3.8.x"
 pyppeteer = "^1.0.2"
 pandas = "^1.4.4"
 bs4 = "^0.0.1"
@@ -24,6 +24,7 @@ torchvision = "^0.14.0"
 torch = "^1.13.0"
 tensorboard = "^2.11.0"
 simple-parsing = "^0.0.21"
+kserve = "^0.9.0"
 
 
 [tool.poetry.group.dev.dependencies]
