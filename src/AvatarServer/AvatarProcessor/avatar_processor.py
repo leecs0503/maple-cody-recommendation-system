@@ -66,14 +66,16 @@ class AvatarProcessor:
                 json.dump(base_wz, f, ensure_ascii=False, indent="\t")
         return base_wz
 
-    async def process_image(self, avatar: Avatar):
+    async def process_image(self, avatar: Avatar, decode_image: bool = True):
         wcr_response = await self.caller.get_image(avatar=avatar)
         if wcr_response is None:
             return None
-
-        image_data = base64.b64decode(wcr_response)
-        item_image = Image.open(io.BytesIO(image_data))
-        return item_image
+        if decode_image:
+            image_data = base64.b64decode(wcr_response)
+            item_image = Image.open(io.BytesIO(image_data))
+            return item_image
+        else:
+            return wcr_response
 
     def infer(self, packed_character_look: str) -> PackedCharacterInfo:
         crypt = [
