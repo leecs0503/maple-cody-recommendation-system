@@ -51,7 +51,11 @@ def _get_data_loader(
         num_workers=num_workers,
     )
 
-def preprocess_raw_data(raw_data: dict, parts):
+def preprocess_raw_data(
+    raw_data: dict,
+    parts: str,
+    gender: str,
+):
     dataset = {
         "input_list": [],
         "answer_list": [],
@@ -59,7 +63,14 @@ def preprocess_raw_data(raw_data: dict, parts):
     answer_set = set()
     for crt_name, avatar_info_list in raw_data.items():
         for avatar_info in avatar_info_list:
-            answer = avatar_info[parts]
+            if avatar_info["gender"] != gender:
+                continue
+            answer: str = avatar_info[parts]
+            if parts == "hair":
+                answer = answer.split("+")[0]
+                answer = answer[:-1]
+            if parts == "face":
+                answer = answer[:-3] + answer[-2:]
             input_image_b64 = avatar_info[f"{parts}_image"]
             if input_image_b64 == "":
                 continue

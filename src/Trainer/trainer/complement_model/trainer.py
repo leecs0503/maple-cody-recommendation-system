@@ -21,7 +21,8 @@ class TrainerArguments:
     num_workers: int = 8
     tensorboard_path: str = f"./runs/{time.strftime('%Y.%m.%d - %H:%M:%S')}"
     model_save_path: str = './runs/models'
-    parts: str = "weapon"
+    gender: str = "female"
+    parts: str = "face"
     saved_model_path: Optional[str] = None
     num_epochs: int = 50
     learning_rate: float = 0.001
@@ -36,6 +37,7 @@ class Trainer(BaseTrainer):
         num_workers: int,
         model_save_path: str,
         tensorboard_path: str,
+        gender: str,
         parts: str,
         saved_model_path: Optional[str],
         num_epochs: int,
@@ -47,6 +49,7 @@ class Trainer(BaseTrainer):
             tensorboard_path=tensorboard_path,
         )
         self.batch_size = batch_size
+        self.gender = gender
         self.parts = parts
         self.num_workers = num_workers
         (
@@ -57,6 +60,10 @@ class Trainer(BaseTrainer):
         self.learning_rate = learning_rate
         self.step_size = step_size
         self.gamma = gamma
+        tensorboard_path = os.path.join(
+            tensorboard_path,
+            f"{time.strftime('%Y.%m.%d - %H:%M:%S')}-{gender}-{parts}"
+        )
 
         self.model_save_path = model_save_path
         if not os.path.exists(model_save_path):
@@ -80,7 +87,11 @@ class Trainer(BaseTrainer):
     ) -> ComplementDataLoader:
         with open(data_path, "r") as f:
             raw_data: dict = json.load(f)
-            data_set, class_num, answer_dict = preprocess_raw_data(raw_data, self.parts)
+            data_set, class_num, answer_dict = preprocess_raw_data(
+                raw_data=raw_data,
+                parts=self.parts,
+                gender=self.gender,
+            )
             data_loader = load_DataLoader(
                 data_set=data_set,
                 batch_size=self.batch_size,
@@ -154,9 +165,10 @@ class Trainer(BaseTrainer):
         self,
         epoch: int
     ):
+        os.makedirs(self.model_save_path, exist_ok=True)
         model_save_path = os.path.join(
             self.model_save_path,
-            f"complement_model_EPOCH_{epoch}"
+            f"complement_model_{self.parts}_EPOCH_{epoch}"
         )
         torch.save(
             self.model.state_dict(),
