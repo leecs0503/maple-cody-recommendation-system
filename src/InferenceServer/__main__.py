@@ -24,21 +24,26 @@ def main():
         "skin",
     ]
 
-    for part in item_parts:
-        parser.add_argument(f"--{part}-model-dir", type=str, help=f"{part} model dir", default=f"./model/{part}")
+    gender_list = ["male", "female"]
 
-    parser.add_argument("--model-class-dir", type=str, help="model class dir", default="./src/Trainer/models/complement_model")
-    parser.add_argument("--model-class-name", type=str, help="model class name", default="ComplementModel")
+    for gender in gender_list:
+        for part in item_parts:
+            parser.add_argument(f"--{gender}_{part}_model_dir", type=str, help=f"{gender}-{part} model dir", default=f"model/{gender}_{part}/{gender}_{part}_model.pt")
+            parser.add_argument(f"--{gender}_{part}_answer_dict_dir", type=str, help=f"{gender}-{part} answer dict dir", default=f"model/{gender}_{part}/{gender}_{part}_answer_dict_dir.json")
+
+    parser.add_argument("--model_class_dir", type=str, help="model class dir", default="src.Trainer.models.complement_model.model")
+    parser.add_argument("--model_class_name", type=str, help="model class name", default="ComplementModel")
 
     args = parser.parse_args()
 
     model_list = [
         Model(
-            name=part,
-            model_dir=getattr(args, f"{part}_model_dir"),
+            name=f"{gender}-{part}",
+            model_dir=getattr(args, f"{gender}_{part}_model_dir"),
             model_class_dir=args.model_class_dir,
             model_class_name=args.model_class_name,
-        ) for part in item_parts
+            model_answer_dict_dir=getattr(args, f"{gender}_{part}_answer_dict_dir"),
+        ) for gender in gender_list for part in item_parts
     ]
 
     for model in model_list:
