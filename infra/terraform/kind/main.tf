@@ -1,4 +1,3 @@
-
 resource "kind_cluster" "default" {
   name           = "mcrs-cluster"
   node_image     = "kindest/node:v1.23.4"
@@ -14,6 +13,14 @@ resource "kind_cluster" "default" {
         "kind: InitConfiguration\nnodeRegistration:\n  kubeletExtraArgs:\n    node-labels: \"ingress-ready=true\"\n"
       ]
 
+      extra_mounts {
+        host_path      = "/etc/resolv.conf"
+        container_path = "/etc/resolv.conf"
+      }
+      extra_mounts {
+        host_path      = "/etc/docker/daemon.json"
+        container_path = "/etc/docker/daemon.json"
+      }
       extra_port_mappings {
         container_port = 80
         host_port      = 80
