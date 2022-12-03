@@ -59,4 +59,6 @@ data "kubectl_file_documents" "istioingressinstall" {
 resource "kubectl_manifest" "istioingressinstall" {
   for_each  = data.kubectl_file_documents.istioingressinstall.manifests
   yaml_body = each.value
+
+  depends_on = [kubernetes_namespace.istio-ingress]
 }
