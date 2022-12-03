@@ -68,7 +68,7 @@ class Trainer(BaseTrainer):
         self.model_save_path = model_save_path
         if not os.path.exists(model_save_path):
             os.makedirs(model_save_path)
-        with open(os.path.join(model_save_path, f"{parts}_answer_dict.json"), "w") as f:
+        with open(os.path.join(model_save_path, f"{gender}_{parts}_answer_dict.json"), "w") as f:
             json.dump(self.answer_dict, f, ensure_ascii=False, indent="\t")
         self.model = ComplementModel(
             num_result_classes=self.data_loader.class_num
@@ -168,7 +168,7 @@ class Trainer(BaseTrainer):
         os.makedirs(self.model_save_path, exist_ok=True)
         model_save_path = os.path.join(
             self.model_save_path,
-            f"complement_model_{self.parts}_EPOCH_{epoch}"
+            f"complement_model_{self.parts}_EPOCH_{epoch}.pt"
         )
         torch.save(
             self.model.state_dict(),
