@@ -6,6 +6,7 @@ import torch
 import importlib
 import base64
 import torchvision.transforms as transforms
+import json
 
 
 class Model(kserve.Model):
@@ -15,6 +16,7 @@ class Model(kserve.Model):
         model_dir: str,
         model_class_dir: str,
         model_class_name: str,
+        model_answer_dict_dir: str,
     ):
         super().__init__(name)
         self.name = name
@@ -22,41 +24,56 @@ class Model(kserve.Model):
         self.model_class_dir = model_class_dir
         self.model_class_name = model_class_name
         self.ready = False
-        self.model = None
         self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         self.transform = transforms.Compose([
             transforms.ToTensor(),
             # normalize
         ])
+        try:
+            with open(model_answer_dict_dir, "r") as f:
+                self.answer_dict = json.load(f)
+        except Exception as err:
+            self.answer_dict = {}
+
+        self.num_classes = len(self.answer_dict)
+
+        model_class = getattr(importlib.import_module(self.model_class_dir), self.model_class_name)
+        self.model = model_class(self.num_classes).to(self.device)
 
     def load(self) -> bool:
-        # Load the python class into memory
-        model_class = getattr(importlib.import_module(self.model_class_dir), self.model_class_name)
-
-        self.model = model_class().to(self.device)
         self.model.load_state_dict(torch.load(self.model_dir, map_location=self.device))
         self.model.eval()
         self.ready = True
         return self.ready
 
     def predict(self, request: Dict) -> Dict:
+        inputs = []
         with torch.no_grad():
             try:
                 raw_inputs = request["instances"]
-                inputs = []
                 for raw_input in raw_inputs:
                     input_image = Image.open(BytesIO(base64.b64decode(raw_input)))
                     input_image = input_image.convert("RGB")
                     input = input_image.resize((224, 224), Image.ANTIALIAS)
                     inputs.append(self.transform(input))
-                inputs = torch.tensor(inputs).to(self.device)
+                inputs = torch.stack(inputs).to(self.device)
             except Exception as e:
                 raise TypeError(
                     "Failed to initialize Torch Tensor from inputs: %s, %s" % (e, inputs))
             try:
                 outputs = self.model(inputs)
-                _, output_index = torch.max(outputs, 1)
-                # TODO: output index를 실제 코드로 변환하는 로직 추가
-                return {"predictions": output_index.tolist()}
+                result = []
+                for image_num in range(inputs.shape[0]):
+                    index_list = [
+                        (outputs[image_num, class_num].item(), self.answer_dict[f"{class_num}"])
+                        for class_num in range(self.num_classes)
+                    ]
+                    index_list.sort(reverse=True)
+                    result.append(index_list[:5])
+                    
+                    outputs = self.model(inputs)
+                    _, output_index = torch.max(outputs, 1)
+
+                    return {"predictions": output_index.tolist()}
             except Exception as e:
                 raise Exception("Failed to predict %s" % e)
