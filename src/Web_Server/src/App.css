@@ -1,0 +1,85 @@
+.App {
+  text-align: center;
+}
+
+@font-face {
+  font-family: 'custom';
+  src: url("/home/yu/react/my-app/public/fonts/PyeongChangPeace-Bold.ttf");
+}
+.top-black-nav {
+  text-align: left;
+  background: linear-gradient( rgba(10, 10, 0, 0.3), rgba(0, 0, 19, 0.9) );
+  opacity: 0.8;
+  width: 100%;
+  color: white;
+  padding-top: 1px;
+  padding-left: 50px;
+  padding-bottom: 1px;
+  font-family: 'custom';
+
+}
+.black-nav {
+  text-align: center;
+  background: linear-gradient( rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3) ) ,url('/home/yu/react/my-app/public/maplebackground.jpg');
+  width: 100%;
+  color: white;
+  padding-left: 20px;
+  padding-top: 50px;
+  padding-bottom: 500px;
+  font-family: 'custom';
+}
+
+#input1 {
+  text-align: center;
+  width: 300px;
+  height: 50px;
+  border: 3px solid black;
+  border-radius: 5px;
+  font-family: 'custom';
+
+}
+
+
+#input2 {
+  width: 50px;
+  height: 50px;
+  border: 3px solid black;
+  border-radius: 10px;
+  font-family: 'custom';
+
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

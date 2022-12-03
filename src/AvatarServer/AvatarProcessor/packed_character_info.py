@@ -280,6 +280,8 @@ class PackedCharacterInfo:
     def get_avatar(self) -> Avatar:
         avatar = Avatar()
 
+        avatar.gender = "male" if self.gender == 0 else "female"
+
         self._add_skin_to(avatar)
         self._add_face_to(avatar)
         if self.is_long_coat:

@@ -140,5 +140,8 @@ data
 **/.terraform
 **/terraform.tfstate.backup
 **/terraform.tfstate
-runs/
 **/mcrs-cluster-config
+
+# tensorboard
+runs/
+

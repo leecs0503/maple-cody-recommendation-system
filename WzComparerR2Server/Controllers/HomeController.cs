@@ -1,9 +1,5 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
-using WzComparerR2Server.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using WzComparerR2;
-using WzComparerR2.Common;
 using WzComparerR2.Avatar;
 using WzComparerR2.WzLib;
 using WzComparerR2.PluginBase;
@@ -12,14 +8,10 @@ using MainProgram;
 using System;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Text.Unicode;
 using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
-
 namespace WzComparerR2Server.Controllers;
 
 public class HomeController : Controller
@@ -28,7 +20,6 @@ public class HomeController : Controller
 	AvatarCanvas avatar;
 	string ?query_result;
 	bool inited;
-	public StringLinker DefaultStringLinker;
 
 	public class Json_data
 	{
@@ -71,7 +62,6 @@ public class HomeController : Controller
 	public HomeController()
 	{
 		this.avatar = new AvatarCanvas();
-		this.DefaultStringLinker = new StringLinker();
 		this.query_result = null;
 	}
 
@@ -332,9 +322,13 @@ public class HomeController : Controller
 			gearType = get_geartype(shield);
 			if (gearType == null || gearType != GearType.shield)
 			{
-				return BadRequest("Fail to load item(shield)");
+				// FIXME: 예외처리 추가
+				//return BadRequest("Fail to load item(shield)");
 			}
-			code += ","; code += shield;
+			else
+			{
+				code += ","; code += shield;
+			}
 		}
 		if (cape != null && cape != "0")
 		{
@@ -461,12 +455,18 @@ public class HomeController : Controller
 				part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
 			}
 			var byteArray = BitmapToByteArray(this.avatar.MixBitmaps(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap,BitmapOrigin.CreateFromNode(mix_node, PluginManager.FindWz).Bitmap,mixOpacity));
+			if(byteArray == null) {
+				return BadRequest("Invalid Request");
+			}
 			if (bs == true) return Content(Convert.ToBase64String(byteArray));
 			else return base.File(byteArray,"image/png");
 		}
 		else
 		{
 			var byteArray = BitmapToByteArray(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap);
+			if(byteArray == null) {
+				return BadRequest("Invalid Request");
+			}
 			if (bs == true) return Content(Convert.ToBase64String(byteArray));
 			return base.File(byteArray,"image/png");
 		}
@@ -475,7 +475,8 @@ public class HomeController : Controller
 	[Route("hair")]
 	public ActionResult Hair(string code, string actionName, bool? bs)
 	{
-		var m = GetFromCode(code); Add_X_request_ID();
+		Add_X_request_ID();
+		var m = GetFromCode(code);
 		if (m == null)
 		{
 			return BadRequest("Wrong Code");
@@ -514,6 +515,9 @@ public class HomeController : Controller
 				part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
 			}
 			var byteArray = BitmapToByteArray(this.avatar.MixBitmaps(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap,BitmapOrigin.CreateFromNode(mix_node, PluginManager.FindWz).Bitmap,mixOpacity));
+			if(byteArray == null) {
+				return BadRequest("Invalid Request");
+			}
 			if (bs == true) return Content(Convert.ToBase64String(byteArray));
 			else return base.File(byteArray,"image/png");
 		}
@@ -531,6 +535,9 @@ public class HomeController : Controller
 				part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
 			}
 			var byteArray = BitmapToByteArray(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap);
+			if(byteArray == null) {
+				return BadRequest("Invalid Request");
+			}
 			if (bs == true) return Content(Convert.ToBase64String(byteArray));
 			return base.File(byteArray,"image/png");
 		}
@@ -539,7 +546,8 @@ public class HomeController : Controller
 	[Route("hairoverhead")]
 	public ActionResult HairOverHead(string code, string actionName, bool? bs)
 	{
-		var m = GetFromCode(code); Add_X_request_ID();
+		Add_X_request_ID();
+		var m = GetFromCode(code);
 		if (m == null)
 		{
 			return BadRequest("Wrong Code");
@@ -578,6 +586,9 @@ public class HomeController : Controller
 				part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
 			}
 			var byteArray = BitmapToByteArray(this.avatar.MixBitmaps(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap,BitmapOrigin.CreateFromNode(mix_node, PluginManager.FindWz).Bitmap,mixOpacity));
+			if(byteArray == null) {
+				return BadRequest("Invalid Request");
+			}
 			if (bs == true) return Content(Convert.ToBase64String(byteArray));
 			else return base.File(byteArray,"image/png");
 		}
@@ -596,6 +607,9 @@ public class HomeController : Controller
 			}
 
 			var byteArray = BitmapToByteArray(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap);
+			if(byteArray == null) {
+				return BadRequest("Invalid Request");
+			}
 			if (bs == true) return Content(Convert.ToBase64String(byteArray));
 			return base.File(byteArray,"image/png");
 		}
@@ -856,8 +870,12 @@ public class HomeController : Controller
 			g.DrawImage(layer.Bitmap, layer.OpOrigin.X - rect.X, layer.OpOrigin.Y - rect.Y);
 		}
 		g.Dispose();
-		if (bs == true) return Content(Convert.ToBase64String(BitmapToByteArray(bmp)));
-		return base.File(BitmapToByteArray(bmp),"image/png");
+		var byteArray = BitmapToByteArray(bmp);
+		if(byteArray == null) {
+			return BadRequest("Invalid Request");
+		}
+		if (bs == true) return Content(Convert.ToBase64String(byteArray));
+		return base.File(byteArray,"image/png");
 	}
 
 	private ActionResult ItemWithEmotion(string code, GearType type, string typename, bool? bs)
@@ -888,6 +906,9 @@ public class HomeController : Controller
 		}
 
 		var byteArray = BitmapToByteArray(BitmapOrigin.CreateFromNode(part_node, PluginManager.FindWz).Bitmap);
+		if(byteArray == null) {
+			return BadRequest("Invalid Request");
+		}
 		if (bs == true) return Content(Convert.ToBase64String(byteArray));
 		return base.File(byteArray,"image/png");
 	}
@@ -980,34 +1001,73 @@ public class HomeController : Controller
 				{
 					cap_node = cap_node.GetValue<Wz_Uol>().HandleUol(cap_node);
 				}
-				cap_node = FindActionFrameNode(cap_node, new ActionFrame(avatar.ActionName, 0));
-				while(cap_node.Value is Wz_Uol)
-				{
-					cap_node = cap_node.GetValue<Wz_Uol>().HandleUol(cap_node);
-				}
-				foreach(var childNode in cap_node.Nodes)
-				{
-					var cap_z = childNode.FindNodeByPath("z");
-					if(cap_z != null)
+				// cap_node = FindActionFrameNode(cap_node, new ActionFrame(avatar.ActionName, 0));
+				cap_node = cap_node.FindNodeByPath("default");
+				if(cap_node == null) {
+					cap_node = cap.Node;
+					while(cap_node.Value is Wz_Uol)
 					{
-						var cap_string = cap_z.GetValue<string>();
-						if (cap_string == "cap")
+						cap_node = cap_node.GetValue<Wz_Uol>().HandleUol(cap_node);
+					}
+					cap_node = FindActionFrameNode(cap.Node, new ActionFrame(avatar.ActionName, 0));
+				}
+				else {
+					var tempNode = cap_node;
+					foreach(var childNode in cap_node.Nodes) {
+						tempNode = childNode;
+					}
+					if (tempNode == cap_node) {
+						cap_node = cap.Node;
+						while(cap_node.Value is Wz_Uol)
 						{
-							avatar.HairCover = true;
+							cap_node = cap_node.GetValue<Wz_Uol>().HandleUol(cap_node);
 						}
-						else
-						{
-							avatar.HairCover = false;
+						cap_node = FindActionFrameNode(cap.Node, new ActionFrame(avatar.ActionName, 0));
+						if(cap_node == null) {
+							Console.WriteLine("Unknown Exception");
+							Environment.Exit(-1);
 						}
-						break;
+					}
+					else {
+						cap_node = tempNode;
 					}
 				}
-				
+				if(cap_node != null) {
+					while(cap_node.Value is Wz_Uol)
+					{
+						cap_node = cap_node.GetValue<Wz_Uol>().HandleUol(cap_node);
+					}
+					foreach(var childNode in cap_node.Nodes)
+					{
+						var cap_z = childNode.FindNodeByPath("z");
+						if(cap_z != null)
+						{
+							var cap_string = cap_z.GetValue<string>();
+							if (cap_string == "cap" || cap_string == "capBelowAccessory")
+							{
+								avatar.HairCover = true;
+							}
+							else if(cap_string == "capOverHair" || cap_string == "backCapAccessory" || cap_string == "capeOverHead")
+							{
+								avatar.HairCover = false;
+							}
+							else
+							{
+								Console.WriteLine(cap_string);
+								Environment.Exit(-1);
+							}
+							break;
+						}
+					}
+				}
 			}
 			Console.WriteLine("성공");
 			var bone = this.avatar.CreateFrame(0, 0, 0);
 			var frame = this.avatar.DrawFrame(bone);
 			var byteArray = BitmapToByteArray(frame.Bitmap);
+			if(byteArray == null) {
+				return BadRequest("Invalid Request");
+			}
 			if (bs == true) return Content(Convert.ToBase64String(byteArray));
 			return base.File(byteArray,"image/png");
 		}
@@ -1066,11 +1126,6 @@ public class HomeController : Controller
 		{
 			Console.WriteLine("아바타 플러그인을 초기화할 수 없습니다.");
 			return false;
-		}
-		var sl = this.DefaultStringLinker;
-		if (!sl.HasValues) //生成默认stringLinker
-		{
-			sl.Load(PluginManager.FindWz(Wz_Type.String).GetValueEx<Wz_File>(null), PluginManager.FindWz(Wz_Type.Item).GetValueEx<Wz_File>(null), PluginManager.FindWz(Wz_Type.Etc).GetValueEx<Wz_File>(null));
 		}
 
 		if (loadType == 0) //先清空。。
