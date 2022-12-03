@@ -49,29 +49,28 @@ class KserveComplementModel(kserve.Model):
 
     def predict(self, request: Dict) -> Dict:
         inputs = []
-        with torch.no_grad():
-            try:
-                raw_inputs = request["instances"]
-                for raw_input in raw_inputs:
-                    input_image = Image.open(BytesIO(base64.b64decode(raw_input)))
-                    input_image = input_image.convert("RGB")
-                    input = input_image.resize((224, 224), Image.ANTIALIAS)
-                    inputs.append(self.transform(input))
-                inputs = torch.stack(inputs).to(self.device)
-            except Exception as e:
-                raise TypeError(
-                    "Failed to initialize Torch Tensor from inputs: %s, %s" % (e, inputs))
-            try:
-                outputs = self.model(inputs)
-                result = []
-                for image_num in range(inputs.shape[0]):
-                    index_list = [
-                        (outputs[image_num, class_num].item(), self.answer_dict[f"{class_num}"])
-                        for class_num in range(self.num_classes)
-                    ]
-                    index_list.sort(reverse=True)
-                    result.append(index_list[:5])
+        try:
+            raw_inputs = request["instances"]
+            for raw_input in raw_inputs:
+                input_image = Image.open(BytesIO(base64.b64decode(raw_input)))
+                input_image = input_image.convert("RGB")
+                input = input_image.resize((224, 224), Image.ANTIALIAS)
+                inputs.append(self.transform(input))
+            inputs = torch.stack(inputs).to(self.device)
+        except Exception as e:
+            raise TypeError(
+                "Failed to initialize Torch Tensor from inputs: %s, %s" % (e, inputs))
+        try:
+            outputs = self.model(inputs)
+            result = []
+            for image_num in range(inputs.shape[0]):
+                index_list = [
+                    (outputs[image_num, class_num].item(), self.answer_dict[f"{class_num}"])
+                    for class_num in range(self.num_classes)
+                ]
+                index_list.sort(reverse=True)
+                result.append(index_list[:5])
 
-                return {"predictions": result}
-            except Exception as e:
-                raise Exception("Failed to predict %s" % e)
+            return {"predictions": result}
+        except Exception as e:
+            raise Exception("Failed to predict %s" % e)

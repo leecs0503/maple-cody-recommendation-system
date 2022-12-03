@@ -16,7 +16,7 @@ def main():
     model_list = [
         KserveComplementModel(
             name=f"complement-model-{gender}-{part}",
-            model_dir=f"/mnt/models",
+            model_dir="/mnt/models",
             gender=gender,
             part=part,
         ) for gender, part in model_list_to_make
