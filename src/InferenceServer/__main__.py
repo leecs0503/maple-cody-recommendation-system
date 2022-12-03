@@ -29,7 +29,7 @@ def main():
     for gender in gender_list:
         for part in item_parts:
             parser.add_argument(f"--{gender}_{part}_model_dir", type=str, help=f"{gender}-{part} model dir", default=f"model/{gender}_{part}/{gender}_{part}_model.pt")
-            parser.add_argument(f"--{gender}_{part}_answer_dict_dir", type=str, help=f"{gender}-{part} answer dict dir", default=f"model/{gender}_{part}/{gender}_{part}_answer_dict_dir.json")
+            parser.add_argument(f"--{gender}_{part}_answer_dict_dir", type=str, help=f"{gender}-{part} answer dict dir", default=f"model/{gender}_{part}/{gender}_{part}_answer_dict.json")
 
     parser.add_argument("--model_class_dir", type=str, help="model class dir", default="src.Trainer.models.complement_model.model")
     parser.add_argument("--model_class_name", type=str, help="model class name", default="ComplementModel")
@@ -46,10 +46,10 @@ def main():
         ) for gender in gender_list for part in item_parts
     ]
 
-    for model in model_list:
-        model.load()
+    # for model in model_list:
+    #     model.load()
 
-    kserve.ModelServer().start(model_list)
+    kserve.ModelServer(http_port=9000).start(model_list)
 
 
 if __name__ == "__main__":

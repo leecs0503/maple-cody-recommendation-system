@@ -41,7 +41,7 @@ class Model(kserve.Model):
         self.model = model_class(self.num_classes).to(self.device)
 
     def load(self) -> bool:
-        self.model.load_state_dict(torch.load(self.model_dir, map_location=self.device))
+        # self.model.load_state_dict(torch.load(self.model_dir, map_location=self.device))
         self.model.eval()
         self.ready = True
         return self.ready
@@ -70,10 +70,7 @@ class Model(kserve.Model):
                     ]
                     index_list.sort(reverse=True)
                     result.append(index_list[:5])
-                    
-                    outputs = self.model(inputs)
-                    _, output_index = torch.max(outputs, 1)
 
-                    return {"predictions": output_index.tolist()}
+                return {"predictions": result}
             except Exception as e:
                 raise Exception("Failed to predict %s" % e)
