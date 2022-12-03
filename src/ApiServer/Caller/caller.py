@@ -17,11 +17,11 @@ class Caller:
         timeout: float,
         backoff: float,
     ):
+        self.logger = logger
         self.server_host = server_host
         self.server_protocol = server_protocol
         self.server_port = server_port
         self.retry_num = retry_num
-        self.session = aiohttp.ClientSession()
         self.timeout = timeout
         self.backoff = backoff
 
@@ -37,6 +37,8 @@ class Caller:
     ):
         url = f"{self.server_protocol}://{self.server_host}:{self.server_port}/{route_path}"
         retry_num = self.retry_num if self.retry_num >= 0 else 1000000000
+
+        # TODO: keep alive 사용
 
         for step in range(retry_num):
             async with aiohttp.ClientSession() as session:

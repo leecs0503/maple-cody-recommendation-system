@@ -131,8 +131,8 @@ async def test_recommend_handler(test_http_handler: HttpHandler):
 
     result_dict = json.loads(result.text)
 
-    for k, v in result_dict.items():
-        if k == v:
-            assert v in data["parts_to_change"]
+    for avatar_parts, code in result_dict.items():
+        if avatar_parts == code:
+            assert code in data["parts_to_change"]
         else:
-            assert v not in data["parts_to_change"]
+            assert code not in data["parts_to_change"]

@@ -9,6 +9,7 @@ import requests
 from bs4 import BeautifulSoup
 import json
 import os
+import asyncio
 
 
 def get_html_text(url: str):
@@ -202,18 +203,22 @@ class HttpHandler:
         result = {}
         gender = character_data["gender"]
 
-        for part_image, value in character_data.items():
+        for part_image in character_data:
             if "_image" in part_image:
                 part = part_image[:-6]
                 result[part] = character_data[part]
 
-        for part in parts_to_change:
-            result[part] = await self.inference_caller.request(
+        changed_parts = await asyncio.gather(*[
+            self.inference_caller.request(
                 route_path=part,
                 gender=gender,
                 parts=part,
                 input_data=character_data[f"{part}_image"],
-            )
+            ) for part in parts_to_change
+        ])
+
+        for part, code in zip(parts_to_change, changed_parts):
+            result[part] = code
 
         return web.Response(
             text=await self.avatar_caller.request(
