@@ -12,7 +12,7 @@ interface FormValues {
   specs?: string;
 }
 
-export default function FormSubmitHooks() {
+export default function Main() {
   const navigate = useNavigate();
   const [formValues, setFormValues] = useState<FormValues>({});
   const handleTextFieldChange = (
@@ -26,30 +26,27 @@ export default function FormSubmitHooks() {
   };
 
   const handleSubmit = () => {
-    let id = formValues.specs
+    let id = formValues.UserID
     navigate(`/${id}`);
-    console.log(formValues);
   }
 
   return (
-    <form>
-      <FormGroup
-        sx={{
-          padding: 2,
-          borderRadius: 2,
-          border: "1px solid",
-          borderColor: "primary.main",
-        }}
-      >
-        <TextField
-          sx={{ paddingBottom: 2 }}
-          name="specs"
-          variant="outlined"
-          placeholder="Specs..."
-          onChange={handleTextFieldChange}
-        />
-        <Button variant="outlined" onClick={handleSubmit}>Submit</Button>
-      </FormGroup>
-    </form>
+    <FormGroup
+      sx={{
+        padding: 2,
+        borderRadius: 2,
+        border: "1px solid",
+        borderColor: "primary.main",
+      }}
+    >
+      <TextField
+        sx={{ paddingBottom: 2 }}
+        name="UserID"
+        variant="outlined"
+        placeholder="UserId를 입력하세요"
+        onChange={handleTextFieldChange}
+      />
+      <Button variant="outlined" onClick={handleSubmit}>Submit</Button>
+    </FormGroup>
   );
 }

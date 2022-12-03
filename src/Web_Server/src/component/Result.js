@@ -20,7 +20,6 @@ function Result() {
   return (
     <div className="black-nav">
       <Avatar alt="Remy Sharp" src={`data:image/jpeg;base64,${res_64}`} />
-      <br></br>
       <Typography variant="h4" component="h2">
         변환 된 아바타
       </Typography>
