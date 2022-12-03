@@ -4,6 +4,7 @@ from src.ApiServer.server.http_handler import HttpHandler
 from tests.test_api_server.util.make_mocked_request import _make_mocked_request_json
 import requests_mock
 import os
+import json
 
 
 @pytest.mark.asyncio
@@ -110,3 +111,28 @@ async def test_infer_code_web_handler(test_http_handler: HttpHandler):
         result_code_text = infer_result_file.read()
 
         assert result.text == result_code_text
+
+
+@pytest.mark.asyncio
+async def test_recommend_handler(test_http_handler: HttpHandler):
+    cwd = os.path.dirname(__file__)
+    json_path = os.path.join(cwd, 'test_data', 'test_recommend_data.json')
+    with open(json_path, 'rt') as file:
+        data = json.load(file)
+    request = _make_mocked_request_json(
+        obj={
+            "encrypted_character_image": data["encrypted_character_image"],
+            "parts_to_change": data["parts_to_change"],
+        },
+        request_path="/recommend",
+    )
+
+    result = await test_http_handler.recommend_handler(request=request)
+
+    result_dict = json.loads(result.text)
+
+    for avatar_parts, code in result_dict.items():
+        if avatar_parts == code:
+            assert code in data["parts_to_change"]
+        else:
+            assert code not in data["parts_to_change"]

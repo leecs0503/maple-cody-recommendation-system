@@ -4,10 +4,12 @@ from http import HTTPStatus
 from aiohttp import web
 
 from ..server.config import Config
+from ..Caller.caller import Caller
 import requests
 from bs4 import BeautifulSoup
 import json
 import os
+import asyncio
 
 
 def get_html_text(url: str):
@@ -101,9 +103,29 @@ class HttpHandler:
         self,
         logger: logging.Logger,
         config: Config,
+        avatar_caller: Caller = None,
+        inference_caller: Caller = None,
     ):
         self.logger = logger
         self.config = config
+        self.avatar_caller = avatar_caller if avatar_caller is not None else Caller(
+            logger=logger,
+            server_host=config.avatar_server_host,
+            server_protocol=config.avatar_server_protocol,
+            server_port=config.avatar_server_port,
+            retry_num=config.avatar_caller_retry_num,
+            timeout=config.avatar_caller_timeout,
+            backoff=config.avatar_caller_backoff,
+        )
+        self.inference_caller = inference_caller if inference_caller is not None else Caller(
+            logger=logger,
+            server_host=config.inference_server_host,
+            server_protocol=config.inference_server_protocol,
+            server_port=config.inference_server_port,
+            retry_num=config.inference_caller_retry_num,
+            timeout=config.inference_caller_timeout,
+            backoff=config.inference_caller_backoff,
+        )
 
     def get_routes(self):
         return [
@@ -111,6 +133,7 @@ class HttpHandler:
             web.get("/healthcheck", self.healthcheck_handler),
             web.post('/character_code_web_handler', self.character_code_web_handler),
             web.post('/infer_code_web_handler', self.infer_code_web_handler),
+            web.post('/recommend', self.recommend_handler)
         ]
 
     async def index_handler(self, request: web.Request):
@@ -167,3 +190,39 @@ class HttpHandler:
         result_inference['infer_item_code_name'] = item_code_name
 
         return web.json_response(result_inference)
+
+    async def recommend_handler(self, request: web.Request):
+        post = await request.json()
+        encrypted_character_image = post["encrypted_character_image"]
+        parts_to_change = post["parts_to_change"]
+
+        character_data = await self.avatar_caller.request(
+            route_path="/character_look_data",
+            packed_character_look=encrypted_character_image,
+        )
+        result = {}
+        gender = character_data["gender"]
+
+        for part_image in character_data:
+            if "_image" in part_image:
+                part = part_image[:-6]
+                result[part] = character_data[part]
+
+        changed_parts = await asyncio.gather(*[
+            self.inference_caller.request(
+                route_path=f"/{part}",
+                gender=gender,
+                parts=part,
+                input_data=character_data[f"{part}_image"],
+            ) for part in parts_to_change
+        ])
+
+        for part, code in zip(parts_to_change, changed_parts):
+            result[part] = code
+
+        return web.Response(
+            text=await self.avatar_caller.request(
+                route_path="/avatar_image",
+                avatar=result,
+            )
+        )
