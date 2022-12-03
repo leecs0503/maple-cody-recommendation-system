@@ -2,6 +2,7 @@
 import json
 import os
 import requests
+import gc
 
 cwd = os.getcwd()
 file_path = os.path.abspath(os.path.join(cwd, os.pardir))
@@ -24,7 +25,6 @@ for path in paths:
 
 # %%
 
-import requests, gc
 
 cnt = 1
 result = {}
@@ -37,8 +37,12 @@ for json_data in json_datas:
             print(data["nickname"])
             for code_list in data["recent_cody_list"]:
                 while True:
-                    encrypted_code = code_list.replace('https://avatar.maplestory.nexon.com/Character/', '').replace('.png', '')
-                    response = requests.post("http://localhost:8080/character_look_data", json={"packed_character_look": encrypted_code})
+                    encrypted_code = code_list.replace(
+                        'https://avatar.maplestory.nexon.com/Character/', ''
+                    ).replace('.png', '')
+                    response = requests.post("http://localhost:8080/character_look_data", json={
+                        "packed_character_look": encrypted_code
+                    })
                     if response.status_code == 200:
                         result[data["nickname"]].append(json.loads(response.text))
                         break
@@ -55,7 +59,7 @@ for json_data in json_datas:
                     json.dump(result, f, ensure_ascii=False, indent="\t")
 
             cnt += 1
-            del(result)
+            del result
             gc.collect()
             result = {}
 

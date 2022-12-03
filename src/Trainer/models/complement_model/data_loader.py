@@ -1,4 +1,4 @@
-from typing import TypedDict, Dict
+from typing import Dict
 import torch
 import torch.utils.data
 import torchvision.transforms as transforms
@@ -17,6 +17,7 @@ class ComplementDataLoader:
         self.train = train
         self.valid = valid
         self.class_num = class_num
+
 
 class ComplementDataset(torch.utils.data.Dataset):
     def __init__(
@@ -50,6 +51,7 @@ def _get_data_loader(
         shuffle=True,
         num_workers=num_workers,
     )
+
 
 def preprocess_raw_data(
     raw_data: dict,
@@ -95,6 +97,7 @@ def preprocess_raw_data(
     ]
 
     return dataset, len(answer_set), answer_dict
+
 
 def load_DataLoader(
     data_set: Dict,

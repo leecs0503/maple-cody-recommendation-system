@@ -175,7 +175,7 @@ class HttpHandler:
         # response = requests.post("http://localhost:8080/inference", post)  -> infer 서버에 사용자의 코드 요청
         # 추천된 코드를 json으로 저장하여 response로 받는다고 가정
 
-        response_infer_code = '{"face": "54002", "cap": "1005041", "longcoat": "1053240", "weapon": "1703048", "cape": "1103332", "coat": "0", "glove": "1082703", "hair": "61481+3*50", "pants": "0", "shield": "1092067", "shoes": "1073534", "faceAccessory": "1012050", "eyeAccessory": "1022079", "earrings": "1032022", "skin": "12024"}'
+        response_infer_code = '{"face": "54002", "cap": "1005041", "longcoat": "1053240", "weapon": "1703048", "cape": "1103332", "coat": "0", "glove": "1082703", "hair": "61481+3*50", "pants": "0", "shield": "1092067", "shoes": "1073534", "faceAccessory": "1012050", "eyeAccessory": "1022079", "earrings": "1032022", "skin": "12024"}'  # noqa: E501
         response_infer_code = json.loads(response_infer_code)
         self.logger.debug(f"inference character code : {response_infer_code}")
         encoding_images_string = get_avatar_item_encoding_string(item_code=response_infer_code)

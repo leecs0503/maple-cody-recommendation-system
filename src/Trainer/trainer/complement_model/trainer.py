@@ -1,7 +1,6 @@
 from ..base_trainer import BaseTrainer
 from ...models.complement_model.model import ComplementModel
 from ...models.complement_model.data_loader import ComplementDataLoader, load_DataLoader, preprocess_raw_data
-import logging
 import json
 import os
 from typing import Optional
@@ -13,6 +12,7 @@ from torch.optim import lr_scheduler
 import torch
 import torch.nn as nn
 import time
+
 
 @dataclass
 class TrainerArguments:
@@ -28,6 +28,7 @@ class TrainerArguments:
     learning_rate: float = 0.001
     step_size: float = 20
     gamma: float = 0.1
+
 
 class Trainer(BaseTrainer):
     def __init__(
@@ -78,8 +79,6 @@ class Trainer(BaseTrainer):
         if saved_model_path is not None:
             self.model.load(saved_model_path)
         self.model.to(self.device)
-
-
 
     def get_dataloader(
         self,

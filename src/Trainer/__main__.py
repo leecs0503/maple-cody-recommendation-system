@@ -2,6 +2,7 @@ import simple_parsing
 import src.Trainer.trainer
 import dataclasses
 
+
 def main():
     parser = simple_parsing.ArgumentParser(description="train server")
 
@@ -9,7 +10,7 @@ def main():
     first_args, unparsed = parser.parse_known_args()
     model_name = first_args.model_name
     print(model_name)
-    
+
     trainer_module = getattr(src.Trainer.trainer, model_name)
     args_cls = trainer_module.TrainerArguments
     parser.add_arguments(args_cls, dest="trainer_arguments")

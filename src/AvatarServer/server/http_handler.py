@@ -5,7 +5,6 @@ from http import HTTPStatus
 from aiohttp import web
 import aiohttp
 
-from ..Avatar.avatar import Avatar
 from ..AvatarProcessor.avatar_processor import AvatarProcessor, LookStringVersionException
 from ..server.config import Config
 
@@ -55,6 +54,7 @@ class HTTPHandler:
             raise web.HTTPInternalServerError(
                 body=f"Internal Server Error 500: {str(err)}"
             )
+
     async def character_look_data_handler(self, request: web.Request):
         post = await request.json()
         packed_character_look = post.get("packed_character_look")
@@ -74,7 +74,7 @@ class HTTPHandler:
                     raise web.HTTPGatewayTimeout(
                         body=f"Gateway Timeout Eror 504: {str(err)}"
                     )
-                except:
+                except Exception:
                     result[f"{item_type}_image"] = ""
                 setattr(avatar, item_type, item_code)
             return web.json_response(result)
