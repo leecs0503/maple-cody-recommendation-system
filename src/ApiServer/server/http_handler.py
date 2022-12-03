@@ -4,8 +4,7 @@ from http import HTTPStatus
 from aiohttp import web
 
 from ..server.config import Config
-from ..Caller.avatar_caller import AvatarCaller
-from ..Caller.inference_caller import InferenceCaller
+from ..Caller.caller import Caller
 import requests
 from bs4 import BeautifulSoup
 import json
@@ -103,12 +102,12 @@ class HttpHandler:
         self,
         logger: logging.Logger,
         config: Config,
-        avatar_caller: AvatarCaller = None,
-        inference_caller: InferenceCaller = None,
+        avatar_caller: Caller = None,
+        inference_caller: Caller = None,
     ):
         self.logger = logger
         self.config = config
-        self.avatar_caller = avatar_caller if avatar_caller is not None else AvatarCaller(
+        self.avatar_caller = avatar_caller if avatar_caller is not None else Caller(
             logger=logger,
             server_host=config.avatar_server_host,
             server_protocol=config.avatar_server_protocol,
@@ -117,7 +116,7 @@ class HttpHandler:
             timeout=config.avatar_caller_timeout,
             backoff=config.avatar_caller_backoff,
         )
-        self.inference_caller = inference_caller if inference_caller is not None else InferenceCaller(
+        self.inference_caller = inference_caller if inference_caller is not None else Caller(
             logger=logger,
             server_host=config.inference_server_host,
             server_protocol=config.inference_server_protocol,
@@ -196,7 +195,10 @@ class HttpHandler:
         encrypted_character_image = post["encrypted_character_image"]
         parts_to_change = post["parts_to_change"]
 
-        character_data = await self.avatar_caller.get_character_look_data(encrypted_character_image)
+        character_data = await self.avatar_caller.request(
+            route_path="character_look_data",
+            packed_character_look=encrypted_character_image,
+        )
         result = {}
         gender = character_data["gender"]
 
@@ -206,10 +208,16 @@ class HttpHandler:
                 result[part] = character_data[part]
 
         for part in parts_to_change:
-            result[part] = await self.inference_caller.infer(
+            result[part] = await self.inference_caller.request(
+                route_path=part,
                 gender=gender,
-                item_parts=part,
-                b64_character_look=character_data[f"{part}_image"],
+                parts=part,
+                input_data=character_data[f"{part}_image"],
             )
 
-        return web.Response(text=await self.avatar_caller.get_avatar_image(result))
+        return web.Response(
+            text=await self.avatar_caller.request(
+                route_path="avatar_image",
+                avatar=result,
+            )
+        )

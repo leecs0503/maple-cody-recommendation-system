@@ -3,9 +3,10 @@ import logging
 
 import aiohttp
 from aiohttp import web
+from http import HTTPStatus
 
 
-class InferenceCaller:
+class Caller:
     def __init__(
         self,
         logger: logging.Logger,
@@ -29,27 +30,21 @@ class InferenceCaller:
         delay = self.backoff * (2**step)
         await asyncio.sleep(delay)
 
-    async def infer(
+    async def request(
         self,
-        gender: str,
-        item_parts: str,
-        b64_character_look: str,
+        route_path: str,
+        **kwargs,
     ):
-        url = f"{self.server_protocol}://{self.server_host}:{self.server_port}/{item_parts}"
+        url = f"{self.server_protocol}://{self.server_host}:{self.server_port}/{route_path}"
         retry_num = self.retry_num if self.retry_num >= 0 else 1000000000
-        json_data = {
-            "gender": gender,
-            "parts": item_parts,
-            "input_data": b64_character_look
-        }
 
         for step in range(retry_num):
             async with aiohttp.ClientSession() as session:
-                async with session.post(url, json=json_data, ssl=False) as resp:
-                    if resp.status == 200:
-                        return await resp.text()  # 아이템 코드를 string의 형태로 리턴해줄 것이라는 기대
-                    elif resp.status == 400:
+                async with session.post(url, json=kwargs, ssl=False) as resp:
+                    if resp.status == HTTPStatus.OK:
+                        return await resp.json()
+                    elif resp.status == HTTPStatus.BAD_REQUEST:
                         raise web.HTTPBadRequest(text=await resp.text())
             await self.exponential_backoff(step)
 
-        raise Exception("err: get_image")
+        raise Exception(f"err: {route_path}")
