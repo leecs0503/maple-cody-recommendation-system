@@ -20,13 +20,13 @@ class CallerForTest:
         route_path: str,
         **kwargs,
     ):
-        if route_path == "character_look_data":
+        if route_path == "/character_look_data":
             return self.data["get_character_look_data"]
 
-        if route_path == "avatar_image":
+        if route_path == "/avatar_image":
             return json.dumps(kwargs)
 
-        if "parts" in kwargs and kwargs["parts"] == route_path:
+        if "parts" in kwargs and f"/{kwargs['parts']}" == route_path:
             return kwargs["parts"]
 
         raise Exception("invalid request")

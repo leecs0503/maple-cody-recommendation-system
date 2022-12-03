@@ -197,7 +197,7 @@ class HttpHandler:
         parts_to_change = post["parts_to_change"]
 
         character_data = await self.avatar_caller.request(
-            route_path="character_look_data",
+            route_path="/character_look_data",
             packed_character_look=encrypted_character_image,
         )
         result = {}
@@ -210,7 +210,7 @@ class HttpHandler:
 
         changed_parts = await asyncio.gather(*[
             self.inference_caller.request(
-                route_path=part,
+                route_path=f"/{part}",
                 gender=gender,
                 parts=part,
                 input_data=character_data[f"{part}_image"],
@@ -222,7 +222,7 @@ class HttpHandler:
 
         return web.Response(
             text=await self.avatar_caller.request(
-                route_path="avatar_image",
+                route_path="/avatar_image",
                 avatar=result,
             )
         )

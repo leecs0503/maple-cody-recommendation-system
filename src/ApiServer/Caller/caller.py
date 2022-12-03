@@ -35,7 +35,7 @@ class Caller:
         route_path: str,
         **kwargs,
     ):
-        url = f"{self.server_protocol}://{self.server_host}:{self.server_port}/{route_path}"
+        url = f"{self.server_protocol}://{self.server_host}:{self.server_port}{route_path}"
         retry_num = self.retry_num if self.retry_num >= 0 else 1000000000
 
         # TODO: keep alive 사용
