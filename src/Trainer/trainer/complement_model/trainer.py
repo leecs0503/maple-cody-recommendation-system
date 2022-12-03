@@ -59,6 +59,10 @@ class Trainer(BaseTrainer):
         self.gamma = gamma
 
         self.model_save_path = model_save_path
+        if not os.path.exists(model_save_path):
+            os.makedirs(model_save_path)
+        with open(os.path.join(model_save_path, f"{parts}_answer_dict.json"), "w") as f:
+            json.dump(self.answer_dict, f, ensure_ascii=False, indent="\t")
         self.model = ComplementModel(
             num_result_classes=self.data_loader.class_num
         )
