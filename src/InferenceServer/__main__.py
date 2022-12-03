@@ -15,9 +15,9 @@ def main():
 
     model_list = [
         KserveComplementModel(
-            name=f"{gender}-{part}",
-            model_dir=getattr(args, f"{gender}_{part}_model_dir"),
-            model_answer_dict_dir=getattr(args, f"{gender}_{part}_answer_dict_dir"),
+            name=f"complement-model-{gender}-{part}",
+            model_dir=f"{gender}_{part}_model_dir",
+            model_answer_dict_dir=f"{gender}_{part}_answer_dict_dir",
         ) for gender, part in model_list_to_make
     ]
 
