@@ -413,6 +413,29 @@ public class HomeController : Controller
 		else return base.File(byteArray,"image/png");
 	}
 
+	[Route("head")]
+	public ActionResult Head(string code, string actionName, bool? bs, string earType)
+	{
+		Add_X_request_ID();
+		if (earType == "ear")
+		{
+			avatar.EarType = 1;
+		}
+		if (earType == "lefEar")
+		{
+			avatar.EarType = 2;
+		}
+		else if (earType == "highlefEar")
+		{
+			avatar.EarType = 3;
+		}
+		else
+		{
+			avatar.EarType = 0;
+		}
+		return ItemWithAction(code, actionName, GearType.head, bs, avatar.EarType);
+	}
+
 	[Route("body")]
 	public ActionResult Body(string code, string actionName, bool? bs, string earType)
 	{
