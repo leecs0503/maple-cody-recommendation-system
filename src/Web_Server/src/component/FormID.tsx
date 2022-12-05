@@ -1,9 +1,5 @@
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 import useFetch from "../hooks/useFetch";
-import CharacterInfo from "./CharacterInfo";
-import FormID from "./FormID.tsx";
-import InferImage from "./InferImage";
-import MainIntro from "./MainIntro"
 import { createTheme,ThemeProvider } from '@mui/material/styles';
 import {
   Grid,
@@ -11,6 +7,7 @@ import {
   FormGroup,
   TextField,
 } from "@mui/material";
+
 
 interface FormValues {
   specs?: string;
@@ -27,7 +24,8 @@ const theme = createTheme({
 });
 
 
-export default function Main() {
+
+export default function FormID() {
   const [formValues, setFormValues] = useState<FormValues>({});
   const [devices, setDevices] = useState(() => []);
 
@@ -49,28 +47,27 @@ export default function Main() {
   const characterImageSubmit = () => {
     console.log(character_code.avatar_image)
   }
-  return (
-    <Fragment>
-      <MainIntro/>
-      <Grid container spacing={2}>
-      <Grid item xs={0.5}>
-      </Grid>
-        <Grid item xs={5}>
-          <CharacterInfo code={character_code} device={devices} />
-          <br/>
-          <FormID />
-        </Grid>
-        <Grid item xs={2}>
-          <InferImage image_name={[1,4]} code={character_code}/>
-        </Grid>
-        <Grid item xs={2}>
-          <InferImage image_name={[2,5]} code={character_code}/>
-        </Grid>
-        <Grid item xs={2}>
-          <InferImage image_name={[3,6]} code={character_code}/>
-        </Grid>
-      </Grid>
-    </Fragment>
+
+return (
+  <FormGroup
+  sx={{
+    padding: 2,
+    borderRadius: 2,
+    border: "1px solid",
+    borderColor: "error.main",
+  }}
+>
+  <TextField
+    sx={{ paddingBottom: 2 }}
+    name="UserID"
+    variant="outlined"
+    placeholder="UserId를 입력하세요"
+    onChange={handleTextFieldChange}
+  />
+<ThemeProvider theme={theme}>
+  <Button color="neutral" variant="contained" component="label"  size="large" onClick={characterImageSubmit}>Submit</Button>
+</ThemeProvider>
+</FormGroup>
 
   );
 }

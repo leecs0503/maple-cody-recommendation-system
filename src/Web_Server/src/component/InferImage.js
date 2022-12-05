@@ -104,8 +104,9 @@ export default function CharacterInfo(props) {
       </ListItem>
     </List>
     </Dialog>
-
       </Paper>
+      <br/>
+      <br/>
       <Paper elevation={1}>
       이미지  {props.image_name[1]}
       </Paper>

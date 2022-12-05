@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 import {
+    Grid,
     Box,
     Card,
     Typography,
@@ -32,62 +33,57 @@ export default function CharacterInfo(props) {
     }
 
   return (
-    <Box
-    sx={{
-    display: 'flex',
-    flexWrap: 'wrap',
-    '& > :not(style)': {
-        m: 1,
-        width: 1250,
-        height: 455,
-    },
-    }}
-    >
-    <Paper elevation={1} >
-    <Box
-    sx={{
-    display: 'flex',
-    flexWrap: 'wrap',
-    '& > :not(style)': {
-        m: 1,
-        width: 125,
-        height: 50,
-    },
-    }}
-    >
-    <Paper elevation={1} >
-    헤어
-    </Paper>
+    <Grid container spacing={2}>
+      <Grid item xs={2}>
+      <br/>
+      <Paper elevation={1} >
+      <br/>
+      헤어
+      <br/>
+      <br/>
+      </Paper>
+      <br/>
+      <br/>
+      <br/>
+      <Paper elevation={1} >
+      <br/>
+      눈
+      <br/>
+      <br/>
+      </Paper>
+      <br/>
+      <br/>
+      <br/>
+      <Paper elevation={1} >
+      <br/>
+      얼장
+      <br/>
+      <br/>
+      </Paper>
+      <br/>
+      <br/>
+      <br/>
+      <Paper elevation={1} >
+      <br/>
+      눈장
+      <br/>
+      <br/>
+      </Paper>
+      </Grid>
 
-    <Paper elevation={1} >
-    모자
-    </Paper>
-    <Paper elevation={1} >
-    단벌 옷
-    </Paper>
-    <Paper elevation={1} >
-    무기
-    </Paper>
-    </Box>
-    <Box
-    sx={{
-    display: 'flex',
-    flexWrap: 'wrap',
-    '& > :not(style)': {
-        m: 1,
-        width: 525,
-        height: 115,
-    },
-    }}
-    >
+      <Grid item xs={8}>
     <Typography sx={{ mb: 1.5 }} color="text.secondary">
         <img src = {character_code.avatar_image}/>
-        <br />
-        <br />
     </Typography>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+
     <Typography variant="h5">
         캐릭터 이미지
-        <br />
         <ToggleButtonGroup
     value={devices}
     onChange={handleDevices}
@@ -123,37 +119,45 @@ export default function CharacterInfo(props) {
 
     <Button variant="outlined" onClick={inferSubmit}>추론하기</Button>
     </Typography>
-    </Box>
 
-    <br />
-    <br />
-
-    <Box
-    sx={{
-    display: 'flex',
-    flexWrap: 'wrap',
-    '& > :not(style)': {
-        m: 1,
-        width: 125,
-        height: 50,
-    },
-    }}
-    >
-    <Paper elevation={1} >
-    얼장
-    </Paper>
-    <Paper elevation={1} >
-    눈장
-    </Paper>
-    <Paper elevation={1} >
-    눈
-    </Paper>
-    <Paper elevation={1} >
-    망토
-    </Paper>
-    </Box>
-    </Paper>
-
-    </Box>
+      </Grid>
+      <Grid item xs={2}>
+      <br/>
+      <Paper elevation={1} >
+      <br/>
+      모자
+      <br/>
+      <br/>
+      </Paper>
+      <br/>
+      <br/>
+      <br/>
+      <Paper elevation={1} >
+      <br/>
+      단벌 옷
+      <br/>
+      <br/>
+      </Paper>
+      <br/>
+      <br/>
+      <br/>
+      <Paper elevation={1} >
+      <br/>
+      무기
+      <br/>
+      <br/>
+      </Paper>
+      <br/>
+      <br/>
+      <br/>
+      <Paper elevation={1} >
+      <br/>
+      망토
+      <br/>
+      <br/>
+      </Paper>
+      <br/>
+      </Grid>
+    </Grid>
   );
 }
