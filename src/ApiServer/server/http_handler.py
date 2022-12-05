@@ -133,7 +133,7 @@ class HttpHandler:
             web.get("/healthcheck", self.healthcheck_handler),
             web.post('/character_code_web_handler', self.character_code_web_handler),
             web.post('/infer_code_web_handler', self.infer_code_web_handler),
-            web.post('/recommend', self.recommend_handler),
+            web.post('/v1/recommend-cody', self.recommend_handler),
             web.post('/v1/character-info', self.character_info_handler)
         ]
 
@@ -194,12 +194,12 @@ class HttpHandler:
 
     async def recommend_handler(self, request: web.Request):
         post = await request.json()
-        encrypted_character_image = post["encrypted_character_image"]
-        parts_to_change = post["parts_to_change"]
+        encrypted_character_uri = post["crypto_uri"]
+        parts_to_change = post["parts"]
 
         character_data = await self.avatar_caller.request(
             route_path="/character_look_data",
-            packed_character_look=encrypted_character_image,
+            packed_character_look=encrypted_character_uri,
         )
         result = {}
         gender = character_data["gender"]
@@ -221,12 +221,13 @@ class HttpHandler:
         for part, code in zip(parts_to_change, changed_parts["predictions"]):
             result[part] = code
 
-        return web.Response(
-            text=await self.avatar_caller.request(
+        return web.json_response({
+            "recommended image": await self.avatar_caller.request(
                 route_path="/avatar_image",
                 avatar=result,
-            )
-        )
+            ),
+            "result_parts": result,
+        })
 
     async def character_info_handler(self, request: web.Request):
         post = await request.json()
