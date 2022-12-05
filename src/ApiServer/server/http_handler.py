@@ -241,7 +241,6 @@ class HttpHandler:
             'https://avatar.maplestory.nexon.com/Character/', ''
         ).replace('.png', '')
 
-
         result["crypto_uri"] = crypto_uri
 
         avatar = await self.avatar_caller.request(
@@ -283,7 +282,7 @@ class HttpHandler:
                 icon=avatar["eyeAccessory"],
             )
         )
-        
+
         keys.append("long_coat_thum")
         coroutines.append(
             self.avatar_caller.request(

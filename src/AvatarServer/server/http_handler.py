@@ -59,7 +59,7 @@ class HTTPHandler:
             raise web.HTTPInternalServerError(
                 body=f"Internal Server Error 500: {str(err)}"
             )
-    
+
     async def avatar_image_handler(self, request: web.Request):
         post = await request.json()
         avatar_dict = post.get("avatar")
