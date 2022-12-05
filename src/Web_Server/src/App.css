@@ -4,30 +4,58 @@
 
 @font-face {
   font-family: 'custom';
-  src: url("/home/yu/react/my-app/public/fonts/PyeongChangPeace-Bold.ttf");
+  src: "/fonts/PyeongChangPeace-Bold.ttf";
 }
-.top-black-nav {
-  text-align: left;
-  background: linear-gradient( rgba(10, 10, 0, 0.3), rgba(0, 0, 19, 0.9) );
-  opacity: 0.8;
-  width: 100%;
-  color: white;
-  padding-top: 1px;
-  padding-left: 50px;
-  padding-bottom: 1px;
-  font-family: 'custom';
 
+@font-face {
+  font-family: "inter-black";
+  src: "/fonts/Inter-Black.ttf";
+  font-weight: normal;
+  font-style: normal;
 }
-.black-nav {
-  text-align: center;
-  background: linear-gradient( rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3) ) ,url('/home/yu/react/my-app/public/maplebackground.jpg');
-  width: 100%;
-  color: white;
-  padding-left: 20px;
-  padding-top: 50px;
-  padding-bottom: 500px;
-  font-family: 'custom';
+
+@font-face {
+  font-family: "inter-bold";
+  src: url("../public/fonts/Inter-Bold.ttf");
 }
+
+@font-face {
+  font-family: "inter-extra-bold";
+  src: url("../public/fonts/Inter-ExtraBold.ttf");
+}
+
+@font-face {
+  font-family: "inter-extra-light";
+  src: url("../public/fonts/Inter-ExtraLight.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "inter-light";
+  src: url("../public/fonts/Inter-Light.ttf");
+}
+
+@font-face {
+  font-family: "inter-medium";
+  src: url("../public/fonts/Inter-Medium.ttf");
+}
+
+@font-face {
+  font-family: "inter-regular";
+  src: url("../public/fonts/Inter-Regular.ttf");
+}
+
+@font-face {
+  font-family: "inter-semi-bold";
+  src: url("../public/fonts/Inter-SemiBold.ttf");
+}
+
+@font-face {
+  font-family: "inter-thin";
+  src: url("../public/fonts/Inter-Thin.ttf");
+}
+
 
 #input1 {
   text-align: center;
@@ -35,8 +63,7 @@
   height: 50px;
   border: 3px solid black;
   border-radius: 5px;
-  font-family: 'custom';
-
+  /* font-family: 'custom'; */
 }
 
 

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import useFetch from "../hooks/useFetch";
 import CharacterInfo from "./CharacterInfo";
 import InferImage from "./InferImage";
+import MainIntro from "./MainIntro"
 import {
   Grid,
   Button,
@@ -15,7 +16,7 @@ interface FormValues {
 
 export default function Main() {
   const [formValues, setFormValues] = useState<FormValues>({});
-  const [devices, setDevices] = React.useState(() => []);
+  const [devices, setDevices] = useState(() => []);
 
   const handleTextFieldChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -34,40 +35,43 @@ export default function Main() {
 
   const characterImageSubmit = () => {
     console.log(character_code.avatar_image)
-
   }
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={6}>
-        <CharacterInfo code={character_code} device={devices} />
-        <br />
-        <FormGroup
-          sx={{
-            padding: 2,
-            borderRadius: 2,
-            border: "1px solid",
-            borderColor: "primary.main",
-          }}
-        >
-          <TextField
-            sx={{ paddingBottom: 2 }}
-            name="UserID"
-            variant="outlined"
-            placeholder="UserId를 입력하세요"
-            onChange={handleTextFieldChange}
-          />
-          <Button variant="outlined" onClick={characterImageSubmit}>Submit</Button>
-        </FormGroup>
+    <Fragment>
+      <MainIntro/>
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          <CharacterInfo code={character_code} device={devices} />
+          <br />
+          <FormGroup
+            sx={{
+              padding: 2,
+              borderRadius: 2,
+              border: "1px solid",
+              borderColor: "primary.main",
+            }}
+          >
+            <TextField
+              sx={{ paddingBottom: 2 }}
+              name="UserID"
+              variant="outlined"
+              placeholder="UserId를 입력하세요"
+              onChange={handleTextFieldChange}
+            />
+            <Button variant="outlined" onClick={characterImageSubmit}>Submit</Button>
+          </FormGroup>
+        </Grid>
+        <Grid item xs={2}>
+          <InferImage image_name={[1,4]} code={character_code}/>
+        </Grid>
+        <Grid item xs={2}>
+          <InferImage image_name={[2,5]} code={character_code}/>
+        </Grid>
+        <Grid item xs={2}>
+          <InferImage image_name={[3,6]} code={character_code}/>
+        </Grid>
       </Grid>
-      <Grid item xs={2}>
-      <InferImage image_name={[1,4]} code={character_code}/>
-      </Grid>
-      <Grid item xs={2}>
-      <InferImage image_name={[2,5]} code={character_code}/>
-      </Grid>
-      <Grid item xs={2}>
-      <InferImage image_name={[3,6]} code={character_code}/>
-      </Grid>
-    </Grid>
+    </Fragment>
+
   );
 }
