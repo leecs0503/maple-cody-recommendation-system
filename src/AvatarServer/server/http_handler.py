@@ -32,6 +32,7 @@ class HTTPHandler:
             web.post('/character_look_data', self.character_look_data_handler),
             web.post('/icon', self.icon_handler),
             web.post('/eye_image', self.eye_image_handler),
+            web.post('/hair_image', self.hair_image_handler),
         ]
 
     async def index_handler(self, request: web.Request):
