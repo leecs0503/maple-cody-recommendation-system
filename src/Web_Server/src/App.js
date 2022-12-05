@@ -11,7 +11,6 @@ function App() {
       <Header />
       <Routes>
         <Route path="/" element={<Main />} />
-        <Route path="/:id" element={<Result />} />
       </Routes>
     </div>
   );
