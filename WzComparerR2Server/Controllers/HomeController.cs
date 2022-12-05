@@ -536,7 +536,7 @@ public class HomeController : Controller
 				return BadRequest("Action Not Found");
 			}
 			part_node = part_node.FindNodeByPath("0").FindNodeByPath("hair");
-			var mix_node = part.MixNodes[mixColor].FindNodeByPath(actionName).FindNodeByPath("0").FindNodeByPath("hair");
+			var mix_node = FindActionFrameNode(part.MixNodes[mixColor], new ActionFrame(actionName, 0)).FindNodeByPath("hair");
 			while(part_node.Value is Wz_Uol)
 			{
 				part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);
@@ -607,7 +607,7 @@ public class HomeController : Controller
 				return BadRequest("Action Not Found");
 			}
 			part_node = part_node.FindNodeByPath("hairOverHead");
-			var mix_node = part.MixNodes[mixColor].FindNodeByPath(actionName).FindNodeByPath("hairOverHead");
+			var mix_node = FindActionFrameNode(part.MixNodes[mixColor], new ActionFrame(actionName, 0)).FindNodeByPath("hairOverHead");
 			while(part_node.Value is Wz_Uol)
 			{
 				part_node = part_node.GetValue<Wz_Uol>().HandleUol(part_node);

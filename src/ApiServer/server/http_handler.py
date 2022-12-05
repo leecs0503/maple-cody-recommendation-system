@@ -133,7 +133,8 @@ class HttpHandler:
             web.get("/healthcheck", self.healthcheck_handler),
             web.post('/character_code_web_handler', self.character_code_web_handler),
             web.post('/infer_code_web_handler', self.infer_code_web_handler),
-            web.post('/recommend', self.recommend_handler)
+            web.post('/v1/recommend-cody', self.recommend_handler),
+            web.post('/v1/character-info', self.character_info_handler)
         ]
 
     async def index_handler(self, request: web.Request):
@@ -193,12 +194,12 @@ class HttpHandler:
 
     async def recommend_handler(self, request: web.Request):
         post = await request.json()
-        encrypted_character_image = post["encrypted_character_image"]
-        parts_to_change = post["parts_to_change"]
+        encrypted_character_uri = post["crypto_uri"]
+        parts_to_change = post["parts"]
 
         character_data = await self.avatar_caller.request(
             route_path="/character_look_data",
-            packed_character_look=encrypted_character_image,
+            packed_character_look=encrypted_character_uri,
         )
         result = {}
         gender = character_data["gender"]
@@ -208,21 +209,115 @@ class HttpHandler:
                 part = part_image[:-6]
                 result[part] = character_data[part]
 
-        changed_parts = await asyncio.gather(*[
-            self.inference_caller.request(
-                route_path=f"/{part}",
-                gender=gender,
-                parts=part,
-                input_data=character_data[f"{part}_image"],
-            ) for part in parts_to_change
-        ])
+        part_image_to_change = [
+            character_data[f"{part}_image"] for part in parts_to_change
+        ]
 
-        for part, code in zip(parts_to_change, changed_parts):
+        changed_parts = await self.inference_caller.request(
+            route_path=f"/v1/models/complement-model-{gender}-{part}:predict",
+            instances=part_image_to_change,
+        )
+
+        for part, code in zip(parts_to_change, changed_parts["predictions"]):
             result[part] = code
 
-        return web.Response(
-            text=await self.avatar_caller.request(
+        return web.json_response({
+            "recommended image": await self.avatar_caller.request(
                 route_path="/avatar_image",
                 avatar=result,
+            ),
+            "result_parts": result,
+        })
+
+    async def character_info_handler(self, request: web.Request):
+        post = await request.json()
+        user_name = post["user_name"]
+        result = {}
+
+        image_url = None  # TODO: 크롤링해서 이미지 url 받아오는 코드 추가
+        result["crt_image"] = None  # TODO: 크롤링해서 이미지 받아오는 코드 추가
+
+        crypto_uri = image_url.replace(
+            'https://avatar.maplestory.nexon.com/Character/', ''
+        ).replace('.png', '')
+
+        result["crypto_uri"] = crypto_uri
+
+        avatar = await self.avatar_caller.request(
+            route_path="/packed_character_look",
+            packed_character_look=crypto_uri,
+        )
+
+        keys = []
+        coroutines = []
+
+        keys.append("eye_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/eye_image",
+                eye=avatar["face"],
             )
         )
+
+        keys.append("hair_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/hair_image",
+                hair=avatar["hair"],
+            )
+        )
+
+        keys.append("face_acc_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/icon",
+                icon=avatar["faceAccessory"],
+            )
+        )
+
+        keys.append("eye_acc_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/icon",
+                icon=avatar["eyeAccessory"],
+            )
+        )
+
+        keys.append("long_coat_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/icon",
+                icon=avatar["longcoat"],
+            )
+        )
+
+        keys.append("weapon_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/icon",
+                icon=avatar["weapon"],
+            )
+        )
+
+        keys.append("cape_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/icon",
+                icon=avatar["cape"],
+            )
+        )
+
+        keys.append("glove_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/icon",
+                icon=avatar["glove"],
+            )
+        )
+
+        thumbnails = await asyncio.gather(*coroutines)
+
+        for key, thumbnail in zip(keys, thumbnails):
+            result[key] = thumbnail
+
+        return web.json_response(result)

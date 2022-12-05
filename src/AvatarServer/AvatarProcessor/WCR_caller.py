@@ -1,6 +1,7 @@
 import asyncio
 import json
 import logging
+from http import HTTPStatus
 from typing import Optional
 
 import aiohttp
@@ -57,10 +58,68 @@ class WCRCaller:
             async with aiohttp.ClientSession() as session:
                 # TODO: 무기 처리 코드 추가
                 async with session.get(url, params=params, ssl=False) as resp:
-                    if resp.status == 200:
+                    if resp.status == HTTPStatus.OK:
                         return await resp.text()
-                    if resp.status == 400:
+                    if resp.status == HTTPStatus.BAD_REQUEST:
                         raise web.HTTPBadRequest(text=await resp.text())
             await self.exponential_backoff(step)
 
         raise Exception("err: get_image")
+
+    async def get_icon(self, item_code: str):
+        url = f"{self.wcr_server_protocol}://{self.wcr_server_host}:{self.wcr_server_port}/icon/"
+        retry_num = self.retry_num if self.retry_num >= 0 else 1000000000
+        params = [
+            ("code", item_code),
+            ("bs", "true"),
+        ]
+
+        for step in range(retry_num):
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, params=params, ssl=False) as resp:
+                    if resp.status == HTTPStatus.OK:
+                        return await resp.text()
+                    if resp.status == HTTPStatus.BAD_GATEWAY:
+                        raise web.HTTPBadRequest(text=await resp.text())
+            await self.exponential_backoff(step)
+
+        raise Exception("err: get_icon")
+
+    async def get_eye(self, item_code: str):
+        url = f"{self.wcr_server_protocol}://{self.wcr_server_host}:{self.wcr_server_port}/face/"
+        retry_num = self.retry_num if self.retry_num >= 0 else 1000000000
+        params = [
+            ("code", item_code),
+            ("bs", "true"),
+        ]
+
+        for step in range(retry_num):
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, params=params, ssl=False) as resp:
+                    if resp.status == HTTPStatus.OK:
+                        return await resp.text()
+                    if resp.status == HTTPStatus.BAD_GATEWAY:
+                        raise web.HTTPBadRequest(text=await resp.text())
+            await self.exponential_backoff(step)
+
+        raise Exception("err: get_icon")
+
+    async def get_hair(self, item_code: str):
+        url = f"{self.wcr_server_protocol}://{self.wcr_server_host}:{self.wcr_server_port}/avatar/"
+        retry_num = self.retry_num if self.retry_num >= 0 else 1000000000
+        params = [
+            ("head", "12015"),
+            ("hair", item_code),
+            ("bs", "true"),
+        ]
+
+        for step in range(retry_num):
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, params=params, ssl=False) as resp:
+                    if resp.status == HTTPStatus.OK:
+                        return await resp.text()
+                    if resp.status == HTTPStatus.BAD_GATEWAY:
+                        raise web.HTTPBadRequest(text=await resp.text())
+            await self.exponential_backoff(step)
+
+        raise Exception("err: get_icon")
