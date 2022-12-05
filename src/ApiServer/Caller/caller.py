@@ -44,7 +44,11 @@ class Caller:
             async with aiohttp.ClientSession() as session:
                 async with session.post(url, json=kwargs, ssl=False) as resp:
                     if resp.status == HTTPStatus.OK:
-                        return await resp.json()
+                        if resp.content_type == "application/json":
+                            return await resp.json()
+                        elif resp.content_type == "text/plain":
+                            return await resp.text()
+                        raise Exception("Unknown Content Type")
                     elif resp.status == HTTPStatus.BAD_REQUEST:
                         raise web.HTTPBadRequest(text=await resp.text())
             await self.exponential_backoff(step)
