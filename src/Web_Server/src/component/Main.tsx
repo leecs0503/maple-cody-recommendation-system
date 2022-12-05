@@ -6,6 +6,7 @@ import InferImage from "./InferImage";
 import MainIntro from "./MainIntro"
 import { createTheme,ThemeProvider } from '@mui/material/styles';
 import {
+  Box,
   Grid,
   Button,
   FormGroup,
@@ -60,14 +61,36 @@ export default function Main() {
           <br/>
           <FormID />
         </Grid>
+
         <Grid item xs={2}>
+        <Box
+      sx={{
+        p: 2, border: '1px dashed grey',
+        borderRadius: '16px'
+      }}
+    >
           <InferImage image_name={[1,4]} code={character_code}/>
+      </Box>
         </Grid>
         <Grid item xs={2}>
+        <Box
+      sx={{
+        p: 2, border: '1px dashed grey',
+        borderRadius: '16px'
+      }}
+    >
           <InferImage image_name={[2,5]} code={character_code}/>
+      </Box>
         </Grid>
         <Grid item xs={2}>
+        <Box
+      sx={{
+        p: 2, border: '1px dashed grey',
+        borderRadius: '16px'
+      }}
+    >
           <InferImage image_name={[3,6]} code={character_code}/>
+      </Box>
         </Grid>
       </Grid>
     </Fragment>

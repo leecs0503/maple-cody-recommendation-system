@@ -1,5 +1,8 @@
+
 import React, { useState } from "react";
+
 import CloseIcon from '@mui/icons-material/Close';
+
 import {
   Dialog,
   ListItemText,
@@ -17,6 +20,20 @@ import {
 } from "@mui/material";
 
 import { TransitionProps } from '@mui/material/transitions';
+import { createTheme,ThemeProvider } from '@mui/material/styles';
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#545454',
+      darker: '#000000',
+    },
+    neutral: {
+      main: '#ECECEC',
+      contrastText: '#000000',
+    },
+  },
+});
 
 
 const Transition = React.forwardRef(function Transition(
@@ -57,9 +74,9 @@ export default function CharacterInfo(props) {
       이미지 {props.image_name[0]}
       <br/>
       <br/>
-    <Button variant="outlined" onClick={handleClickOpen}>
-      상세 정보
-    </Button>
+    <ThemeProvider theme={theme}>
+      <Button color="primary" variant="contained" onClick={handleClickOpen}>상세정보</Button>
+      </ ThemeProvider>
     <Dialog
     fullScreen
     open={open}

@@ -54,7 +54,6 @@ return (
     padding: 2,
     borderRadius: 2,
     border: "1px solid",
-    borderColor: "error.main",
   }}
 >
   <TextField
@@ -65,7 +64,7 @@ return (
     onChange={handleTextFieldChange}
   />
 <ThemeProvider theme={theme}>
-  <Button color="neutral" variant="contained" component="label"  size="large" onClick={characterImageSubmit}>Submit</Button>
+  <Button color="neutral" variant="outlined" component="label"  size="large" onClick={characterImageSubmit}>Submit</Button>
 </ThemeProvider>
 </FormGroup>
 
