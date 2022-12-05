@@ -77,6 +77,9 @@ class AvatarProcessor:
         else:
             return wcr_response
 
+    async def get_icon(self, item_code: str):
+        return await self.caller.get_icon(item_code=item_code)
+
     def infer(self, packed_character_look: str) -> PackedCharacterInfo:
         crypt = [
             ((ord(packed_character_look[i]) - ord('A')) << 4)
