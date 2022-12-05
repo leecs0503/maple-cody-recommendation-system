@@ -118,7 +118,7 @@ avatar_raw와 동일한 작업을 하는 route.
 |code|헤어 아이템 코드.|
 |actionName|캐릭터의 모션을 지정. stand1(한손무기 모션) 또는 stand2(두손무기 모션)만을 받음. default로는 stand1.|
 |bs|이미지를 base64 encoding한 문자열로 리턴할지 결정하는 boolean variable. default로는 false|
-## /hearoverhead/
+## /hairoverhead/
 헤어에 대한 개별 이미지를 리턴하는 route. 원래 상태의 머리 이미지를 리턴함.
 
  - 예시 : /hairoverhead/?code=41750%2B5*50&actionName=stand1
