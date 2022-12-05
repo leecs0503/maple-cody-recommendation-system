@@ -3,6 +3,7 @@ import useFetch from "../hooks/useFetch";
 import CharacterInfo from "./CharacterInfo";
 import InferImage from "./InferImage";
 import MainIntro from "./MainIntro"
+import { createTheme,ThemeProvider } from '@mui/material/styles';
 import {
   Grid,
   Button,
@@ -13,6 +14,17 @@ import {
 interface FormValues {
   specs?: string;
 }
+
+
+const theme = createTheme({
+  palette: {
+    neutral: {
+      main: '#e53e3e',
+      contrastText: '#FFFFFF',
+    },
+  },
+});
+
 
 export default function Main() {
   const [formValues, setFormValues] = useState<FormValues>({});
@@ -40,15 +52,16 @@ export default function Main() {
     <Fragment>
       <MainIntro/>
       <Grid container spacing={2}>
-        <Grid item xs={6}>
+      <Grid item xs={0.5}>
+      </Grid>
+        <Grid item xs={5}>
           <CharacterInfo code={character_code} device={devices} />
-          <br />
           <FormGroup
             sx={{
               padding: 2,
               borderRadius: 2,
               border: "1px solid",
-              borderColor: "primary.main",
+              borderColor: "error.main",
             }}
           >
             <TextField
@@ -58,8 +71,11 @@ export default function Main() {
               placeholder="UserId를 입력하세요"
               onChange={handleTextFieldChange}
             />
-            <Button variant="outlined" onClick={characterImageSubmit}>Submit</Button>
+          <ThemeProvider theme={theme}>
+            <Button color="neutral" variant="contained" component="label"  size="large" onClick={characterImageSubmit}>Submit</Button>
+          </ThemeProvider>
           </FormGroup>
+
         </Grid>
         <Grid item xs={2}>
           <InferImage image_name={[1,4]} code={character_code}/>

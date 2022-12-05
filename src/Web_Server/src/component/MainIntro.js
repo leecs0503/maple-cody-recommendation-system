@@ -1,18 +1,42 @@
 import './MainIntro.css';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import { createTheme,ThemeProvider } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
+
 import Grid from '@mui/material/Grid';
-import { Typography, Box } from '@mui/material';
+import { Typography, Box, Button, IconButton } from '@mui/material';
 import { Fragment } from "react";
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#0971f1',
+      darker: '#053e85',
+    },
+    neutral: {
+      main: '#ECECEC',
+      contrastText: '#000000',
+    },
+  },
+});
+
 export default function MainIntro() {
+  const navigate = useNavigate();
+  const GitHubUrl = 'https://github.com/leecs0503/maple-cody-recommendation-system';
+  const GitHubSubmit = () => {
+    navigate(GitHubUrl);
+  }
+
   return (
     <Fragment>
       <Box style={{
-        "width": "70vw",
         "paddingTop": "7.5vh",
       }}>
         <div className="top-nav" style={{
           "display": "flex",
           "alignItems": "center",
           "justifyContent": "center",
+          width: '100vw'
         }}>
           <Typography
             variant="h3"
@@ -32,18 +56,38 @@ export default function MainIntro() {
         "display": "flex",
         "alignItems": "center",
         "justifyContent": "center",
+        width: '50vw',
+        paddingLeft : '25vw',
+        paddingTop : '5vh',
+
         }}>
-          재의의 요구가 있을 때에는 국회는 재의에 붙이고, 재적의원과반수의 출석과 출석의원 3분의 2 이상의 찬성으로 전과 같은 의결을 하면 그 법률안은 법률로서 확정된다.
+          본 페이지는 Korea University COSE489 Team-4의 Final Project Page입니다.
           <br/>
-          누구든지 체포 또는 구속의 이유와 변호인의 조력을 받을 권리가 있음을 고지받지 아니하고는 체포 또는 구속을 당하지 아니한다. 체포 또는 구속을 당한 자의 가족등 법률이 정하는 자에게는 그 이유와 일시·장소가 지체없이 통지되어야 한다.
+          기존의 캐릭터 코디로부터 이미지 인식 기반 딥러닝 모델을 통해 코디 추천을 진행합니다.
+          <br/>
+          추후 kernel 시각화를 통해 어떤 근거로 추론했는지 기능을 추가할 예정입니다.
         </div>
         <div className="top-nav" style={{
         "display": "flex",
         "alignItems": "center",
         "justifyContent": "center",
+        width: '70vw',
+        paddingLeft : '14.5vw',
+        paddingTop : '5vh',
+        paddingBottom : '5vh',
+
         }}>
-          git 버튼
-          뭐시기버튼
+
+          <Button color="error" variant="contained" component="label"  size="large" onClick={GitHubSubmit} >
+          <GitHubIcon />
+          &nbsp;&nbsp;GitHub
+          </Button>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <ThemeProvider theme={theme}>
+            <Button color="neutral" variant="contained" component="label" size="large">
+            &ensp;&ensp;PaPer&ensp;&ensp;
+            </Button>
+          </ThemeProvider>
         </div>
       </Box>
     </Fragment>

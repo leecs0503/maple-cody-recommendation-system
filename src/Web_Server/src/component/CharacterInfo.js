@@ -43,35 +43,43 @@ export default function CharacterInfo(props) {
     },
     }}
     >
-    <Paper elevation={3} >
+    <Paper elevation={1} >
     <Box
     sx={{
     display: 'flex',
     flexWrap: 'wrap',
     '& > :not(style)': {
         m: 1,
-        width: 150,
+        width: 125,
         height: 50,
     },
     }}
     >
-    <Paper elevation={3} >
+    <Paper elevation={1} >
     헤어
     </Paper>
 
-    <Paper elevation={3} >
+    <Paper elevation={1} >
     모자
     </Paper>
-    <Paper elevation={3} >
+    <Paper elevation={1} >
     단벌 옷
     </Paper>
-    <Paper elevation={3} >
+    <Paper elevation={1} >
     무기
     </Paper>
     </Box>
-
-    <Card sx={{ minWidth: 275 }}>
-    <CardContent>
+    <Box
+    sx={{
+    display: 'flex',
+    flexWrap: 'wrap',
+    '& > :not(style)': {
+        m: 1,
+        width: 525,
+        height: 115,
+    },
+    }}
+    >
     <Typography sx={{ mb: 1.5 }} color="text.secondary">
         <img src = {character_code.avatar_image}/>
         <br />
@@ -114,11 +122,11 @@ export default function CharacterInfo(props) {
     <br />
 
     <Button variant="outlined" onClick={inferSubmit}>추론하기</Button>
-
-
     </Typography>
-    </CardContent>
-    </Card>
+    </Box>
+
+    <br />
+    <br />
 
     <Box
     sx={{
@@ -126,21 +134,21 @@ export default function CharacterInfo(props) {
     flexWrap: 'wrap',
     '& > :not(style)': {
         m: 1,
-        width: 150,
+        width: 125,
         height: 50,
     },
     }}
     >
-    <Paper elevation={3} >
+    <Paper elevation={1} >
     얼장
     </Paper>
-    <Paper elevation={3} >
+    <Paper elevation={1} >
     눈장
     </Paper>
-    <Paper elevation={3} >
+    <Paper elevation={1} >
     눈
     </Paper>
-    <Paper elevation={3} >
+    <Paper elevation={1} >
     망토
     </Paper>
     </Box>

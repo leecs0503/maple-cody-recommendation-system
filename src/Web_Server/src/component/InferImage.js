@@ -53,7 +53,7 @@ export default function CharacterInfo(props) {
         },
       }}
     >
-      <Paper elevation={3}>
+      <Paper elevation={1}>
       이미지 {props.image_name[0]}
       <br/>
       <br/>
@@ -106,7 +106,7 @@ export default function CharacterInfo(props) {
     </Dialog>
 
       </Paper>
-      <Paper elevation={3}>
+      <Paper elevation={1}>
       이미지  {props.image_name[1]}
       </Paper>
     </Box>
