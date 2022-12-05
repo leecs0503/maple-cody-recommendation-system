@@ -386,27 +386,31 @@ public class HomeController : Controller
 		return GetAvatar(code, actionName, bs);
 	}
 
-	[Route("head")]
-	public ActionResult Head(string code, string actionName, bool? bs, string earType)
+	[Route("icon")]
+	public ActionResult Icon(string code, bool? bs)
 	{
 		Add_X_request_ID();
-		if (earType == "ear")
+		var m = GetFromCode(code);
+		if (m == null)
 		{
-			avatar.EarType = 1;
+			return BadRequest("Wrong Code");
 		}
-		if (earType == "lefEar")
+		Wz_Node imgNode = GetWzNode(m);
+		if (imgNode == null)
 		{
-			avatar.EarType = 2;
+			Console.WriteLine("Image Node not found");
+			return BadRequest("wz file not found");
 		}
-		else if (earType == "highlefEar")
+		Wz_Node infoNode = imgNode.FindNodeByPath("info");
+		if (infoNode == null)
 		{
-			avatar.EarType = 3;
+			Console.WriteLine("Invalid item code");
+			return BadRequest("Invalid item code");
 		}
-		else
-		{
-			avatar.EarType = 0;
-		}
-		return ItemWithAction(code, actionName, GearType.head, bs, avatar.EarType);
+		Wz_Node iconNode = infoNode.FindNodeByPath("icon");
+		var byteArray = BitmapToByteArray(BitmapOrigin.CreateFromNode(iconNode, PluginManager.FindWz).Bitmap);
+		if (bs == true) return Content(Convert.ToBase64String(byteArray));
+		else return base.File(byteArray,"image/png");
 	}
 
 	[Route("body")]

@@ -81,6 +81,10 @@ public class Program
 			pattern: "{controller=Home}/{action=Avatar_Raw}");
 
 		app.MapControllerRoute(
+			name: "icon",
+			pattern: "{controller=Home}/{action=Icon}");
+
+		app.MapControllerRoute(
 			name: "head",
 			pattern: "{controller=Home}/{action=Head}");
 		
