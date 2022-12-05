@@ -80,6 +80,12 @@ class AvatarProcessor:
     async def get_icon(self, item_code: str):
         return await self.caller.get_icon(item_code=item_code)
 
+    async def get_eye(self, item_code: str):
+        return await self.caller.get_eye(item_code=item_code)
+
+    async def get_hair(self, item_code: str):
+        return await self.caller.get_hair(item_code=item_code)
+
     def infer(self, packed_character_look: str) -> PackedCharacterInfo:
         crypt = [
             ((ord(packed_character_look[i]) - ord('A')) << 4)
