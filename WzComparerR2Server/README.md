@@ -64,6 +64,16 @@ avatar_raw와 동일한 작업을 하는 route.
 |bs|이미지를 base64 encoding한 문자열로 리턴할지 결정하는 boolean variable. default로는 false|bs=false|
 |earType|아바타의 귀 종류, ear, humanEar, lefEar, highlefEar 중 하나. default로는 humanEar|earType=ear|
 
+## /icon/
+개별 아이템의 아이콘 이미지를 리턴하는 route
+
+ - 예시 : /icon/?code=1102940&bs=false
+
+|query parameter|description|example|
+|:---:|---|---|
+|code|개별 아이템 코드.|code=1102940|
+|bs|이미지를 base64 encoding한 문자열로 리턴할지 결정하는 boolean variable. default로는 false|bs=false|
+
 ## /head/
 피부에 대한 개별 이미지(머리)를 리턴하는 route.
 
