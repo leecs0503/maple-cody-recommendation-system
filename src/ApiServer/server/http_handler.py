@@ -9,6 +9,7 @@ import requests
 from bs4 import BeautifulSoup
 import json
 import os
+import asyncio
 
 
 def get_html_text(url: str):
@@ -132,7 +133,8 @@ class HttpHandler:
             web.get("/healthcheck", self.healthcheck_handler),
             web.post('/character_code_web_handler', self.character_code_web_handler),
             web.post('/infer_code_web_handler', self.infer_code_web_handler),
-            web.post('/recommend', self.recommend_handler)
+            web.post('/recommend', self.recommend_handler),
+            web.post('/v1/character-info', self.character_info_handler)
         ]
 
     async def index_handler(self, request: web.Request):
@@ -225,3 +227,97 @@ class HttpHandler:
                 avatar=result,
             )
         )
+
+    async def character_info_handler(self, request: web.Request):
+        post = await request.json()
+        user_name = post["user_name"]
+        result = {}
+
+        image_url = None  # TODO: 크롤링해서 이미지 url 받아오는 코드 추가
+        result["crt_image"] = None  # TODO: 크롤링해서 이미지 받아오는 코드 추가
+
+        crypto_uri = image_url.replace(
+            'https://avatar.maplestory.nexon.com/Character/', ''
+        ).replace('.png', '')
+
+
+        result["crypto_uri"] = crypto_uri
+
+        avatar = await self.avatar_caller.request(
+            route_path="/packed_character_look",
+            packed_character_look=crypto_uri,
+        )
+
+        keys = []
+        coroutines = []
+
+        keys.append("eye_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/eye_image",
+                eye=avatar["face"],
+            )
+        )
+
+        keys.append("hair_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/hair_image",
+                hair=avatar["hair"],
+            )
+        )
+
+        keys.append("face_acc_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/icon",
+                icon=avatar["faceAccessory"],
+            )
+        )
+
+        keys.append("eye_acc_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/icon",
+                icon=avatar["eyeAccessory"],
+            )
+        )
+        
+        keys.append("long_coat_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/icon",
+                icon=avatar["longcoat"],
+            )
+        )
+
+        keys.append("weapon_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/icon",
+                icon=avatar["weapon"],
+            )
+        )
+
+        keys.append("cape_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/icon",
+                icon=avatar["cape"],
+            )
+        )
+
+        keys.append("glove_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/icon",
+                icon=avatar["glove"],
+            )
+        )
+
+        thumbnails = await asyncio.gather(*coroutines)
+
+        for key, thumbnail in zip(keys, thumbnails):
+            result[key] = thumbnail
+
+        return web.json_response(result)
