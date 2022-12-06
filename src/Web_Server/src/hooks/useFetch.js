@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 
 function useFetch(url, userid) {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null);
   useEffect(() => {
+    if (userid === null)
+      return
     fetch(url, {
       method: "POST",
       body: JSON.stringify({ "user_name": userid })
     })
       .then(res => {
-        console.log(res)
         return res.json();
       })
       .then(data => {

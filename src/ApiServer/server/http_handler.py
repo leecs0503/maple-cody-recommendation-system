@@ -270,6 +270,14 @@ class HttpHandler:
         keys = []
         coroutines = []
 
+        keys.append("hair_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/hair_image",
+                hair=avatar["hair"],
+            )
+        )
+
         keys.append("eye_thum")
         coroutines.append(
             self.avatar_caller.request(
@@ -278,11 +286,19 @@ class HttpHandler:
             )
         )
 
-        keys.append("hair_thum")
+        keys.append("weapon_thum")
         coroutines.append(
             self.avatar_caller.request(
-                route_path="/hair_image",
-                hair=avatar["hair"],
+                route_path="/icon",
+                icon=avatar["weapon"],
+            )
+        )
+
+        keys.append("cap_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/icon",
+                icon=avatar["cap"],
             )
         )
 
@@ -310,19 +326,20 @@ class HttpHandler:
             )
         )
 
-        keys.append("weapon_thum")
+        keys.append("shoes_thum")
         coroutines.append(
             self.avatar_caller.request(
                 route_path="/icon",
-                icon=avatar["weapon"],
+                icon=avatar["shoes"],
             )
         )
 
-        keys.append("cape_thum")
+
+        keys.append("earrings_thum")
         coroutines.append(
             self.avatar_caller.request(
                 route_path="/icon",
-                icon=avatar["cape"],
+                icon=avatar["earrings"],
             )
         )
 
@@ -331,6 +348,14 @@ class HttpHandler:
             self.avatar_caller.request(
                 route_path="/icon",
                 icon=avatar["glove"],
+            )
+        )
+
+        keys.append("cape_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/icon",
+                icon=avatar["cape"],
             )
         )
 

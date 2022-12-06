@@ -16,7 +16,6 @@ import {
 
 export default function Main() {
   const [characterInfo, setCharacterInfo] = useState(null)
-  console.log(characterInfo)
 
   return (
     <Fragment>
