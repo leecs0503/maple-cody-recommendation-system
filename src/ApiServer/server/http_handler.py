@@ -248,7 +248,7 @@ class HttpHandler:
 
     def get_as_base64(self, url: str):
         # TODO: change to async
-        return str(base64.b64encode(requests.get(url).content))
+        return base64.b64encode(requests.get(url).content).decode(encoding='utf-8')
 
     async def character_info_handler(self, request: web.Request):
         post = await request.json()
@@ -337,4 +337,5 @@ class HttpHandler:
         thumbnails = await asyncio.gather(*coroutines)
         for key, thumbnail in zip(keys, thumbnails):
             result[key] = thumbnail
+        print("200 OK")
         return web.json_response(result)

@@ -1,15 +1,15 @@
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
-module.exports = function(app) {
+module.exports = function (app) {
     app.use(
-        '/character_code_web_handler',
+        '/v1/character-info',
         createProxyMiddleware({
             target: 'http://localhost:7000',
             changeOrigin: true,
         })
     );
     app.use(
-        '/infer_code_web_handler',
+        '/v1/infer_code_web_handler',
         createProxyMiddleware({
             target: 'http://localhost:7000',
             changeOrigin: true,

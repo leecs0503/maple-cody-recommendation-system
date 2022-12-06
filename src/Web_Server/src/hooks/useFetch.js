@@ -4,10 +4,11 @@ function useFetch(url, userid) {
   const [data, setData] = useState([]);
   useEffect(() => {
     fetch(url, {
-        method : "POST",
-        body : JSON.stringify({name: userid})
+      method: "POST",
+      body: JSON.stringify({ "user_name": userid })
     })
       .then(res => {
+        console.log(res)
         return res.json();
       })
       .then(data => {
