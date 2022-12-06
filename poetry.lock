@@ -52,6 +52,19 @@ python-versions = "*"
 aiohttp = ">=1.1"
 
 [[package]]
+name = "aiohttp-middlewares"
+version = "2.2.0"
+description = "Collection of useful middlewares for aiohttp applications."
+category = "main"
+optional = false
+python-versions = ">=3.7,<4.0"
+
+[package.dependencies]
+aiohttp = ">=3.8.1,<4.0.0"
+async-timeout = ">=4.0.2,<5.0.0"
+yarl = ">=1.5.1,<2.0.0"
+
+[[package]]
 name = "aioredis"
 version = "1.3.1"
 description = "asyncio (PEP 3156) Redis support"
@@ -2291,7 +2304,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "3.8.x"
-content-hash = "70cb1ff53b05e3c6bb183e3913b7db6a4b40443de73c368882bcdd92a0ec4c97"
+content-hash = "d0f107d24897e4dd2da5c5ef0e20b6a5d9ae9980939b1233e8f49bcc4e0fb67a"
 
 [metadata.files]
 absl-py = [
@@ -2394,6 +2407,10 @@ aiohttp = [
 aiohttp_cors = [
     {file = "aiohttp-cors-0.7.0.tar.gz", hash = "sha256:4d39c6d7100fd9764ed1caf8cebf0eb01bf5e3f24e2e073fda6234bc48b19f5d"},
     {file = "aiohttp_cors-0.7.0-py3-none-any.whl", hash = "sha256:0451ba59fdf6909d0e2cd21e4c0a43752bc0703d33fc78ae94d9d9321710193e"},
+]
+aiohttp-middlewares = [
+    {file = "aiohttp_middlewares-2.2.0-py3-none-any.whl", hash = "sha256:f4b87665667d4d3e818d70495e832e368f11a1fdc9c2fd8157a7d9e5d5147c5d"},
+    {file = "aiohttp_middlewares-2.2.0.tar.gz", hash = "sha256:3967b2a0d17a2c094681e7c2f246977a365479a2820e48f8a01136c910f4aa93"},
 ]
 aioredis = [
     {file = "aioredis-1.3.1-py3-none-any.whl", hash = "sha256:b61808d7e97b7cd5a92ed574937a079c9387fdadd22bfbfa7ad2fd319ecc26e3"},

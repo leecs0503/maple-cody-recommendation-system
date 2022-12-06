@@ -1,6 +1,7 @@
 import logging
 
 from aiohttp import web
+from aiohttp_middlewares import cors_middleware
 
 from .config import Config
 from .http_handler import HttpHandler
@@ -13,7 +14,9 @@ class HttpServer:
         config: Config,
     ) -> None:
         self.logger = logger
-        self.app = web.Application()
+        self.app = web.Application(
+            middlewares=[cors_middleware(allow_all=True)]
+        )
         self.config = config
         self.HttpHandler = HttpHandler(
             logger=self.logger,
