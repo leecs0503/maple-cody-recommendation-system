@@ -17,7 +17,7 @@ class CallerForTest(WCRCaller):
     async def get_base_wz(self):
         return {}
 
-    async def get_image(self, avatar: Avatar, ActionQuery: Optional[str] = None):
+    async def get_avatar_image(self, avatar: Avatar, ActionQuery: Optional[str] = None):
         return None
 
 

@@ -213,14 +213,21 @@ class HttpHandler:
             character_data[f"{part}_image"] for part in parts_to_change
         ]
 
-        changed_parts = await self.inference_caller.request(
-            route_path=f"/v1/models/complement-model-{gender}-{part}:predict",
-            instances=part_image_to_change,
-        )
+        changed_parts = [
+            await self.inference_caller.request(
+                route_path=f"/v1/models/complement-model-{gender}-{part}:predict",
+                instances=part_image_to_change,
+            )
+            for part in parts_to_change
+        ]
 
-        for part, code in zip(parts_to_change, changed_parts["predictions"]):
-            result[part] = code
+        for part, response_obj in zip(parts_to_change, changed_parts):
+            predictions = response_obj["predictions"]
+            best_prediction = predictions[0][0]
+            best_prediction_prob, best_prediction_item = best_prediction
+            result[part] = best_prediction_item
 
+        print("recommend_handler: 200 OK")
         return web.json_response({
             "recommended image": await self.avatar_caller.request(
                 route_path="/avatar_image",
@@ -363,5 +370,5 @@ class HttpHandler:
         thumbnails = await asyncio.gather(*coroutines)
         for key, thumbnail in zip(keys, thumbnails):
             result[key] = thumbnail
-        print("200 OK")
+        print("character_info_handler: 200 OK")
         return web.json_response(result)
