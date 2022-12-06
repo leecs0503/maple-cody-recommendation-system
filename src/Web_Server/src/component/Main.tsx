@@ -11,6 +11,7 @@ import {
   Grid,
   Button,
 } from "@mui/material";
+import InferResultBox from './InferResultBox'
 
 
 export default function Main() {
@@ -45,6 +46,11 @@ export default function Main() {
           </Button>
         </Grid>
 
+        <Grid item xs={5.5}>
+          <InferResultBox
+            recommandedInfo = {recommandedInfo}
+          />
+        </Grid>
         {/* <Grid item xs={2}>
           <Box
             sx={{

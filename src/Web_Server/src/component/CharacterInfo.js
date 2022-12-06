@@ -38,7 +38,6 @@ export default function CharacterInfo({ characterInfo }) {
           }}>
           <Base64toImg
             width={144}
-            height={144}
             imageData={characterInfo.crt_image}
           />
           <br />
