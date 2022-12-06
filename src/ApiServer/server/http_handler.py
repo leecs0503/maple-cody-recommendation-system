@@ -254,6 +254,7 @@ class HttpHandler:
         post = await request.json()
         user_name = post["user_name"]
         result = {}
+        result["user_name"] = user_name
 
         image_url = self._get_image_url_list_from_maplegg(user_name)  # TODO: 크롤링해서 이미지 url 받아오는 코드 추가
         result["crt_image"] = self.get_as_base64(image_url)  # TODO: 크롤링해서 이미지 받아오는 코드 추가

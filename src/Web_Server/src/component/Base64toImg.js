@@ -1,12 +1,15 @@
 const Base64toImg = (
   {
     imageData,
-    // boxSize,
+    width,
+    height
   }
 ) => {
   return (
     < img
-      // boxSize={boxSize}
+      style={{
+        width, height, zIndex: 2
+      }}
       src={`data:image/jpeg;base64,${imageData}`}
     />
   )
