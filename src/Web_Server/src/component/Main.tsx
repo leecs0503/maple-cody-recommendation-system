@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from "react";
 import useFetch from "../hooks/useFetch";
+import useRecommandFetch from "../hooks/useRecommandFetch";
 import CharacterInfo from "./CharacterInfo";
 import FormID from "./FormID.tsx";
 import InferImage from "./InferImage";
@@ -13,12 +14,16 @@ import {
 
 
 export default function Main() {
-  const [characterInfo, setCharacterInfo] = useState(null)
+  const [characterInfo, setCharacterInfo] = useState(null);
+  const [cryptoUriToRecommand, setCryptoUriToRecommand] = useState(null);
+  const recommandedInfo = useRecommandFetch(cryptoUriToRecommand);
   const onRecommandButtonClick = (event) => {
     if (characterInfo === null) {
       return
     }
+    setCryptoUriToRecommand(characterInfo.crypto_uri);
   }
+  console.log(recommandedInfo)
   return (
     <Fragment>
       <MainIntro />
@@ -28,7 +33,7 @@ export default function Main() {
         <Grid item xs={5}>
           <CharacterInfo characterInfo={characterInfo} />
           <br />
-          <FormID setCharacterInfo={setCharacterInfo} />
+          <FormID setCharacterInfo={setCharacterInfo} setCryptoUriToRecommand={setCryptoUriToRecommand}/>
         </Grid>
         <Grid item xs={1} style={{
           "display": "flex",

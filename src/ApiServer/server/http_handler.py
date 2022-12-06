@@ -226,24 +226,22 @@ class HttpHandler:
             best_prediction = predictions[0][0]
             best_prediction_prob, best_prediction_item = best_prediction
             result[part] = best_prediction_item
-
+        recommend_image = await self.avatar_caller.request(
+            route_path="/avatar_image",
+            avatar=result,
+        )
         print("recommend_handler: 200 OK")
         return web.json_response({
-            "recommended image": await self.avatar_caller.request(
-                route_path="/avatar_image",
-                avatar=result,
-            ),
+            "recommended image": recommend_image,
             "result_parts": result,
         })
 
-        
     def get_html_text(self, url: str):
         # TODO: change to async
         html = requests.get(url).text
         # html = requests.get(url).text
         soup = BeautifulSoup(html, "html.parser")
         return soup
-
 
     def _get_image_url_list_from_maplegg(self, nickname: str):
         # TODO: change to async
@@ -341,7 +339,6 @@ class HttpHandler:
                 icon=avatar["shoes"],
             )
         )
-
 
         keys.append("earrings_thum")
         coroutines.append(

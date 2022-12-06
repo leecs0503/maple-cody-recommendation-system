@@ -5,7 +5,6 @@ import {
 } from "@mui/material";
 
 export default function EquipmentsGrid({ characterInfo }) {
-  console.log(characterInfo)
   const girdStyle = {
     "display": "flex",
     "alignItems": "center",
