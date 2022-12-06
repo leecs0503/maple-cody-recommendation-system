@@ -71,7 +71,7 @@ export default function MainIntro() {
           "justifyContent": "center",
           width: '70vw',
           paddingLeft: '14.5vw',
-          paddingTop: '5vh',
+          paddingTop: '3vh',
           paddingBottom: '5vh',
 
         }}>

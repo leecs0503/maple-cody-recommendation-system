@@ -5,18 +5,20 @@ import FormID from "./FormID.tsx";
 import InferImage from "./InferImage";
 import MainIntro from "./MainIntro"
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import SendIcon from '@mui/icons-material/Send';
 import {
-  Box,
   Grid,
   Button,
-  FormGroup,
-  TextField,
 } from "@mui/material";
 
 
 export default function Main() {
   const [characterInfo, setCharacterInfo] = useState(null)
-
+  const onRecommandButtonClick = (event) => {
+    if (characterInfo === null) {
+      return
+    }
+  }
   return (
     <Fragment>
       <MainIntro />
@@ -27,6 +29,15 @@ export default function Main() {
           <CharacterInfo characterInfo={characterInfo} />
           <br />
           <FormID setCharacterInfo={setCharacterInfo} />
+        </Grid>
+        <Grid item xs={1} style={{
+          "display": "flex",
+          "alignItems": "center",
+          "justifyContent": "center",
+        }}>
+          <Button variant="contained" endIcon={<SendIcon />} color="error" onClick={onRecommandButtonClick}>
+            추천
+          </Button>
         </Grid>
 
         {/* <Grid item xs={2}>

@@ -39,7 +39,6 @@ export default function EquipmentsBox({
         borderRadius: '2px',
         background: isThumnailImage ? "linear-gradient( to bottom, #998888,  #BBAAAA)" : "#BB7766",
         '&:hover': {
-          backgroundColor: '#00FFFF',
           opacity: [0.9, 0.8, 0.7],
         },
       }}

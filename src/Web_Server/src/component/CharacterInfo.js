@@ -16,15 +16,16 @@ export default function CharacterInfo({ characterInfo }) {
           borderRadius: '16px'
         }}
       >
-        none
+        유저 아이디를 입력해주세요
       </Box>
     )
   }
   return (
     <Box
       sx={{
-        p: 2, border: '1px dashed grey',
-        borderRadius: '16px'
+        p: 2,
+        border: '1px dashed grey',
+        borderRadius: '16px',
       }}
     >
       <Grid container spacing={2}>
@@ -43,8 +44,8 @@ export default function CharacterInfo({ characterInfo }) {
           <br />
           <Box
             sx={{
-              backgroundColor: "black",
-              color: "white",
+              // backgroundColor: "black",
+              // color: "white",
               borderRadius: '3px',
               marginTop: "-20px",
             }}

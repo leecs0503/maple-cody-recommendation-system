@@ -12,7 +12,11 @@ export default function EquipmentsGrid({ characterInfo }) {
     "justifyContent": "center",
   }
   return (
-    <div>
+    <div
+      style={{
+        marginTop: "16px"
+      }}
+    >
       <Grid container spacing={2}>
         {/* row 1 */}
         <Grid xs={3} style={girdStyle}>
