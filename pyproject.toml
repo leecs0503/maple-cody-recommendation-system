@@ -25,6 +25,7 @@ torch = "^1.13.0"
 tensorboard = "^2.11.0"
 simple-parsing = "^0.0.21"
 kserve = "^0.9.0"
+fastapi = "^0.86.0"
 
 
 [tool.poetry.group.dev.dependencies]

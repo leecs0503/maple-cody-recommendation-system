@@ -1,6 +1,6 @@
 import logging
 from http import HTTPStatus
-
+import base64
 from aiohttp import web
 
 from ..server.config import Config
@@ -229,20 +229,39 @@ class HttpHandler:
             "result_parts": result,
         })
 
+        
+    def get_html_text(self, url: str):
+        # TODO: change to async
+        html = requests.get(url).text
+        # html = requests.get(url).text
+        soup = BeautifulSoup(html, "html.parser")
+        return soup
+
+
+    def _get_image_url_list_from_maplegg(self, nickname: str):
+        # TODO: change to async
+        """user_info에 대해 maplegg로 부터 image_url_list를 받아오는 메소드"""
+        url = "https://maple.gg/u/{}".format(nickname)
+        soup = self.get_html_text(url)
+        img_tag = soup.find_all(class_="character-image")[1:-1]
+        return [tag["src"] for tag in img_tag][0]
+
+    def get_as_base64(self, url: str):
+        # TODO: change to async
+        return str(base64.b64encode(requests.get(url).content))
+
     async def character_info_handler(self, request: web.Request):
         post = await request.json()
         user_name = post["user_name"]
         result = {}
 
-        image_url = None  # TODO: 크롤링해서 이미지 url 받아오는 코드 추가
-        result["crt_image"] = None  # TODO: 크롤링해서 이미지 받아오는 코드 추가
-
+        image_url = self._get_image_url_list_from_maplegg(user_name)  # TODO: 크롤링해서 이미지 url 받아오는 코드 추가
+        result["crt_image"] = self.get_as_base64(image_url)  # TODO: 크롤링해서 이미지 받아오는 코드 추가
         crypto_uri = image_url.replace(
             'https://avatar.maplestory.nexon.com/Character/', ''
         ).replace('.png', '')
 
         result["crypto_uri"] = crypto_uri
-
         avatar = await self.avatar_caller.request(
             route_path="/packed_character_look",
             packed_character_look=crypto_uri,
@@ -316,8 +335,6 @@ class HttpHandler:
         )
 
         thumbnails = await asyncio.gather(*coroutines)
-
         for key, thumbnail in zip(keys, thumbnails):
             result[key] = thumbnail
-
         return web.json_response(result)
