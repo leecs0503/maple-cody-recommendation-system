@@ -24,8 +24,8 @@ def main():
     parser.add_argument("--avatar-caller-backoff", type=float, help="avatar server caller backoff", default=1)
     parser.add_argument("--inference-server-host", type=str, help="inference server host", default="0.0.0.0")
     parser.add_argument("--inference-server-protocol", type=str, help="inference server protocol", default="http")
-    parser.add_argument("--inference-server-port", type=int, help="inference server port", default=8080)
-    parser.add_argument("--inference-caller-retry-num", type=int, help="inference server retry num", default=-1)
+    parser.add_argument("--inference-server-port", type=int, help="inference server port", default=9000)
+    parser.add_argument("--inference-caller-retry-num", type=int, help="inference server retry num", default=5)
     parser.add_argument("--inference-caller-timeout", type=float, help="inference server caller timeout", default=2.5)
     parser.add_argument("--inference-caller-backoff", type=float, help="inference server caller backoff", default=1)
 

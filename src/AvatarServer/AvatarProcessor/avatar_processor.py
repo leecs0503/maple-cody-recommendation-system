@@ -67,7 +67,7 @@ class AvatarProcessor:
         return base_wz
 
     async def process_image(self, avatar: Avatar, decode_image: bool = True):
-        wcr_response = await self.caller.get_image(avatar=avatar)
+        wcr_response = await self.caller.get_avatar_image(avatar=avatar)
         if wcr_response is None:
             return None
         if decode_image:

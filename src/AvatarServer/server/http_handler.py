@@ -69,7 +69,7 @@ class HTTPHandler:
                 raise Exception("attribute not in avatar")
             setattr(avatar, k, v)
         try:
-            image_str = await self.processor.caller.get_image(avatar=avatar)
+            image_str = await self.processor.caller.get_avatar_image(avatar=avatar)
             return web.Response(text=image_str)
         except web.HTTPBadRequest as e:
             raise web.HTTPBadRequest(text=e.text)
@@ -97,7 +97,8 @@ class HTTPHandler:
                     raise web.HTTPGatewayTimeout(
                         body=f"Gateway Timeout Eror 504: {str(err)}"
                     )
-                except Exception:
+                except Exception as e:
+                    print(e)
                     result[f"{item_type}_image"] = ""
                 setattr(avatar, item_type, item_code)
             return web.json_response(result)
