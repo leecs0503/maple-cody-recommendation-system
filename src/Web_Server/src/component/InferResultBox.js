@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import {
   Box,
+  Grid,
+  Divider,
 } from "@mui/material";
 import Base64toImg from "./Base64toImg";
+import EquipmentsGrid from "./EquipmentsGrid";
 
 export default function InferResultBox({ recommandedInfo }) {
   if (recommandedInfo === null) {
@@ -25,10 +28,27 @@ export default function InferResultBox({ recommandedInfo }) {
         borderRadius: '16px',
       }}
     >
-        <Base64toImg
-            width={144}
-            imageData={recommandedInfo["recommended image"]}
-        />
+      <Grid container spacing={2}>
+        <Grid item xs={5}
+          style={{
+            "display": "flex",
+            "alignItems": "center",
+            "justifyContent": "center",
+            flexDirection: "column"
+          }}>
+          <Base64toImg
+              width={144}
+              imageData={recommandedInfo["recommended image"]}
+          />
+        </Grid>
+        <Divider orientation="vertical" flexItem style={{ marginTop: "16px" }} />
+        <Grid item xs={1}></Grid>
+        <Grid item xs={5}>
+          <EquipmentsGrid
+            characterInfo={recommandedInfo.result_parts}
+          />
+        </Grid>
+      </Grid>
     </Box>
 
   );
