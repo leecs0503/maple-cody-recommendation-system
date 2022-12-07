@@ -35,14 +35,14 @@ class ItemManager:
                 if "name" in self.data[parts][item_code]:
                     self.item_name[item_code] = self.data[parts][item_code]["name"]
 
-    def parts_index_to_str(self, idx: int):
+    def parts_index_to_str(self, idx: str):
         return self.index_to_parts[idx]
 
-    def get_item_list(self, idx: int):
+    def get_item_list(self, idx: str):
         assert self.data is not None
         return self.item_codes[idx]
 
-    def get_item_name(self, idx: int):
+    def get_item_name(self, idx: str):
         if idx in self.item_name:
             return self.item_name[idx]
         return ""
