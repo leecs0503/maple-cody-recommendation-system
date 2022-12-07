@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import Base64toImg from "./Base64toImg"
 import {
   Box,
+  Tooltip,
 } from "@mui/material";
 export default function EquipmentsBox({
   thumnailImage,
+  nameImage,
   partName,
   width,
   height,
@@ -25,45 +27,47 @@ export default function EquipmentsBox({
   }
 
   return (
-    <Box
-      style={{
-        marginBottom: 5,
-        marginTop: 5,
-        "display": "flex",
-        "alignItems": "center",
-        "justifyContent": "center",
-      }}
-      sx={{
-        width: width,
-        height: height,
-        borderRadius: '2px',
-        background: isThumnailImage ? "linear-gradient( to bottom, #998888,  #BBAAAA)" : "#BB7766",
-        '&:hover': {
-          opacity: [0.9, 0.8, 0.7],
-        },
-      }}
-    >
-      <div
+    <Tooltip title={nameImage} placement="right-start">
+      <Box
         style={{
-          position: "relative",
+          marginBottom: 5,
+          marginTop: 5,
+          "display": "flex",
+          "alignItems": "center",
+          "justifyContent": "center",
+        }}
+        sx={{
+          width: width,
+          height: height,
+          borderRadius: '2px',
+          background: isThumnailImage ? "linear-gradient( to bottom, #998888,  #BBAAAA)" : "#BB7766",
+          '&:hover': {
+            opacity: [0.9, 0.8, 0.7],
+          },
         }}
       >
         <div
           style={{
-            position: "absolute",
-            top: `-${height / 2 - 5}px`,
-            left: `${isThumnailImage ? 0 : -width / 2 + 2}px`,
-            fontSize: "7px",
-            fontFamily: "inter-bold",
-            color: "#CCCCCC",
-            zIndex: 1
+            position: "relative",
           }}
         >
-          {partName}
+          <div
+            style={{
+              position: "absolute",
+              top: `-${height / 2 - 5}px`,
+              left: `${isThumnailImage ? 0 : -width / 2 + 2}px`,
+              fontSize: "7px",
+              fontFamily: "inter-bold",
+              color: "#CCCCCC",
+              zIndex: 1
+            }}
+          >
+            {partName}
+          </div>
         </div>
-      </div>
 
-      {img}
-    </Box>
+        {img}
+      </Box>
+    </Tooltip>
   )
 }

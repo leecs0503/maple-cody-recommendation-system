@@ -24,6 +24,7 @@ export default function EquipmentsGrid({ characterInfo }) {
             width={70}
             height={150}
             thumnailImage={characterInfo.hair_thum}
+            nameImage={characterInfo.hair_name}
           />
         </Grid>
         <Grid xs={3} style={{
@@ -33,10 +34,12 @@ export default function EquipmentsGrid({ characterInfo }) {
           <EquipmentsBox
             partName="CAP"
             thumnailImage={characterInfo.cap_thum}
+            nameImage={characterInfo.cap_name}
           />
           <EquipmentsBox
             partName="FACE ACC"
             thumnailImage={characterInfo.face_acc_thum}
+            nameImage={characterInfo.face_acc_name}
           />
         </Grid>
         <Grid xs={6}>
@@ -46,17 +49,20 @@ export default function EquipmentsGrid({ characterInfo }) {
           <EquipmentsBox
             partName="EYE"
             thumnailImage={characterInfo.eye_thum}
+            nameImage={characterInfo.eye_name}
           />
         </Grid>
         <Grid xs={3} style={girdStyle}>
           <EquipmentsBox
             partName="EYE ACC"
             thumnailImage={characterInfo.eye_acc_thum}
+            nameImage={characterInfo.eye_acc_name}
           />
         </Grid>
         <Grid xs={3} style={girdStyle}>
           <EquipmentsBox
             thumnailImage={characterInfo.earrings_thum}
+            nameImage={characterInfo.earrings_name}
           />
         </Grid>
         <Grid xs={3} style={girdStyle}>
@@ -66,12 +72,14 @@ export default function EquipmentsGrid({ characterInfo }) {
           <EquipmentsBox
             partName="WEAPON"
             thumnailImage={characterInfo.weapon_thum}
+            nameImage={characterInfo.weapon_name}
           />
         </Grid>
         <Grid xs={3} style={girdStyle}>
           <EquipmentsBox
             partName="COAT"
             thumnailImage={characterInfo.long_coat_thum}
+            nameImage={characterInfo.long_coat_name}
           />
         </Grid>
         <Grid xs={3} style={girdStyle}>
@@ -92,12 +100,14 @@ export default function EquipmentsGrid({ characterInfo }) {
           <EquipmentsBox
             partName="GLOVE"
             thumnailImage={characterInfo.glove_thum}
+            nameImage={characterInfo.glove_name}
           />
         </Grid>
         <Grid xs={3} style={girdStyle}>
           <EquipmentsBox
             partName="CAPE"
             thumnailImage={characterInfo.cape_thum}
+            nameImage={characterInfo.cape_name}
           />
         </Grid>
         {/* row 5 */}
@@ -107,6 +117,7 @@ export default function EquipmentsGrid({ characterInfo }) {
           <EquipmentsBox
             partName="SHOES"
             thumnailImage={characterInfo.shoes_thum}
+            nameImage={characterInfo.shoes_name}
           />
         </Grid>
         <Grid xs={3} style={girdStyle}>
