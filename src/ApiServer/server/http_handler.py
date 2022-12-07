@@ -225,16 +225,17 @@ class HttpHandler:
 
         for part, response_obj in zip(parts_to_change, changed_parts):
             predictions = response_obj["predictions"]
-            best_prediction = predictions[0][0]
-            best_prediction_prob, best_prediction_item = best_prediction
-            if part == "hair":
-                mix_part = character_data[part].split('+')
-                best_prediction_item += mix_part[0][-1]
-                if len(mix_part) == 2:
-                    best_prediction_item += '+' + mix_part[1]
-            elif part == "face":
-                best_prediction_item = best_prediction_item[:-2] + character_data[part][-3] + best_prediction_item[-2:]
-            result[part] = best_prediction_item
+            for prediction_prob, prediction_item in predictions[0]:
+                if part == "hair":
+                    mix_part = character_data[part].split('+')
+                    prediction_item += mix_part[0][-1]
+                    if len(mix_part) == 2:
+                        prediction_item += '+' + mix_part[1]
+                elif part == "face":
+                    prediction_item = prediction_item[:-2] + character_data[part][-3] + prediction_item[-2:]
+                result[part] = prediction_item
+                if character_data[part] != prediction_item:
+                    break
         recommend_image = await self.avatar_caller.request(
             route_path="/avatar_image",
             avatar=result,
