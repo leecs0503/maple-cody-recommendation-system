@@ -8,6 +8,9 @@ export default function EquipmentsBox({
   thumnailImage,
   nameImage,
   partName,
+  partIndex,
+  partStateToRecommand,
+  setPartStateToRecommand,
   width,
   height,
 }) {
@@ -17,6 +20,13 @@ export default function EquipmentsBox({
     <div />
   )
   const isThumnailImage = typeof thumnailImage !== 'undefined'
+  const isPartStateToRecommand = typeof partStateToRecommand !== 'undefined' 
+  const onClickBox = (event) => {
+    if (!isPartStateToRecommand) {
+      return
+    }
+    setPartStateToRecommand(partStateToRecommand ^ (1 << partIndex))
+  }
   if (isThumnailImage) {
     img = (
       <Base64toImg
@@ -25,10 +35,17 @@ export default function EquipmentsBox({
       />
     )
   }
+  const opacityState = {}
+  if (isPartStateToRecommand && ((partStateToRecommand & (1 << partIndex)) > 0)) {
+    console.log(partStateToRecommand, (1 << partIndex), partIndex)
+    opacityState["opacity"] = [0.8,0.7,0.6]
+  }
+
 
   return (
     <Tooltip title={nameImage} placement="right-start">
       <Box
+        onClick={onClickBox}
         style={{
           marginBottom: 5,
           marginTop: 5,
@@ -44,6 +61,7 @@ export default function EquipmentsBox({
           '&:hover': {
             opacity: [0.9, 0.8, 0.7],
           },
+          ...opacityState
         }}
       >
         <div

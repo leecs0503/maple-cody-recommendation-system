@@ -7,7 +7,11 @@ import {
 import EquipmentsGrid from "./EquipmentsGrid"
 import Base64toImg from './Base64toImg'
 
-export default function CharacterInfo({ characterInfo }) {
+export default function CharacterInfo({
+  characterInfo,
+  partStateToRecommand,
+  setPartStateToRecommand
+}) {
   if (characterInfo === null) {
     return (
       <Box
@@ -59,6 +63,8 @@ export default function CharacterInfo({ characterInfo }) {
         <Grid item xs={5}>
           <EquipmentsGrid
             characterInfo={characterInfo}
+            partStateToRecommand={partStateToRecommand}
+            setPartStateToRecommand={setPartStateToRecommand}
           />
         </Grid>
       </Grid>

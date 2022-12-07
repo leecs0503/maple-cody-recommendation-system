@@ -12,7 +12,7 @@ def main():
     args = parser.parse_args()
 
     model_list_to_make = json.loads(args.model_json)
-
+    print(model_list_to_make)
     model_list = [
         KserveComplementModel(
             name=f"complement-model-{gender}-{part}",
