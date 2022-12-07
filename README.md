@@ -2,29 +2,29 @@
 22-2R 캡스톤디자인 AI 메이플 코디 추천 시스템
 
  # 각자 작업 내용
-이창수:
- - 구조 설계
- - 코드 리뷰
- - 모델 개발
- - 복호화 로직 개발
- - kserve 인프라 구축 (terraform)
- - WebServer - 리엑트 navi, 메인 컴포넌트 구현
- - Trainer 구현
- - Avatar Server 구현
- - 각 Micro Service끼리 통신 프로토콜 정의
-강인구:
- - WzComparerR2Server 작성
- - 복호화 로직 개발
- - Train 환경 구축
- - 학습 데이터 관리
- - 학습 하이퍼파라메터 튜닝 및 학습 환경 관리
- - kserve 추론 서버(predictor) 구현
- - Api Server 비즈니스 로직 작성
- - Avatar Server 전반적인 부분 구현
-유경환:
- - Crwaling script 작성
- - Avatar Server 테스트 코드(test_http_handler.py) 작성
- - Web Server intro box 컴포넌트 구현, fetch hook 작성
+ - 이창수:
+    - 구조 설계
+    - 코드 리뷰
+    - 모델 개발
+    - 복호화 로직 개발
+    - kserve 인프라 구축 (terraform)
+    - WebServer - 리엑트 navi, 메인 컴포넌트 구현
+    - Trainer 구현
+    - Avatar Server 구현
+    - 각 Micro Service들 사이의 통신 프로토콜 정의
+ - 강인구:
+     - WzComparerR2Server 작성
+     - 복호화 로직 개발
+     - Train 환경 구축
+     - 학습 데이터 관리
+     - 학습 하이퍼파라메터 튜닝 및 학습 환경 관리
+     - kserve 추론 서버(predictor) 구현
+     - Api Server 비즈니스 로직 작성
+     - Avatar Server 전반적인 부분 구현
+ - 유경환:
+    - Crwaling script 작성
+    - Avatar Server 테스트 코드(test_http_handler.py) 작성
+    - Web Server intro box 컴포넌트 구현, fetch hook 작성
 
 # 디렉토리 구조
 ```
