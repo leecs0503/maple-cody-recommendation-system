@@ -203,7 +203,6 @@ class HttpHandler:
             route_path="/character_look_data",
             packed_character_look=encrypted_character_uri,
         )
-        prediction_result = {}
         result = {}
         gender = character_data["gender"]
 
@@ -235,21 +234,15 @@ class HttpHandler:
                     best_prediction_item += '+' + mix_part[1]
             elif part == "face":
                 best_prediction_item = best_prediction_item[:-2] + character_data[part][-3] + best_prediction_item[-2:]
-            prediction_result[part] = best_prediction_item
+            result[part] = best_prediction_item
         recommend_image = await self.avatar_caller.request(
             route_path="/avatar_image",
-            avatar=prediction_result,
+            avatar=result,
         )
-        for part, code in prediction_result.items():
-            result[part] = code
-            result[f"{part}_name"] = await self.avatar_caller.request(
-                route_path="/item_name",
-                code=code,
-            )
         print("recommend_handler: 200 OK")
         return web.json_response({
             "recommended image": recommend_image,
-            "result_parts": result,
+            "result_parts": await self._get_avatar_info(result),
         })
 
     def get_html_text(self, url: str):
@@ -271,24 +264,8 @@ class HttpHandler:
         # TODO: change to async
         return base64.b64encode(requests.get(url).content).decode(encoding='utf-8')
 
-    async def character_info_handler(self, request: web.Request):
-        post = await request.json()
-        user_name = post["user_name"]
+    async def _get_avatar_info(self, avatar: dict) -> dict:
         result = {}
-        result["user_name"] = user_name
-
-        image_url = self._get_image_url_list_from_maplegg(user_name)  # TODO: 크롤링해서 이미지 url 받아오는 코드 추가
-        result["crt_image"] = self.get_as_base64(image_url)  # TODO: 크롤링해서 이미지 받아오는 코드 추가
-        crypto_uri = image_url.replace(
-            'https://avatar.maplestory.nexon.com/Character/', ''
-        ).replace('.png', '')
-
-        result["crypto_uri"] = crypto_uri
-        avatar = await self.avatar_caller.request(
-            route_path="/packed_character_look",
-            packed_character_look=crypto_uri,
-        )
-
         keys = []
         coroutines = []
 
@@ -469,7 +446,35 @@ class HttpHandler:
         )
 
         thumbnails = await asyncio.gather(*coroutines)
+        for part, code in avatar.items():
+            result[part] = code
         for key, thumbnail in zip(keys, thumbnails):
             result[key] = thumbnail
+
+        return result
+
+    async def character_info_handler(self, request: web.Request):
+        post = await request.json()
+        user_name = post["user_name"]
+        result = {}
+        result["user_name"] = user_name
+
+        image_url = self._get_image_url_list_from_maplegg(user_name)  # TODO: 크롤링해서 이미지 url 받아오는 코드 추가
+        result["crt_image"] = self.get_as_base64(image_url)  # TODO: 크롤링해서 이미지 받아오는 코드 추가
+        crypto_uri = image_url.replace(
+            'https://avatar.maplestory.nexon.com/Character/', ''
+        ).replace('.png', '')
+
+        result["crypto_uri"] = crypto_uri
+        avatar = await self.avatar_caller.request(
+            route_path="/packed_character_look",
+            packed_character_look=crypto_uri,
+        )
+
+        avatar_result = await self._get_avatar_info(avatar)
+
+        for category, value in avatar_result.items():
+            result[category] = value
+        
         print("character_info_handler: 200 OK")
         return web.json_response(result)
