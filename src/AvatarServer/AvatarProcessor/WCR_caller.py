@@ -74,12 +74,15 @@ class WCRCaller:
             ("bs", "true"),
         ]
 
+        if item_code == "0" or item_code == "":
+            return ""
+
         for step in range(retry_num):
             async with aiohttp.ClientSession() as session:
                 async with session.get(url, params=params, ssl=False) as resp:
                     if resp.status == HTTPStatus.OK:
                         return await resp.text()
-                    if resp.status == HTTPStatus.BAD_GATEWAY:
+                    if resp.status == HTTPStatus.BAD_REQUEST:
                         raise web.HTTPBadRequest(text=await resp.text())
             await self.exponential_backoff(step)
 
@@ -93,12 +96,15 @@ class WCRCaller:
             ("bs", "true"),
         ]
 
+        if item_code == "0" or item_code == "":
+            return ""
+
         for step in range(retry_num):
             async with aiohttp.ClientSession() as session:
                 async with session.get(url, params=params, ssl=False) as resp:
                     if resp.status == HTTPStatus.OK:
                         return await resp.text()
-                    if resp.status == HTTPStatus.BAD_GATEWAY:
+                    if resp.status == HTTPStatus.BAD_REQUEST:
                         raise web.HTTPBadRequest(text=await resp.text())
             await self.exponential_backoff(step)
 
@@ -118,7 +124,7 @@ class WCRCaller:
                 async with session.get(url, params=params, ssl=False) as resp:
                     if resp.status == HTTPStatus.OK:
                         return await resp.text()
-                    if resp.status == HTTPStatus.BAD_GATEWAY:
+                    if resp.status == HTTPStatus.BAD_REQUEST:
                         raise web.HTTPBadRequest(text=await resp.text())
             await self.exponential_backoff(step)
 
