@@ -27,7 +27,7 @@ export default function FormID({ setCharacterInfo, setRecommandInfo }) {
   ) => {
     setTextFieldUserName(event.target.value)
   };
-  const characterInfo = useFetch("http://localhost:7000/v1/character-info", userId);
+  const characterInfo = useFetch("http://vqateam12.kro.kr:8383/v1/character-info", userId);
   const characterImageSubmit = () => {
     setUserId(textFieldUserName)
   }

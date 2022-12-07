@@ -73,7 +73,6 @@ export default function MainIntro() {
           paddingLeft: '14.5vw',
           paddingTop: '3vh',
           paddingBottom: '5vh',
-
         }}>
 
           <Button color="error" variant="contained" component="label" size="large" onClick={GitHubSubmit} >

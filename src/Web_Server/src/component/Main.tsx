@@ -35,7 +35,7 @@ export default function Main() {
     <Fragment>
       <MainIntro />
       <Grid container spacing={2}>
-        <Grid item xs={0.5}>
+        <Grid item xs={0.25}>
         </Grid>
         <Grid item xs={5}>
           <CharacterInfo
@@ -61,37 +61,10 @@ export default function Main() {
             recommandedInfo = {recommandedInfo}
           />
         </Grid>
-        {/* <Grid item xs={2}>
-          <Box
-            sx={{
-              p: 2, border: '1px dashed grey',
-              borderRadius: '16px'
-            }}
-          >
-            <InferImage image_name={[1, 4]} code={character_code} />
-          </Box>
-        </Grid>
-        <Grid item xs={2}>
-          <Box
-            sx={{
-              p: 2, border: '1px dashed grey',
-              borderRadius: '16px'
-            }}
-          >
-            <InferImage image_name={[2, 5]} code={character_code} />
-          </Box>
-        </Grid>
-        <Grid item xs={2}>
-          <Box
-            sx={{
-              p: 2, border: '1px dashed grey',
-              borderRadius: '16px'
-            }}
-          >
-            <InferImage image_name={[3, 6]} code={character_code} />
-          </Box>
-        </Grid> */}
       </Grid>
+      <div style={{height: "10vh"}}>
+
+      </div>
     </Fragment>
 
   );
