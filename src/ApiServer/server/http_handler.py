@@ -227,6 +227,13 @@ class HttpHandler:
             predictions = response_obj["predictions"]
             best_prediction = predictions[0][0]
             best_prediction_prob, best_prediction_item = best_prediction
+            if part == "hair":
+                mix_part = character_data[part].split('+')
+                best_prediction_item += mix_part[0][-1]
+                if len(mix_part) == 2:
+                    best_prediction_item += '+' + mix_part[1]
+            elif part == "face":
+                best_prediction_item = best_prediction_item[:-2] + character_data[part][-3] + best_prediction_item[-2:]
             result[part] = best_prediction_item
         recommend_image = await self.avatar_caller.request(
             route_path="/avatar_image",
@@ -235,7 +242,7 @@ class HttpHandler:
         print("recommend_handler: 200 OK")
         return web.json_response({
             "recommended image": recommend_image,
-            "result_parts": result,
+            "result_parts": await self._get_avatar_info(result),
         })
 
     def get_html_text(self, url: str):
@@ -257,6 +264,195 @@ class HttpHandler:
         # TODO: change to async
         return base64.b64encode(requests.get(url).content).decode(encoding='utf-8')
 
+    async def _get_avatar_info(self, avatar: dict) -> dict:
+        result = {}
+        keys = []
+        coroutines = []
+
+        keys.append("hair_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/hair_image",
+                hair=avatar["hair"],
+            )
+        )
+
+        keys.append("hair_name")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/item_name",
+                code=avatar["hair"],
+            )
+        )
+
+        keys.append("eye_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/eye_image",
+                eye=avatar["face"],
+            )
+        )
+
+        keys.append("eye_name")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/item_name",
+                code=avatar["face"],
+            )
+        )
+
+        keys.append("weapon_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/icon",
+                icon=avatar["weapon"],
+            )
+        )
+
+        keys.append("weapon_name")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/item_name",
+                code=avatar["weapon"],
+            )
+        )
+
+        keys.append("cap_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/icon",
+                icon=avatar["cap"],
+            )
+        )
+
+        keys.append("cap_name")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/item_name",
+                code=avatar["cap"],
+            )
+        )
+
+        keys.append("face_acc_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/icon",
+                icon=avatar["faceAccessory"],
+            )
+        )
+
+        keys.append("face_acc_name")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/item_name",
+                code=avatar["faceAccessory"],
+            )
+        )
+
+        keys.append("eye_acc_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/icon",
+                icon=avatar["eyeAccessory"],
+            )
+        )
+
+        keys.append("eye_acc_name")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/item_name",
+                code=avatar["eyeAccessory"],
+            )
+        )
+
+        keys.append("long_coat_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/icon",
+                icon=avatar["longcoat"],
+            )
+        )
+
+        keys.append("long_coat_name")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/item_name",
+                code=avatar["longcoat"],
+            )
+        )
+
+        keys.append("shoes_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/icon",
+                icon=avatar["shoes"],
+            )
+        )
+
+        keys.append("shoes_name")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/item_name",
+                code=avatar["shoes"],
+            )
+        )
+
+        keys.append("earrings_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/icon",
+                icon=avatar["earrings"],
+            )
+        )
+
+        keys.append("earrings_name")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/item_name",
+                code=avatar["earrings"],
+            )
+        )
+
+        keys.append("glove_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/icon",
+                icon=avatar["glove"],
+            )
+        )
+
+        keys.append("glove_name")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/item_name",
+                code=avatar["glove"],
+            )
+        )
+
+        keys.append("cape_thum")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/icon",
+                icon=avatar["cape"],
+            )
+        )
+
+        keys.append("cape_name")
+        coroutines.append(
+            self.avatar_caller.request(
+                route_path="/item_name",
+                code=avatar["cape"],
+            )
+        )
+
+        thumbnails = await asyncio.gather(*coroutines)
+        for part, code in avatar.items():
+            result[part] = code
+        for key, thumbnail in zip(keys, thumbnails):
+            result[key] = thumbnail
+
+        return result
+
     async def character_info_handler(self, request: web.Request):
         post = await request.json()
         user_name = post["user_name"]
@@ -275,99 +471,10 @@ class HttpHandler:
             packed_character_look=crypto_uri,
         )
 
-        keys = []
-        coroutines = []
+        avatar_result = await self._get_avatar_info(avatar)
 
-        keys.append("hair_thum")
-        coroutines.append(
-            self.avatar_caller.request(
-                route_path="/hair_image",
-                hair=avatar["hair"],
-            )
-        )
-
-        keys.append("eye_thum")
-        coroutines.append(
-            self.avatar_caller.request(
-                route_path="/eye_image",
-                eye=avatar["face"],
-            )
-        )
-
-        keys.append("weapon_thum")
-        coroutines.append(
-            self.avatar_caller.request(
-                route_path="/icon",
-                icon=avatar["weapon"],
-            )
-        )
-
-        keys.append("cap_thum")
-        coroutines.append(
-            self.avatar_caller.request(
-                route_path="/icon",
-                icon=avatar["cap"],
-            )
-        )
-
-        keys.append("face_acc_thum")
-        coroutines.append(
-            self.avatar_caller.request(
-                route_path="/icon",
-                icon=avatar["faceAccessory"],
-            )
-        )
-
-        keys.append("eye_acc_thum")
-        coroutines.append(
-            self.avatar_caller.request(
-                route_path="/icon",
-                icon=avatar["eyeAccessory"],
-            )
-        )
-
-        keys.append("long_coat_thum")
-        coroutines.append(
-            self.avatar_caller.request(
-                route_path="/icon",
-                icon=avatar["longcoat"],
-            )
-        )
-
-        keys.append("shoes_thum")
-        coroutines.append(
-            self.avatar_caller.request(
-                route_path="/icon",
-                icon=avatar["shoes"],
-            )
-        )
-
-        keys.append("earrings_thum")
-        coroutines.append(
-            self.avatar_caller.request(
-                route_path="/icon",
-                icon=avatar["earrings"],
-            )
-        )
-
-        keys.append("glove_thum")
-        coroutines.append(
-            self.avatar_caller.request(
-                route_path="/icon",
-                icon=avatar["glove"],
-            )
-        )
-
-        keys.append("cape_thum")
-        coroutines.append(
-            self.avatar_caller.request(
-                route_path="/icon",
-                icon=avatar["cape"],
-            )
-        )
-
-        thumbnails = await asyncio.gather(*coroutines)
-        for key, thumbnail in zip(keys, thumbnails):
-            result[key] = thumbnail
+        for category, value in avatar_result.items():
+            result[category] = value
+        
         print("character_info_handler: 200 OK")
         return web.json_response(result)
