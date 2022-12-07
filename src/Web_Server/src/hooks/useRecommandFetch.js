@@ -1,12 +1,32 @@
 import { useEffect, useState } from "react";
 
-function useRecommandFetch(cryptoUri) {
+const TRANSFORM_STATE_TO_PARTS = [
+  "hair",
+  "cap",
+  "face_acc",
+  "eye",
+  "eye_acc",
+  "earrings",
+  "weapon",
+  "coat",
+  "subweapon", 
+  "pants",
+  "glove",
+  "cape", 
+  "shoes",
+]
+
+function useRecommandFetch(cryptoUri, partState) {
   const url = 'http://localhost:7000/v1/recommend-cody'
-  const parts = ["weapon", "cape", "cap"]
+  const parts = ["cap"]
   const [data, setData] = useState(null);
   useEffect(() => {
     if (cryptoUri === null)
       return
+    if (partState === 0)
+      return
+    const parts = []
+    
     fetch(url, {
       method: "POST",
       body: JSON.stringify({
@@ -20,7 +40,7 @@ function useRecommandFetch(cryptoUri) {
       .then(data => {
         setData(data);
       });
-  }, [cryptoUri]);
+  }, [cryptoUri, partState]);
 
   return data;
 }

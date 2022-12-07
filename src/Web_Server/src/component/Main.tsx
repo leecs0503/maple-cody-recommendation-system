@@ -13,16 +13,22 @@ import {
 } from "@mui/material";
 import InferResultBox from './InferResultBox'
 
-
 export default function Main() {
   const [characterInfo, setCharacterInfo] = useState(null);
-  const [cryptoUriToRecommand, setCryptoUriToRecommand] = useState(null);
-  const recommandedInfo = useRecommandFetch(cryptoUriToRecommand);
+  const [recommandInfo, setRecommandInfo] = useState({
+    "cryptoUriToRecommand": null,
+    "partStateToRecommand": 0,
+  });
+  const [partStateToRecommand, setPartStateToRecommand] = useState(0);
+  const recommandedInfo = useRecommandFetch(recommandInfo.cryptoUriToRecommand, recommandInfo.partStateToRecommand);
   const onRecommandButtonClick = (event) => {
     if (characterInfo === null) {
       return
     }
-    setCryptoUriToRecommand(characterInfo.crypto_uri);
+    setRecommandInfo({
+      cryptoUriToRecommand: characterInfo.crypto_uri,
+      partStateToRecommand,
+    });
   }
   console.log(recommandedInfo)
   return (
@@ -32,7 +38,11 @@ export default function Main() {
         <Grid item xs={0.5}>
         </Grid>
         <Grid item xs={5}>
-          <CharacterInfo characterInfo={characterInfo} />
+          <CharacterInfo
+            characterInfo={characterInfo}
+            partStateToRecommand={partStateToRecommand}
+            setPartStateToRecommand={setPartStateToRecommand}
+          />
           <br />
           <FormID setCharacterInfo={setCharacterInfo} setCryptoUriToRecommand={setCryptoUriToRecommand}/>
         </Grid>
