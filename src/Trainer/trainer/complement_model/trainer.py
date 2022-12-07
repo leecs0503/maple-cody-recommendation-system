@@ -16,7 +16,7 @@ import time
 
 @dataclass
 class TrainerArguments:
-    data_path: str = './data/json_data_result.json'
+    data_path: str = './data/json_data_result_1_5000.json'
     batch_size: int = 32
     num_workers: int = 8
     tensorboard_path: str = f"./runs/{time.strftime('%Y.%m.%d - %H:%M:%S')}"
@@ -24,7 +24,7 @@ class TrainerArguments:
     gender: str = "female"
     parts: str = "face"
     saved_model_path: Optional[str] = None
-    num_epochs: int = 50
+    num_epochs: int = 15
     learning_rate: float = 0.001
     step_size: float = 20
     gamma: float = 0.1
@@ -167,7 +167,7 @@ class Trainer(BaseTrainer):
         os.makedirs(self.model_save_path, exist_ok=True)
         model_save_path = os.path.join(
             self.model_save_path,
-            f"complement_model_{self.parts}_EPOCH_{epoch}.pt"
+            f"complement_model_{self.gender}_{self.parts}_EPOCH_{epoch}.pt"
         )
         torch.save(
             self.model.state_dict(),
