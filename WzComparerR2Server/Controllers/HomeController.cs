@@ -1037,13 +1037,17 @@ public class HomeController : Controller
 						cap_node = cap_node.GetValue<Wz_Uol>().HandleUol(cap_node);
 					}
 					cap_node = FindActionFrameNode(cap.Node, new ActionFrame(avatar.ActionName, 0));
+					if (cap_node != null) {
+						while(cap_node.Value is Wz_Uol)
+						{
+							cap_node = cap_node.GetValue<Wz_Uol>().HandleUol(cap_node);
+						}
+						cap_node = cap_node.FindNodeByPath("default");
+					}
 				}
 				else {
-					var tempNode = cap_node;
-					foreach(var childNode in cap_node.Nodes) {
-						tempNode = childNode;
-					}
-					if (tempNode == cap_node) {
+					var tempNode = cap_node.FindNodeByPath("default");
+					if (tempNode == null) {
 						cap_node = cap.Node;
 						while(cap_node.Value is Wz_Uol)
 						{
@@ -1054,36 +1058,34 @@ public class HomeController : Controller
 							Console.WriteLine("Unknown Exception");
 							Environment.Exit(-1);
 						}
+						while(cap_node.Value is Wz_Uol)
+						{
+							cap_node = cap_node.GetValue<Wz_Uol>().HandleUol(cap_node);
+						}
+						cap_node = cap_node.FindNodeByPath("default");
 					}
 					else {
 						cap_node = tempNode;
 					}
 				}
 				if(cap_node != null) {
-					while(cap_node.Value is Wz_Uol)
+					var cap_z = cap_node.FindNodeByPath("z");
+					if(cap_z != null)
 					{
-						cap_node = cap_node.GetValue<Wz_Uol>().HandleUol(cap_node);
-					}
-					foreach(var childNode in cap_node.Nodes)
-					{
-						var cap_z = childNode.FindNodeByPath("z");
-						if(cap_z != null)
+						var cap_string = cap_z.GetValue<string>();
+						Console.WriteLine(cap.Node.FullPath + " : " + cap_string);
+						if (cap_string == "cap" || cap_string == "capBelowAccessory" || cap_string == "0")
 						{
-							var cap_string = cap_z.GetValue<string>();
-							if (cap_string == "cap" || cap_string == "capBelowAccessory")
-							{
-								avatar.HairCover = true;
-							}
-							else if(cap_string == "capOverHair" || cap_string == "backCapAccessory" || cap_string == "capeOverHead")
-							{
-								avatar.HairCover = false;
-							}
-							else
-							{
-								Console.WriteLine(cap_string);
-								Environment.Exit(-1);
-							}
-							break;
+							avatar.HairCover = true;
+						}
+						else if(cap_string == "capOverHair" || cap_string == "CapOverHair" || cap_string == "accessoryOverHair" || cap_string == "capeOverHead" || cap_string == "backCapAccessory")
+						{
+							avatar.HairCover = false;
+						}
+						else
+						{
+							Console.WriteLine(cap_string);
+							Environment.Exit(-1);
 						}
 					}
 				}
