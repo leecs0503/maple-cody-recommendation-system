@@ -33,6 +33,7 @@ class HTTPHandler:
             web.post('/icon', self.icon_handler),
             web.post('/eye_image', self.eye_image_handler),
             web.post('/hair_image', self.hair_image_handler),
+            web.post('/item_name', self.item_name_handler),
         ]
 
     async def index_handler(self, request: web.Request):
@@ -117,7 +118,7 @@ class HTTPHandler:
         try:
             return web.Response(
                 text=await self.processor.get_icon(icon_code),
-                status=HTTPStatus.OK
+                status=HTTPStatus.OK,
             )
         except Exception as err:
             raise web.HTTPInternalServerError(
@@ -130,7 +131,7 @@ class HTTPHandler:
         try:
             return web.Response(
                 text=await self.processor.get_eye(eye_code),
-                status=HTTPStatus.OK
+                status=HTTPStatus.OK,
             )
         except Exception as err:
             raise web.HTTPInternalServerError(
@@ -143,9 +144,17 @@ class HTTPHandler:
         try:
             return web.Response(
                 text=await self.processor.get_hair(hair_code),
-                status=HTTPStatus.OK
+                status=HTTPStatus.OK,
             )
         except Exception as err:
             raise web.HTTPInternalServerError(
                 body=f"Internal Server Error 500: {str(err)}"
             )
+    async def item_name_handler(self, request: web.Request):
+        post = await request.json()
+        code = post.get("code")
+        return web.Response(
+            text=self.processor.get_item_name(code),
+            status=HTTPStatus.OK,
+        )
+
