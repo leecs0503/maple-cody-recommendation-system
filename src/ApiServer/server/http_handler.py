@@ -203,6 +203,7 @@ class HttpHandler:
             route_path="/character_look_data",
             packed_character_look=encrypted_character_uri,
         )
+        prediction_result = {}
         result = {}
         gender = character_data["gender"]
 
@@ -227,11 +228,24 @@ class HttpHandler:
             predictions = response_obj["predictions"]
             best_prediction = predictions[0][0]
             best_prediction_prob, best_prediction_item = best_prediction
-            result[part] = best_prediction_item
+            if part == "hair":
+                mix_part = character_data[part].split('+')
+                best_prediction_item += mix_part[0][-1]
+                if len(mix_part) == 2:
+                    best_prediction_item += '+' + mix_part[1]
+            elif part == "face":
+                best_prediction_item = best_prediction_item[:-2] + character_data[part][-3] + best_prediction_item[-2:]
+            prediction_result[part] = best_prediction_item
         recommend_image = await self.avatar_caller.request(
             route_path="/avatar_image",
-            avatar=result,
+            avatar=prediction_result,
         )
+        for part, code in prediction_result.items():
+            result[part] = code
+            result[f"{part}_name"] = await self.avatar_caller.request(
+                route_path="/item_name",
+                code=code,
+            )
         print("recommend_handler: 200 OK")
         return web.json_response({
             "recommended image": recommend_image,
