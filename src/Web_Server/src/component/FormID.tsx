@@ -19,7 +19,7 @@ const theme = createTheme({
 
 
 
-export default function FormID({ setCharacterInfo, setCryptoUriToRecommand }) {
+export default function FormID({ setCharacterInfo, setRecommandInfo }) {
   const [textFieldUserName, setTextFieldUserName] = useState("");
   const [userId, setUserId] = useState(null);
   const handleTextFieldChange = (
@@ -32,7 +32,10 @@ export default function FormID({ setCharacterInfo, setCryptoUriToRecommand }) {
     setUserId(textFieldUserName)
   }
   useEffect(() => {
-    setCryptoUriToRecommand(null)
+    setRecommandInfo({
+      "cryptoUriToRecommand": null,
+      "partStateToRecommand": 0,
+    })
     setCharacterInfo(characterInfo)
   }, [characterInfo]);
 

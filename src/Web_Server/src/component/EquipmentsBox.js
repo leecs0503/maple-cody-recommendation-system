@@ -25,7 +25,7 @@ export default function EquipmentsBox({
     if (!isPartStateToRecommand) {
       return
     }
-    setPartStateToRecommand(isPartStateToRecommand ^ (1 << partIndex))
+    setPartStateToRecommand(partStateToRecommand ^ (1 << partIndex))
   }
   if (isThumnailImage) {
     img = (
@@ -36,7 +36,8 @@ export default function EquipmentsBox({
     )
   }
   const opacityState = {}
-  if (isPartStateToRecommand) {
+  if (isPartStateToRecommand && ((partStateToRecommand & (1 << partIndex)) > 0)) {
+    console.log(partStateToRecommand, (1 << partIndex), partIndex)
     opacityState["opacity"] = [0.8,0.7,0.6]
   }
 

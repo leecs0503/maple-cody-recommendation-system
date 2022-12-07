@@ -44,7 +44,7 @@ export default function Main() {
             setPartStateToRecommand={setPartStateToRecommand}
           />
           <br />
-          <FormID setCharacterInfo={setCharacterInfo} setCryptoUriToRecommand={setCryptoUriToRecommand}/>
+          <FormID setCharacterInfo={setCharacterInfo} setRecommandInfo={setRecommandInfo}/>
         </Grid>
         <Grid item xs={1} style={{
           "display": "flex",

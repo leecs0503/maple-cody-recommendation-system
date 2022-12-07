@@ -27,7 +27,7 @@ export default function EquipmentsGrid({
             partName="HAIR"
             width={70}
             height={150}
-            partsIndex={0}
+            partIndex={0}
             partStateToRecommand={partStateToRecommand}
             setPartStateToRecommand={setPartStateToRecommand}
             thumnailImage={characterInfo.hair_thum}
@@ -40,7 +40,7 @@ export default function EquipmentsGrid({
         }}>
           <EquipmentsBox
             partName="CAP"
-            partsIndex={1}
+            partIndex={1}
             partStateToRecommand={partStateToRecommand}
             setPartStateToRecommand={setPartStateToRecommand}
             thumnailImage={characterInfo.cap_thum}
@@ -48,7 +48,7 @@ export default function EquipmentsGrid({
           />
           <EquipmentsBox
             partName="FACE ACC"
-            partsIndex={2}
+            partIndex={2}
             partStateToRecommand={partStateToRecommand}
             setPartStateToRecommand={setPartStateToRecommand}
             thumnailImage={characterInfo.face_acc_thum}
@@ -61,7 +61,7 @@ export default function EquipmentsGrid({
         <Grid xs={3} style={girdStyle}>
           <EquipmentsBox
             partName="EYE"
-            partsIndex={3}
+            partIndex={3}
             partStateToRecommand={partStateToRecommand}
             setPartStateToRecommand={setPartStateToRecommand}
             thumnailImage={characterInfo.eye_thum}
@@ -71,7 +71,7 @@ export default function EquipmentsGrid({
         <Grid xs={3} style={girdStyle}>
           <EquipmentsBox
             partName="EYE ACC"
-            partsIndex={4}
+            partIndex={4}
             partStateToRecommand={partStateToRecommand}
             setPartStateToRecommand={setPartStateToRecommand}
             thumnailImage={characterInfo.eye_acc_thum}
@@ -81,7 +81,7 @@ export default function EquipmentsGrid({
         <Grid xs={3} style={girdStyle}>
           <EquipmentsBox
             partName="EAR RING"
-            partsIndex={5}
+            partIndex={5}
             partStateToRecommand={partStateToRecommand}
             setPartStateToRecommand={setPartStateToRecommand}
             thumnailImage={characterInfo.earrings_thum}
@@ -94,7 +94,7 @@ export default function EquipmentsGrid({
         <Grid xs={3} style={girdStyle}>
           <EquipmentsBox
             partName="WEAPON"
-            partsIndex={6}
+            partIndex={6}
             partStateToRecommand={partStateToRecommand}
             setPartStateToRecommand={setPartStateToRecommand}
             thumnailImage={characterInfo.weapon_thum}
@@ -104,7 +104,7 @@ export default function EquipmentsGrid({
         <Grid xs={3} style={girdStyle}>
           <EquipmentsBox
             partName="COAT"
-            partsIndex={7}
+            partIndex={7}
             partStateToRecommand={partStateToRecommand}
             setPartStateToRecommand={setPartStateToRecommand}
             thumnailImage={characterInfo.long_coat_thum}
@@ -128,7 +128,7 @@ export default function EquipmentsGrid({
         <Grid xs={3} style={girdStyle}>
           <EquipmentsBox
             partName="GLOVE"
-            partsIndex={8}
+            partIndex={8}
             partStateToRecommand={partStateToRecommand}
             setPartStateToRecommand={setPartStateToRecommand}
             thumnailImage={characterInfo.glove_thum}
@@ -138,7 +138,7 @@ export default function EquipmentsGrid({
         <Grid xs={3} style={girdStyle}>
           <EquipmentsBox
             partName="CAPE"
-            partsIndex={9}
+            partIndex={9}
             partStateToRecommand={partStateToRecommand}
             setPartStateToRecommand={setPartStateToRecommand}
             thumnailImage={characterInfo.cape_thum}
@@ -151,7 +151,7 @@ export default function EquipmentsGrid({
         <Grid xs={3} style={girdStyle}>
           <EquipmentsBox
             partName="SHOES"
-            partsIndex={10}
+            partIndex={10}
             partStateToRecommand={partStateToRecommand}
             setPartStateToRecommand={setPartStateToRecommand}
             thumnailImage={characterInfo.shoes_thum}
